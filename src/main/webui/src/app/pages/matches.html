@@ -1,0 +1,11 @@
+@if (matches.isLoading()) {
+  <p>Loading upcoming matches...</p>
+} @else if (matches.error()) {
+  <p class="text-red-500">Error loading matches: {{ matches.error() }}</p>
+} @else {
+  <div class="flex flex-col gap-8">
+    @for ((match of matches.value() || []); track match.id) {
+      <match-card [match]="match"></match-card>
+    }
+  </div>
+}

@@ -1,0 +1,117 @@
+export const API = {
+  USERS: {
+    GET_ALL: () => `/api/v1/users`,
+    GET_BY_ID: (id: string) => `/api/v1/users/id/${id}`,
+    GET_BY_KEYCLOAK_ID: (keycloakId: string) => `/api/v1/users/keycloak/${keycloakId}`,
+    GET_BY_EMAIL: (email: string) => `/api/v1/users/email/${email}`,
+    GET_ACTIVE: () => `/api/v1/users/active`,
+    CREATE: () => `/api/v1/users`,
+    UPDATE: (id: string) => `/api/v1/users/id/${id}`,
+    DELETE: (id: string) => `/api/v1/users/id/${id}`,
+  },
+
+  MATCHES: {
+    GET_ALL: () => `/api/v1/matches`,
+    GET_BY_ID: (id: string) => `/api/v1/matches/id/${id}`,
+    GET_BY_STAGE: (stage: string) => `/api/v1/matches/stage/${stage}`,
+    GET_BY_STATUS: (status: string) => `/api/v1/matches/status/${status}`,
+    GET_BY_TEAM: (teamId: string) => `/api/v1/matches/team/id/${teamId}`,
+    GET_UPCOMING: (next: number = 128) => `/api/v1/matches/upcoming?next=${next}`,
+    GET_BY_DATE_RANGE: (start: string, end: string) =>
+      `/api/v1/matches/date-range?start=${start}&end=${end}`,
+    CREATE: () => `/api/v1/matches`,
+    UPDATE: (id: string) => `/api/v1/matches/id/${id}`,
+    DELETE: (id: string) => `/api/v1/matches/id/${id}`,
+  },
+
+  BETS: {
+    GET_ALL: () => `/api/v1/bets`,
+    GET_BY_ID: (id: string) => `/api/v1/bets/id/${id}`,
+    GET_BY_USER: (userId: string) => `/api/v1/bets/user/id/${userId}`,
+    GET_BY_MATCH: (matchId: string) => `/api/v1/bets/match/id/${matchId}`,
+    GET_BY_USER_AND_MATCH: (userId: string, matchId: string) =>
+      `/api/v1/bets/user/id/${userId}/match/id/${matchId}`,
+    GET_LEADERBOARD: (limit: number = 10) => `/api/v1/bets/leaderboard?limit=${limit}`,
+    GET_TOTAL_POINTS: (userId: string) => `/api/v1/bets/user/id/${userId}/total-points`,
+    CREATE: () => `/api/v1/bets`,
+    UPDATE: (id: string) => `/api/v1/bets/id/${id}`,
+    DELETE: (id: string) => `/api/v1/bets/id/${id}`,
+  },
+
+  CHAMPION_BETS: {
+    GET_ALL: () => `/api/v1/champion-bets`,
+    GET_BY_ID: (id: string) => `/api/v1/champion-bets/id/${id}`,
+    GET_BY_USER: (userId: string) => `/api/v1/champion-bets/user/id/${userId}`,
+    COUNT_BY_CHAMPION: (teamId: string) => `/api/v1/champion-bets/stats/champion/id/${teamId}`,
+    COUNT_BY_RUNNER_UP: (teamId: string) => `/api/v1/champion-bets/stats/runner-up/id/${teamId}`,
+    CREATE: () => `/api/v1/champion-bets`,
+    UPDATE: (id: string) => `/api/v1/champion-bets/id/${id}`,
+    DELETE: (id: string) => `/api/v1/champion-bets/id/${id}`,
+  },
+
+  GROUP_WINNER_BETS: {
+    GET_ALL: () => `/api/v1/group-winner-bets`,
+    GET_BY_ID: (id: string) => `/api/v1/group-winner-bets/id/${id}`,
+    GET_BY_USER: (userId: string) => `/api/v1/group-winner-bets/user/id/${userId}`,
+    GET_BY_GROUP: (groupName: string) => `/api/v1/group-winner-bets/group/${groupName}`,
+    GET_BY_USER_AND_GROUP: (userId: string, groupName: string) =>
+      `/api/v1/group-winner-bets/user/id/${userId}/group/${groupName}`,
+    CREATE: () => `/api/v1/group-winner-bets`,
+    UPDATE: (id: string) => `/api/v1/group-winner-bets/id/${id}`,
+    DELETE: (id: string) => `/api/v1/group-winner-bets/id/${id}`,
+  },
+
+  PAYMENTS: {
+    GET_ALL: () => `/api/v1/payments`,
+    GET_BY_ID: (id: string) => `/api/v1/payments/id/${id}`,
+    GET_BY_USER: (userId: string) => `/api/v1/payments/user/id/${userId}`,
+    GET_BY_POOL: (poolId: string) => `/api/v1/payments/pool/id/${poolId}`,
+    GET_BY_USER_AND_POOL: (userId: string, poolId: string) =>
+      `/api/v1/payments/user/id/${userId}/pool/id/${poolId}`,
+    GET_BY_STATUS: (status: string) => `/api/v1/payments/status/${status}`,
+    GET_BY_TRANSACTION_ID: (transactionId: string) =>
+      `/api/v1/payments/transaction/${transactionId}`,
+    GET_PENDING_BY_POOL: (poolId: string) => `/api/v1/payments/pool/id/${poolId}/pending`,
+    CREATE: () => `/api/v1/payments`,
+    UPDATE: (id: string) => `/api/v1/payments/id/${id}`,
+    DELETE: (id: string) => `/api/v1/payments/id/${id}`,
+  },
+
+  POOLS: {
+    GET_ALL: () => `/api/v1/pools`,
+    GET_BY_ID: (id: string) => `/api/v1/pools/id/${id}`,
+    GET_BY_INVITE_CODE: (inviteCode: string) => `/api/v1/pools/invite-code/${inviteCode}`,
+    GET_ACTIVE: () => `/api/v1/pools/active`,
+    GET_RECENT: () => `/api/v1/pools/recent`,
+    CREATE: () => `/api/v1/pools`,
+    UPDATE: (id: string) => `/api/v1/pools/id/${id}`,
+    DELETE: (id: string) => `/api/v1/pools/id/${id}`,
+  },
+
+  TEAMS: {
+    GET_ALL: () => `/api/v1/teams`,
+    GET_BY_ID: (id: string) => `/api/v1/teams/id/${id}`,
+    GET_BY_FIFA_CODE: (fifaCode: string) => `/api/v1/teams/fifa-code/${fifaCode}`,
+    GET_BY_GROUP: (groupName: string) => `/api/v1/teams/group/${groupName}`,
+    CREATE: () => `/api/v1/teams`,
+    UPDATE: (id: string) => `/api/v1/teams/id/${id}`,
+    DELETE: (id: string) => `/api/v1/teams/id/${id}`,
+  },
+
+  USER_POOLS: {
+    GET_ALL: () => `/api/v1/user-pools`,
+    GET_BY_ID: (id: string) => `/api/v1/user-pools/id/${id}`,
+    GET_BY_USER: (userId: string) => `/api/v1/user-pools/user/id/${userId}`,
+    GET_BY_POOL: (poolId: string) => `/api/v1/user-pools/pool/id/${poolId}`,
+    GET_BY_USER_AND_POOL: (userId: string, poolId: string) =>
+      `/api/v1/user-pools/user/id/${userId}/pool/id/${poolId}`,
+    GET_BY_USER_AND_STATUS: (userId: string, status: string) =>
+      `/api/v1/user-pools/user/id/${userId}/status/${status}`,
+    GET_BY_POOL_AND_STATUS: (poolId: string, status: string) =>
+      `/api/v1/user-pools/pool/id/${poolId}/status/${status}`,
+    COUNT_ACTIVE_MEMBERS: (poolId: string) => `/api/v1/user-pools/pool/id/${poolId}/members/count`,
+    CREATE: () => `/api/v1/user-pools`,
+    UPDATE: (id: string) => `/api/v1/user-pools/id/${id}`,
+    DELETE: (id: string) => `/api/v1/user-pools/id/${id}`,
+  },
+};

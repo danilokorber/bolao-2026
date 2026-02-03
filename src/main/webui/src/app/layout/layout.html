@@ -1,0 +1,142 @@
+<!-- Main container: full screen height -->
+<div
+  class="h-screen w-screen flex flex-col gap-4 overflow-hidden p-4 bg-linear-to-br from-primary-50 via-success-50 to-secondary-50 dark:bg-linear-to-br dark:from-primary-950 dark:via-success-950 dark:to-secondary-950"
+>
+  <!-- Header -->
+  <header
+    class="flex-none rounded-3xl p-4 bg-linear-to-r from-primary-600 to-primary-700 dark:from-primary-800 dark:to-primary-900 shadow-lg"
+  >
+    <div class="flex items-center gap-4 justify-between">
+      <div class="flex items-center gap-4">
+        <!-- Menu toggle button (visible on all screen sizes) -->
+        <button
+          (click)="toggleSidebar()"
+          class="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors duration-200 text-white"
+          type="button"
+          aria-label="Toggle navigation menu"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            ></path>
+          </svg>
+        </button>
+        <span class="text-3xl font-bold text-white">FIFA World Cup 2026</span>
+      </div>
+
+      <!-- Dark mode toggle button -->
+      <button
+        (click)="toggleDarkMode()"
+        class="p-2 bg-secondary-400 hover:bg-secondary-500 rounded-lg transition-colors duration-200 text-primary-950"
+        type="button"
+        aria-label="Toggle dark mode"
+      >
+        @if (darkMode()) {
+          <!-- Sun icon for light mode -->
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+            ></path>
+          </svg>
+        } @else {
+          <!-- Moon icon for dark mode -->
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+            ></path>
+          </svg>
+        }
+      </button>
+    </div>
+  </header>
+
+  <!-- Content area: sidebar + main -->
+  <div class="flex-1 flex gap-4 overflow-hidden relative">
+    <!-- Mobile backdrop overlay -->
+    @if (sidebarOpen()) {
+      <div
+        class="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
+        (click)="toggleSidebar()"
+      ></div>
+    }
+
+    <!-- Sidebar navigation -->
+    <aside
+      [class]="
+        'flex-none w-64 rounded-3xl flex flex-col z-20 bg-linear-to-b from-success-600 to-success-700 dark:from-success-800 dark:to-success-900 inset-y-0 left-0 transition-transform duration-300 shadow-lg text-white ' +
+        (sidebarOpen() ? 'translate-x-0 lg:relative fixed' : '-translate-x-full fixed')
+      "
+    >
+      <!-- Scrollable navigation content -->
+      <nav class="flex-1 overflow-y-auto p-4">
+        <ul class="space-y-2">
+          <li>
+            <a
+              href="#"
+              class="block py-3 px-4 rounded-xl bg-white/10 hover:bg-white/20 transition-colors duration-200 font-medium"
+            >
+              Navigation Item 1
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="block py-3 px-4 rounded-xl hover:bg-white/10 transition-colors duration-200"
+            >
+              Navigation Item 2
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="block py-3 px-4 rounded-xl hover:bg-white/10 transition-colors duration-200"
+            >
+              Navigation Item 3
+            </a>
+          </li>
+          <!-- Add more items as needed -->
+        </ul>
+      </nav>
+
+      <!-- Fixed sidebar footer -->
+      <div class="flex-none p-4 border-t border-white/20">
+        <p class="text-sm text-white/80">Pool 2026 v1.0</p>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="flex-1 overflow-y-auto backdrop-blur-sm">
+      <div class="mb-6">
+        <h1 class="text-4xl font-bold text-primary-700 dark:text-primary-300">
+          {{ pageTitle() }}
+        </h1>
+      </div>
+      <div><router-outlet></router-outlet></div>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer
+    class="flex-none rounded-3xl bg-linear-to-r from-primary-600 to-primary-700 dark:from-primary-800 dark:to-primary-900 shadow-lg"
+  >
+    <div class="p-4 flex items-center justify-between text-white">
+      <p class="text-sm">© 2026 World Cup Pool - USA • Canada • Mexico</p>
+      <div class="flex gap-2">
+        <span
+          class="px-3 py-1 bg-secondary-400 text-primary-950 rounded-full text-xs font-semibold"
+        >
+          🏆 Pool
+        </span>
+      </div>
+    </div>
+  </footer>
+</div>

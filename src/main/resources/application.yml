@@ -1,1 +1,92 @@
-{}
+bolao:
+  auth:
+    header:
+      domain: ${AUTH_HEADER_NAME:X-Game-Id}
+  schedules:
+    matches:
+      schedule: ${SCHEDULE_MATCHES_SCHEDULE:0 0/1 * * * ?} # Every minute
+      enabled: ${SCHEDULE_MATCHES_ENABLED:true}
+
+quarkus:
+  banner:
+    path: banner.txt
+  datasource:
+    db-kind: postgres
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    jdbc:
+      driver: ${DB_DRIVER:org.postgresql.Driver}
+      url: jdbc:postgresql://${DB_HOST}:${DB_PORT:5432}/${DB_NAME}
+
+  #  dev-services:
+  #    enabled: false
+
+  flyway:
+    migrate-at-start: true
+    locations: db
+
+  hibernate-orm:
+    dialect: org.hibernate.dialect.PostgreSQLDialect
+    schema-management:
+      strategy: update
+
+  oidc:
+    auth-server-url: https://auth.easyware.io/realms/bolao
+    client-id: ${KEYCLOAK_CLIENT_ID}
+    credentials:
+      secret: ${KEYCLOAK_CLIENT_SECRET}
+      client-secret:
+        method: ${KEYCLOAK_CLIENT_SECRET_METHOD:basic}
+    application-type: service
+    token:
+      issuer: https://auth.easyware.io/realms/bolao
+      audience: account
+      verify-access-token-with-user-info: false
+      header: Authorization
+    token-cache:
+      max-size: 1000
+      time-to-live: 10m
+    roles:
+      source: accesstoken
+      role-claim-path: realm_access/roles
+    tenant-paths:
+      - paths: /api/*
+        tenant: default
+    connection-timeout: 10s
+    token-state-manager:
+      strategy: keep_all_tokens
+    allow-user-info-cache: true
+
+  quinoa:
+    force-install: true
+    enable-spa-routing: true
+    build-dir: dist/bolao/browser
+    package-manager-command:
+      install: install --legacy-peer-deps
+      ci: ci --legacy-peer-deps
+    dev-server:
+      command: ng serve --host 0.0.0.0 --port 4200 --disable-host-check
+      managed: true
+      check-timeout: 120000
+
+  rest-client:
+    keycloak:
+      url: https://auth.easyware.io
+      connect-timeout: 3000
+      read-timeout: 600000
+
+  rest:
+    path: ${QUARKUS_RESTEASY_PATH:/api}
+
+"%dev":
+  quarkus:
+    flyway:
+      clean-at-start: true
+    http:
+      port: 8050
+      ssl-port: 8183
+      ssl:
+        certificate:
+          files: localhost.crt
+          key-files: localhost.key
+      insecure-requests: redirect

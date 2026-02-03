@@ -1,0 +1,71 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "preserve",
+    "paths": {
+      "@api/*": ["./src/app/api/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@auth/*": ["./src/app/auth/*"],
+      "@boxes/*": ["./src/app/boxes/*"],
+      "@cards/*": ["./src/app/cards/*"],
+      "@classes/*": ["./src/app/classes/*"],
+      "@components/*": ["src/app/components/*"],
+      "@config/*": ["./config/*"],
+      "@controls/*": ["./src/app/controls/*"],
+      "@css/*": ["./src/assets/css/*"],
+      "@directives/*": ["./src/app/directives/*"],
+      "@enums/*": ["./src/app/enums/*"],
+      "@env/*": ["./src/app/environment/*"],
+      "@features/*": ["src/app/features/*"],
+      "@fonts/*": ["./src/assets/fonts/*"],
+      "@forms/*": ["./src/app/forms/*"],
+      "@functions/*": ["./src/app/functions/*"],
+      "@guards/*": ["./src/app/guards/*"],
+      "@icons/*": ["./src/assets/icons/*"],
+      "@img/*": ["./src/assets/img/*"],
+      "@interceptors/*": ["./src/app/interceptors/*"],
+      "@interfaces/*": ["src/app/interfaces/*"],
+      "@layouts/*": ["./src/app/layouts/*"],
+      "@mocks/*": ["./src/assets/mocks/*"],
+      "@modules/*": ["src/app/modules/*"],
+      "@pages/*": ["src/app/modules/*"],
+      "@pipes/*": ["./src/app/pipes/*"],
+      "@redux/*": ["./src/app/redux/*"],
+      "@root/*": ["./*"],
+      "@routing/*": ["./src/app/routing/*"],
+      "@services/*": ["./src/app/services/*"],
+      "@settings/*": ["./src/app/settings/*"],
+      "@shared/*": ["./src/app/shared/*"],
+      "@store/*": ["./src/app/store/*"],
+      "@styles/*": ["./src/app/styles/*"]
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}

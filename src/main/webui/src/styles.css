@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@100;200;300;400;500;600;700;800;900&family=Saira+Semi+Condensed:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import 'tailwindcss';
+@plugin "tailwindcss-primeui";
+
+@import 'primeicons/primeicons.css';
+
+/* Enable class-based dark mode */
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Primary - Stadium Green (Football pitch & prestige) */
+  --color-primary-50: #f0fdf4;
+  --color-primary-100: #dcfce7;
+  --color-primary-200: #b6f2c7;
+  --color-primary-300: #7ae1a1;
+  --color-primary-400: #3fc776;
+  --color-primary-500: #1a9f53;
+  --color-primary-600: #0f7f42;
+  --color-primary-700: #0d6537;
+  --color-primary-800: #0f502e;
+  --color-primary-900: #0d4227;
+  --color-primary-950: #042514;
+
+  /* Secondary - Championship Gold (Trophy & achievement) */
+  --color-secondary-50: #fefcf3;
+  --color-secondary-100: #fdf6db;
+  --color-secondary-200: #fbebb7;
+  --color-secondary-300: #f8dc88;
+  --color-secondary-400: #f4c753;
+  --color-secondary-500: #e9a820;
+  --color-secondary-600: #cd8414;
+  --color-secondary-700: #aa6214;
+  --color-secondary-800: #8b4d17;
+  --color-secondary-900: #724016;
+  --color-secondary-950: #42210a;
+
+  /* Danger - Red (Passion & alerts) */
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-200: #fecaca;
+  --color-danger-300: #fca5a5;
+  --color-danger-400: #f87171;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+  --color-danger-700: #b91c1c;
+  --color-danger-800: #991b1b;
+  --color-danger-900: #7f1d1d;
+  --color-danger-950: #450a0a;
+
+  /* Warning - Amber (Caution) */
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+  --color-warning-800: #92400e;
+  --color-warning-900: #78350f;
+  --color-warning-950: #451a03;
+
+  /* Success - Green (Victory & football pitch) */
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
+  --color-success-400: #4ade80;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-800: #166534;
+  --color-success-900: #14532d;
+  --color-success-950: #052e16;
+
+  /* Info - Blue (Information) */
+  --color-info-50: #eff6ff;
+  --color-info-100: #dbeafe;
+  --color-info-200: #bfdbfe;
+  --color-info-300: #93c5fd;
+  --color-info-400: #60a5fa;
+  --color-info-500: #3b82f6;
+  --color-info-600: #2563eb;
+  --color-info-700: #1d4ed8;
+  --color-info-800: #1e40af;
+  --color-info-900: #1e3a8a;
+  --color-info-950: #172554;
+
+  --font-sans: 'Saira Semi Condensed', 'sans-serif';
+  --font-body: 'Saira Semi Condensed', 'sans-serif';
+
+  --breakpoint-xs: 30rem;
+  --breakpoint-3xl: 112rem;
+}
+
+/* 1. Box-sizing: Border-box for all elements */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2. Prevent font size inflation on mobile */
+html {
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  font-family: var(--font-sans);
+  @apply text-gray-900 dark:text-gray-100;
+}
+
+/* 3. Remove default margins (except dialog for centering) */
+:not(dialog) {
+  margin: 0;
+}
+
+/* 4. Enable smooth size interpolations for animations */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth; /* Bonus: Smooth scrolling */
+  }
+}
+
+/* 5. Core body typography */
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100svh; /* Small viewport height for full coverage */
+}
+
+/* 6. Shorter line heights for headings and forms */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+input,
+label,
+select,
+textarea {
+  line-height: 1.1;
+}
+
+/* 7. Balanced text wrapping */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* 8. Media elements: Responsive and block-level */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* 9. Inherit fonts in form controls */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* 10. Ensure textareas have usable height */
+textarea:not([rows]) {
+  min-height: 10em;
+}
+
+/* 11. Remove list styles only for semantic lists */
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding-inline-start: 0; /* Logical property for RTL */
+}
+
+/* 12. Links: Skip ink on underlines */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+  color: currentColor;
+}
+
+/* 13. Anchored elements: Extra scroll margin */
+:target {
+  scroll-margin-block: 5ex;
+}
+
+/* 14. Isolation for root (e.g., React/Vue apps) */
+#root,
+#__next {
+  isolation: isolate;
+}
+
+/* 15. Overflow wrapping for long words */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* 16. Set header sizes */
+h1 {
+  @apply text-4xl font-bold leading-relaxed;
+  @apply text-primary-700 dark:text-primary-300;
+}
+/* h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 2.25rem;
+  margin-bottom: 1.125rem;
+}
+h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 2rem;
+  margin-bottom: 1rem;
+}
+h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.75rem;
+  margin-bottom: 0.875rem;
+}
+h5 {
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+h6 {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+  margin-bottom: 0.75rem;
+} */
