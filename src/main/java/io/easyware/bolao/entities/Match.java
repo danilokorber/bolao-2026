@@ -15,7 +15,8 @@ import java.util.UUID;
     @Index(name = "idx_match_stage", columnList = "stage"),
     @Index(name = "idx_match_status", columnList = "status"),
     @Index(name = "idx_match_home_team", columnList = "home_team_id"),
-    @Index(name = "idx_match_away_team", columnList = "away_team_id")
+    @Index(name = "idx_match_away_team", columnList = "away_team_id"),
+    @Index(name = "idx_match_match_id", columnList = "match_id")
 })
 @Getter
 @Setter
@@ -27,6 +28,9 @@ public class Match {
     @Id
     @UUIDv7
     private UUID id;
+
+    @Column(name = "match_id", unique = true)
+    private Integer matchId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "home_team_id", nullable = false)

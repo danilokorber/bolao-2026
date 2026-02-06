@@ -24,6 +24,7 @@ CREATE INDEX idx_team_group ON team(group_name);
 -- =====================================================
 CREATE TABLE match (
                        id UUID PRIMARY KEY,
+                       match_id INTEGER UNIQUE,
                        home_team_id UUID NOT NULL,
                        away_team_id UUID NOT NULL,
                        match_datetime TIMESTAMP NOT NULL,
@@ -50,6 +51,7 @@ CREATE INDEX idx_match_stage ON match(stage);
 CREATE INDEX idx_match_status ON match(status);
 CREATE INDEX idx_match_home_team ON match(home_team_id);
 CREATE INDEX idx_match_away_team ON match(away_team_id);
+CREATE INDEX idx_match_match_id ON match(match_id);
 
 -- =====================================================
 -- USERS
@@ -219,6 +221,9 @@ COMMENT ON COLUMN user_pool.status IS 'PENDING: awaiting payment, ACTIVE: can be
 
 COMMENT ON TABLE bet IS 'Match bets - one per user per match, shared across all pools';
 COMMENT ON COLUMN bet.winner_bet_id IS 'For knockout matches that may go to penalties';
+
+COMMENT ON TABLE match IS 'World Cup matches - 104 matches total';
+COMMENT ON COLUMN match.match_id IS 'Official FIFA match ID for knockout stage references (e.g., "winner of match 50")';
 
 COMMENT ON TABLE champion_bet IS 'Special bets made before Round of 16 starts';
 

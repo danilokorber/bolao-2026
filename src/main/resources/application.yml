@@ -22,6 +22,7 @@ quarkus:
   #    enabled: false
 
   flyway:
+    clean-at-start: true
     migrate-at-start: true
     locations: db
 

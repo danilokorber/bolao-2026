@@ -1,7 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Component, effect, inject, PLATFORM_ID, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
-import { ICON, IconComponent } from '@components/icon/icon';
+import { ICON, IconComponent } from '@components/icon';
 import { BolaoModule } from '@modules/bolao/bolao.module';
 import { filter, map } from 'rxjs/operators';
 

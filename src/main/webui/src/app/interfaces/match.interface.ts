@@ -4,6 +4,7 @@ import { Team } from './team.interface';
 
 export interface Match {
   id?: string;
+  matchId?: number;
   homeTeamId: string;
   awayTeamId: string;
   homeTeam?: Team;

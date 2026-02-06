@@ -2,10 +2,11 @@ import { DatePipe } from '@angular/common';
 import { Component, effect, input, linkedSignal, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Match } from '@interfaces/index';
+import { MatchInProgress } from './match-in-progress';
 
 @Component({
   selector: 'match-card',
-  imports: [FormsModule],
+  imports: [FormsModule, MatchInProgress],
   templateUrl: './match-card.html',
   styles: `
     /* Chrome, Safari, Edge, Opera */
@@ -19,6 +20,19 @@ import { Match } from '@interfaces/index';
     input[type='number'] {
       -moz-appearance: textfield;
       appearance: textfield;
+    }
+
+    .saved-tip {
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity 0.3s ease-in-out,
+        visibility 0.3s ease-in-out;
+    }
+
+    .saved-tip.show {
+      opacity: 1;
+      visibility: visible;
     }
   `,
 })
@@ -47,7 +61,20 @@ export class MatchCard {
 
     // Here you can handle the prediction change, e.g., send it to a service or update state
     if (home !== null && away !== null) {
-      console.log(`Prediction changed: Home - ${home}, Away - ${away}`);
+      this.showSavedLabel();
     }
   });
+
+  showSavedLabel() {
+    const savedTip = document.getElementById('savedTip' + this.match().id);
+    if (savedTip) {
+      // Fade in
+      savedTip.classList.add('show');
+
+      // Fade out after 10 seconds
+      setTimeout(() => {
+        savedTip.classList.remove('show');
+      }, 2700);
+    }
+  }
 }

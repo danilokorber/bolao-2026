@@ -13,6 +13,7 @@
       }
     </div>
   </div>
+  <match-in-progress class="absolute -top-1" [show]="matchInProgress()"></match-in-progress>
   <img
     [src]="match().homeTeam?.flagUrl"
     [alt]="match().homeTeam?.fifaCode"
@@ -23,9 +24,6 @@
     <div class="flex-1 text-2xl font-semibold text-right">{{ match().homeTeam?.nameEn }}</div>
     <div class="w-28 text-4xl font-bold my-2 flex flex-row justify-center items-center relative">
       @if (startIsInThePast()) {
-        @if (matchInProgress()) {
-          <div class="absolute -top-5 text-lg text-gray-500">...</div>
-        }
         <div cass="text-right">2</div>
         <div class="w-8 text-center">:</div>
         <div cass="text-left">1</div>
@@ -56,4 +54,13 @@
     class="object-cover rounded-full shadow-2xl bg-white"
     style="width: 6rem; height: 6rem"
   />
+
+  <div class="absolute bottom-0.5 w-full flex justify-center items-center">
+    <div
+      [id]="'savedTip' + match().id"
+      class="saved-tip text-sm px-4 py-px rounded-full bg-primary-500 text-gray-50"
+    >
+      Palpite salvo!
+    </div>
+  </div>
 </div>

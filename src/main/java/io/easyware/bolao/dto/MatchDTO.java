@@ -14,6 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class MatchDTO {
     private UUID id;
+    private Integer matchId;
     private UUID homeTeamId;
     private UUID awayTeamId;
     private TeamDTO homeTeam;
