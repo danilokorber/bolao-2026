@@ -256,3 +256,31 @@ h6 {
   line-height: 1.5rem;
   margin-bottom: 0.75rem;
 } */
+
+aside {
+  /* Position & Layout */
+  @apply fixed bottom-0;
+  @apply lg:absolute lg:bottom-auto lg:left-0 lg:top-1/2 lg:-translate-y-1/2;
+  @apply z-1000;
+
+  /* Sizing */
+  @apply w-full lg:w-auto;
+  @apply my-auto;
+
+  /* Flex Container */
+  @apply flex flex-row lg:flex-col;
+  @apply items-center justify-center;
+  @apply gap-12;
+
+  /* Spacing */
+  @apply px-0 lg:px-6;
+  @apply pt-4 pb-2 lg:pb-0;
+
+  /* Visual */
+  @apply bg-white lg:bg-transparent;
+  @apply border-t border-gray-300 lg:border-0;
+  @apply shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] lg:shadow-none;
+
+  /* Typography */
+  @apply text-3xl;
+}
