@@ -16,7 +16,8 @@ import java.util.UUID;
     @Index(name = "idx_match_status", columnList = "status"),
     @Index(name = "idx_match_home_team", columnList = "home_team_id"),
     @Index(name = "idx_match_away_team", columnList = "away_team_id"),
-    @Index(name = "idx_match_match_id", columnList = "match_id")
+    @Index(name = "idx_match_match_id", columnList = "match_id"),
+    @Index(name = "idx_match_football_data_match_id", columnList = "football_data_match_id")
 })
 @Getter
 @Setter
@@ -31,6 +32,9 @@ public class Match {
 
     @Column(name = "match_id", unique = true)
     private Integer matchId;
+
+    @Column(name = "football_data_match_id", unique = true)
+    private Integer footballDataMatchId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "home_team_id", nullable = false)
@@ -69,4 +73,23 @@ public class Match {
     @Column(nullable = false, length = 20)
     @Builder.Default
     private MatchStatus status = MatchStatus.SCHEDULED;
+
+    /**
+     * Checks if the match is currently in progress (within the active time window).
+     * Returns true from 5 minutes before the match start until 240 minutes after.
+     * 
+     * @return true if the match is in the active window, false otherwise
+     */
+    @Transient
+    public boolean isInProgress() {
+        if (matchDatetime == null) {
+            return false;
+        }
+        
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startWindow = matchDatetime.minusMinutes(5);
+        LocalDateTime endWindow = matchDatetime.plusMinutes(240);
+        
+        return now.isAfter(startWindow) && now.isBefore(endWindow);
+    }
 }

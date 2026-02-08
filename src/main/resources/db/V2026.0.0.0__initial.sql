@@ -25,6 +25,7 @@ CREATE INDEX idx_team_group ON team(group_name);
 CREATE TABLE match (
                        id UUID PRIMARY KEY,
                        match_id INTEGER UNIQUE,
+                       football_data_match_id INTEGER UNIQUE,
                        home_team_id UUID NOT NULL,
                        away_team_id UUID NOT NULL,
                        match_datetime TIMESTAMP NOT NULL,
@@ -52,6 +53,7 @@ CREATE INDEX idx_match_status ON match(status);
 CREATE INDEX idx_match_home_team ON match(home_team_id);
 CREATE INDEX idx_match_away_team ON match(away_team_id);
 CREATE INDEX idx_match_match_id ON match(match_id);
+CREATE INDEX idx_match_football_data_match_id ON match(football_data_match_id);
 
 -- =====================================================
 -- USERS
@@ -224,6 +226,7 @@ COMMENT ON COLUMN bet.winner_bet_id IS 'For knockout matches that may go to pena
 
 COMMENT ON TABLE match IS 'World Cup matches - 104 matches total';
 COMMENT ON COLUMN match.match_id IS 'Official FIFA match ID for knockout stage references (e.g., "winner of match 50")';
+COMMENT ON COLUMN match.football_data_match_id IS 'Football-data.org API match ID for external data synchronization';
 
 COMMENT ON TABLE champion_bet IS 'Special bets made before Round of 16 starts';
 

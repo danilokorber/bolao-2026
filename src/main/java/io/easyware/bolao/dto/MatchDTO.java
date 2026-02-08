@@ -15,6 +15,7 @@ import java.util.UUID;
 public class MatchDTO {
     private UUID id;
     private Integer matchId;
+    private Integer footballDataMatchId;
     private UUID homeTeamId;
     private UUID awayTeamId;
     private TeamDTO homeTeam;
@@ -28,4 +29,5 @@ public class MatchDTO {
     private UUID winnerId;
     private TeamDTO winner;
     private MatchStatus status;
+    private Boolean inProgress;
 }

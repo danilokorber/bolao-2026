@@ -5,6 +5,7 @@ import { Team } from './team.interface';
 export interface Match {
   id?: string;
   matchId?: number;
+  footballDataMatchId?: number;
   homeTeamId: string;
   awayTeamId: string;
   homeTeam?: Team;
@@ -18,4 +19,5 @@ export interface Match {
   winnerId?: string;
   winner?: Team;
   status: MatchStatus;
+  inProgress?: boolean;
 }
