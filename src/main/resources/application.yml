@@ -58,6 +58,7 @@ quarkus:
       strategy: keep_all_tokens
     allow-user-info-cache: true
 
+
   quinoa:
     force-install: true
     enable-spa-routing: true

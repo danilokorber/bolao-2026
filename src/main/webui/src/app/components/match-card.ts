@@ -1,12 +1,13 @@
 import { DatePipe } from '@angular/common';
 import { Component, effect, input, linkedSignal, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Match } from '@interfaces/index';
+import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
+import { Bet, Match, MatchStatus } from '@interfaces/index';
 import { MatchInProgress } from './match-in-progress';
 
 @Component({
   selector: 'match-card',
-  imports: [FormsModule, MatchInProgress],
+  imports: [FormsModule, FlagFallbackDirective, MatchInProgress],
   templateUrl: './match-card.html',
   styles: `
     /* Chrome, Safari, Edge, Opera */
@@ -38,6 +39,7 @@ import { MatchInProgress } from './match-in-progress';
 })
 export class MatchCard {
   match = input.required<Match>();
+  bet = input.required<Bet | undefined>();
 
   formatMatchDate = linkedSignal(() => {
     const datePipe = new DatePipe('en-US');
@@ -50,7 +52,7 @@ export class MatchCard {
     return NOW > SCHEDULE;
   });
 
-  matchInProgress = linkedSignal(() => true);
+  matchInProgress = linkedSignal(() => this.match().status == MatchStatus.LIVE);
 
   homePrediction = signal<number | null>(null);
   awayPrediction = signal<number | null>(null);

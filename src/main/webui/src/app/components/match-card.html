@@ -7,7 +7,7 @@
       class="flex text-sm rounded-full px-6 py-1 bg-primary-900 text-gray-50 dark:border-primary-100 dark:bg-primary-100 dark:text-gray-900"
     >
       @if (startIsInThePast()) {
-        5 pontos
+        {{ bet()?.pointsEarned ?? 0 }} ponto{{ bet()?.pointsEarned != 1 ? 's' : '' }}
       } @else {
         {{ formatMatchDate() }}
       }
@@ -19,15 +19,22 @@
     [alt]="match().homeTeam?.fifaCode"
     class="object-cover rounded-full shadow-2xl bg-white"
     style="width: 6rem; height: 6rem"
+    flag-fallback
   />
   <div class="flex-1 w-full flex flex-row gap-2 justify-center items-center">
     <div class="flex-1 text-2xl font-semibold text-right">{{ match().homeTeam?.nameEn }}</div>
     <div class="w-28 text-4xl font-bold my-2 flex flex-row justify-center items-center relative">
       @if (startIsInThePast()) {
-        <div cass="text-right">2</div>
+        <div cass="text-right">{{ match().homeGoals }}</div>
         <div class="w-8 text-center">:</div>
-        <div cass="text-left">1</div>
-        <div class="absolute -bottom-6 text-lg text-gray-500">1 : 0</div>
+        <div cass="text-left">{{ match().awayGoals }}</div>
+        <div class="absolute -bottom-6 text-lg text-gray-500">
+          @if (bet()) {
+            {{ bet()?.homeGoalsBet }} : {{ bet()?.awayGoalsBet }}
+          } @else {
+            Sem palpite
+          }
+        </div>
       } @else {
         <div>
           <input
@@ -53,6 +60,7 @@
     [alt]="match().awayTeam?.fifaCode"
     class="object-cover rounded-full shadow-2xl bg-white"
     style="width: 6rem; height: 6rem"
+    flag-fallback
   />
 
   <div class="absolute bottom-0.5 w-full flex justify-center items-center">

@@ -2,6 +2,7 @@ import { httpResource } from '@angular/common/http';
 import { afterRenderEffect, Component } from '@angular/core';
 import { API } from '@api/api';
 import { MatchCard } from '@components/match-card';
+import { Bet } from '@interfaces/index';
 import { Match } from '@interfaces/match.interface';
 import { BolaoModule } from '@modules/bolao/bolao.module';
 
@@ -13,6 +14,7 @@ import { BolaoModule } from '@modules/bolao/bolao.module';
 })
 export class Matches {
   matches = httpResource<Match[]>(() => API.MATCHES.GET_ALL());
+  bets = httpResource<Bet[]>(() => API.BETS.GET_ALL());
 
   _ = afterRenderEffect(() => {
     if (this.matches.hasValue()) {
@@ -23,4 +25,11 @@ export class Matches {
       }
     }
   });
+
+  getBetForMatch(matchId: string | undefined): Bet | undefined {
+    if (this.bets.hasValue() && matchId) {
+      return this.bets.value().find((bet) => bet.matchId === matchId);
+    }
+    return undefined;
+  }
 }

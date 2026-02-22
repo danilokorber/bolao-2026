@@ -38,7 +38,7 @@
       "@img/*": ["./src/assets/img/*"],
       "@interceptors/*": ["./src/app/interceptors/*"],
       "@interfaces/*": ["src/app/interfaces/*"],
-      "@layouts/*": ["./src/app/layouts/*"],
+      "@layout/*": ["./src/app/layout/*"],
       "@mocks/*": ["./src/assets/mocks/*"],
       "@modules/*": ["src/app/modules/*"],
       "@pages/*": ["src/app/modules/*"],

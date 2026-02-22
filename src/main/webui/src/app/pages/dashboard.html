@@ -5,7 +5,7 @@
 } @else {
   <div class="flex flex-col gap-8">
     @for ((match of matches.value() || []); track match.id) {
-      <match-card [match]="match"></match-card>
+      <match-card [match]="match" [bet]="undefined"></match-card>
     }
   </div>
 }
