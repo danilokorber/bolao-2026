@@ -1,0 +1,42 @@
+{
+  "matchCard": {
+    "noBet": "No prediction",
+    "betSaved": "Prediction saved!"
+  },
+  "matchSchedule": {
+    "point": "point",
+    "points": "points"
+  },
+  "layout": {
+    "appTitle": "FIFA World Cup 2026",
+    "navItem1": "Navigation Item 1",
+    "navItem2": "Navigation Item 2",
+    "navItem3": "Navigation Item 3",
+    "sidebarVersion": "Pool 2026 v1.0",
+    "footerCopyright": "© 2026 World Cup Pool - USA • Canada • Mexico",
+    "footerBadge": "🏆 Pool"
+  },
+  "account": {
+    "logout": "LOGOUT",
+    "language": "Language",
+    "languageChanged": "Language changed!"
+  },
+  "dashboard": {
+    "loading": "Loading upcoming matches...",
+    "error": "Error loading matches:"
+  },
+  "matches": {
+    "loading": "Loading upcoming matches...",
+    "error": "Error loading matches:"
+  },
+  "login": {
+    "welcome": "Welcome to the World Cup Pool!",
+    "loginWith": "Login with {{provider}}"
+  },
+  "postLogin": {
+    "logout": "LOGOUT"
+  },
+  "postLogout": {
+    "message": "LOGGED OUT"
+  }
+}

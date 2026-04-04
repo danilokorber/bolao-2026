@@ -1,0 +1,42 @@
+{
+  "matchCard": {
+    "noBet": "Kein Tipp",
+    "betSaved": "Tipp gespeichert!"
+  },
+  "matchSchedule": {
+    "point": "Punkt",
+    "points": "Punkte"
+  },
+  "layout": {
+    "appTitle": "FIFA Weltmeisterschaft 2026",
+    "navItem1": "Navigationspunkt 1",
+    "navItem2": "Navigationspunkt 2",
+    "navItem3": "Navigationspunkt 3",
+    "sidebarVersion": "Tippspiel 2026 v1.0",
+    "footerCopyright": "© 2026 WM-Tippspiel - USA • Kanada • Mexiko",
+    "footerBadge": "🏆 Tippspiel"
+  },
+  "account": {
+    "logout": "ABMELDEN",
+    "language": "Sprache",
+    "languageChanged": "Sprache geändert!"
+  },
+  "dashboard": {
+    "loading": "Kommende Spiele werden geladen...",
+    "error": "Fehler beim Laden der Spiele:"
+  },
+  "matches": {
+    "loading": "Kommende Spiele werden geladen...",
+    "error": "Fehler beim Laden der Spiele:"
+  },
+  "login": {
+    "welcome": "Willkommen zum WM-Tippspiel!",
+    "loginWith": "Anmelden mit {{provider}}"
+  },
+  "postLogin": {
+    "logout": "ABMELDEN"
+  },
+  "postLogout": {
+    "message": "ABGEMELDET"
+  }
+}

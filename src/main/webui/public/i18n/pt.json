@@ -1,0 +1,42 @@
+{
+  "matchCard": {
+    "noBet": "Sem palpite",
+    "betSaved": "Palpite salvo!"
+  },
+  "matchSchedule": {
+    "point": "ponto",
+    "points": "pontos"
+  },
+  "layout": {
+    "appTitle": "FIFA World Cup 2026",
+    "navItem1": "Item de Navegação 1",
+    "navItem2": "Item de Navegação 2",
+    "navItem3": "Item de Navegação 3",
+    "sidebarVersion": "Bolão 2026 v1.0",
+    "footerCopyright": "© 2026 Bolão da Copa - EUA • Canadá • México",
+    "footerBadge": "🏆 Bolão"
+  },
+  "account": {
+    "logout": "SAIR",
+    "language": "Idioma",
+    "languageChanged": "Idioma alterado!"
+  },
+  "dashboard": {
+    "loading": "Carregando próximas partidas...",
+    "error": "Erro ao carregar partidas:"
+  },
+  "matches": {
+    "loading": "Carregando próximas partidas...",
+    "error": "Erro ao carregar partidas:"
+  },
+  "login": {
+    "welcome": "Bem-vindo ao Bolão da Copa!",
+    "loginWith": "Entrar com {{provider}}"
+  },
+  "postLogin": {
+    "logout": "SAIR"
+  },
+  "postLogout": {
+    "message": "DESCONECTADO"
+  }
+}
