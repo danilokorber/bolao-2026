@@ -1,25 +1,29 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { LoginButton } from '@auth/components/login-button';
 import { AuthService } from '../services/auth.service';
+import { AuthProvider } from './../enums/auth-providers';
 
 @Component({
   selector: 'login',
-  imports: [],
+  imports: [LoginButton, TranslocoPipe],
   template: `
     <div class="flex flex-col items-center justify-center h-screen">
-      <h1 class="text-4xl font-bold mb-8">Bem-vindo ao Bolão da Copa!</h1>
-      <button
-        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-      >
-        Entrar com Google
-      </button>
+      <h1 class="text-4xl font-bold mb-8">{{ 'login.welcome' | transloco }}</h1>
+      <div class="w-full max-w-lg flex flex-row space-betweent items-center justify-center gap-4">
+        <login-button [provider]="AuthProvider.Google"></login-button>
+        <login-button [provider]="AuthProvider.Facebook"></login-button>
+        <login-button [provider]="AuthProvider.Twitter"></login-button>
+        <login-button [provider]="AuthProvider.Microsoft"></login-button>
+      </div>
     </div>
   `,
 })
 export class LoginPage implements OnInit {
   private readonly authService = inject(AuthService);
+  AuthProvider = AuthProvider;
 
   ngOnInit(): void {
-    // TODO
-    // this.authService.login();
+    this.authService.handleCallback();
   }
 }

@@ -1,7 +1,7 @@
 @if (matches.isLoading() || bets.isLoading()) {
-  <p>Loading upcoming matches...</p>
+  <p>{{ 'matches.loading' | transloco }}</p>
 } @else if (matches.error() || bets.error()) {
-  <p class="text-red-500">Error loading matches: {{ matches.error() || bets.error() }}</p>
+  <p class="text-red-500">{{ 'matches.error' | transloco }} {{ matches.error() || bets.error() }}</p>
 } @else {
   <div class="flex flex-col gap-8">
     @for ((match of matches.value() || []); track match.id) {

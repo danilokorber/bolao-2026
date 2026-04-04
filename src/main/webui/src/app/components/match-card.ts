@@ -1,13 +1,17 @@
 import { DatePipe } from '@angular/common';
 import { Component, effect, input, linkedSignal, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
 import { Bet, Match, MatchStatus } from '@interfaces/index';
 import { MatchInProgress } from './match-in-progress';
+import { MatchCardFlag } from './match-card-flag';
+import { MatchCardTeamName } from './match-card-team-name';
+import { MatchCardSchedule } from './match-card-schedule';
 
 @Component({
   selector: 'match-card',
-  imports: [FormsModule, FlagFallbackDirective, MatchInProgress],
+  imports: [FormsModule, TranslocoPipe, MatchCardFlag, MatchCardTeamName, MatchInProgress, MatchCardSchedule],
   templateUrl: './match-card.html',
   styles: `
     /* Chrome, Safari, Edge, Opera */
@@ -40,11 +44,6 @@ import { MatchInProgress } from './match-in-progress';
 export class MatchCard {
   match = input.required<Match>();
   bet = input.required<Bet | undefined>();
-
-  formatMatchDate = linkedSignal(() => {
-    const datePipe = new DatePipe('en-US');
-    return datePipe.transform(this.match().matchDatetime, 'dd-MMM-yyyy HH:mm')?.toUpperCase() || '';
-  });
 
   startIsInThePast = linkedSignal(() => {
     const NOW = new Date().getTime();

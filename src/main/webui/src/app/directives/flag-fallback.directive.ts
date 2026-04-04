@@ -36,6 +36,7 @@ export class FlagFallbackDirective {
   private setBgImgSrc(src: string) {
     const img = new Image();
     img.src = src;
+
     img.onload = () => {
       this.el.nativeElement.style.backgroundImage = `url(${src})`;
       this.el.nativeElement.style.height = this.sizeStyle();

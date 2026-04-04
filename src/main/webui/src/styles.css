@@ -215,6 +215,10 @@ h6 {
   overflow-wrap: break-word;
 }
 
+hr {
+  color: var(--color-primary-700);
+}
+
 /* 16. Set header sizes */
 h1 {
   @apply text-4xl font-bold leading-relaxed;
@@ -283,4 +287,15 @@ aside {
 
   /* Typography */
   @apply text-3xl;
+}
+
+button {
+  @apply px-6 py-3 cursor-pointer;
+  @apply text-primary-600 font-bold transition-colors hover:bg-primary-200;
+  @apply border border-primary-300;
+  @apply rounded-full;
+
+  &.active {
+    @apply bg-primary-500 text-white shadow-primary-400;
+  }
 }

@@ -1,12 +1,13 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Component, effect, inject, PLATFORM_ID, signal } from '@angular/core';
 import { Router, RouterModule, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { BolaoModule } from '@modules/bolao/bolao.module';
 import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'layout',
-  imports: [RouterModule, BolaoModule],
+  imports: [RouterModule, BolaoModule, TranslocoPipe],
   templateUrl: './layout.html',
   styles: ``,
 })

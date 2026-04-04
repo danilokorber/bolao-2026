@@ -1,5 +1,6 @@
 import { httpResource } from '@angular/common/http';
 import { afterRenderEffect, Component } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { MatchCard } from '@components/match-card';
 import { Bet } from '@interfaces/index';
@@ -8,7 +9,7 @@ import { BolaoModule } from '@modules/bolao/bolao.module';
 
 @Component({
   selector: 'matches',
-  imports: [BolaoModule, MatchCard],
+  imports: [BolaoModule, MatchCard, TranslocoPipe],
   templateUrl: './matches.html',
   styles: ``,
 })

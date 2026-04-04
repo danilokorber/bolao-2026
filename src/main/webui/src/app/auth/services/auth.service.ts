@@ -2,6 +2,7 @@ import { computed, inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { OAuthEvent, OAuthService } from 'angular-oauth2-oidc';
 import { AUTH_CONFIG } from '../config/auth.config';
+import { AuthProvider } from '../enums/auth-providers';
 import { OAuthEventType } from '../enums/o-auth-event-type';
 
 @Injectable({
@@ -10,12 +11,13 @@ import { OAuthEventType } from '../enums/o-auth-event-type';
 export class AuthService {
   protected readonly oAuthService = inject(OAuthService);
   protected readonly router = inject(Router);
+  private initialized = false;
 
-  login(): void {
+  private initialize(): void {
+    if (this.initialized) return;
+    this.initialized = true;
     this.oAuthService.configure(AUTH_CONFIG);
-    this.oAuthService.loadDiscoveryDocumentAndLogin();
-
-    this.oAuthService.events.pipe().subscribe((event: OAuthEvent) => {
+    this.oAuthService.events.subscribe((event: OAuthEvent) => {
       switch (event.type) {
         case OAuthEventType.DISCOVERY_DOCUMENT_LOADED:
         case OAuthEventType.TOKEN_REFRESHED:
@@ -43,9 +45,8 @@ export class AuthService {
         case OAuthEventType.SILENT_REFRESH_ERROR:
           console.warn('Silent refresh failed, attempting manual refresh');
           this.oAuthService.refreshToken();
-          break; // Don't immediately logout
+          break;
         case OAuthEventType.TOKEN_VALIDATION_ERROR:
-        case OAuthEventType.INVALID_NONCE_IN_STATE:
         case OAuthEventType.TOKEN_EXPIRES:
         case OAuthEventType.SESSION_ERROR:
         case OAuthEventType.SESSION_TERMINATED:
@@ -58,10 +59,23 @@ export class AuthService {
         default:
       }
     });
+  }
 
-    if (this.oAuthService.hasValidAccessToken()) {
-      this.router.navigate(['/post-login']);
-    }
+  /** Process the OAuth callback if a code is present in the URL. */
+  handleCallback(): void {
+    this.initialize();
+    this.oAuthService.loadDiscoveryDocumentAndTryLogin().then(() => {
+      if (this.oAuthService.hasValidAccessToken()) {
+        this.router.navigate(['/post-login']);
+      }
+    });
+  }
+
+  login(provider: AuthProvider): void {
+    this.initialize();
+    this.oAuthService.loadDiscoveryDocument().then(() => {
+      this.oAuthService.initCodeFlow('', { kc_idp_hint: provider });
+    });
   }
 
   logout(): void {
@@ -99,7 +113,7 @@ export class AuthService {
   });
 
   isNotLoggedIn = computed(() => {
-    return !this.oAuthService.hasValidAccessToken();
+    return !this.isLoggedIn();
   });
 
   token = computed(() => {

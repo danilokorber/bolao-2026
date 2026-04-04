@@ -1,28 +1,12 @@
 <div
   [id]="match().matchDatetime.substring(0, 10)"
-  class="relative w-full flex flex-row h-24 rounded-full shadow-lg cursor-pointer hover:shadow-xl bg-primary-50 hover:bg-white hover:border hover:border-primary-100"
+  class="relative w-full flex flex-row h-24 rounded-full shadow-lg cursor-pointer hover:shadow-xl bg-white hover:bg-primary-50 focus-within:bg-primary-50 border-t border-l border-r border-primary-900"
 >
-  <div class="absolute -top-3 w-full flex justify-center">
-    <div
-      class="flex text-sm rounded-full px-6 py-1 bg-primary-900 text-gray-50 dark:border-primary-100 dark:bg-primary-100 dark:text-gray-900"
-    >
-      @if (startIsInThePast()) {
-        {{ bet()?.pointsEarned ?? 0 }} ponto{{ bet()?.pointsEarned != 1 ? 's' : '' }}
-      } @else {
-        {{ formatMatchDate() }}
-      }
-    </div>
-  </div>
+  <match-card-schedule [match]="match()" [bet]="bet()"></match-card-schedule>
   <match-in-progress class="absolute -top-1" [show]="matchInProgress()"></match-in-progress>
-  <img
-    [src]="match().homeTeam?.flagUrl"
-    [alt]="match().homeTeam?.fifaCode"
-    class="object-cover rounded-full shadow-2xl bg-white"
-    style="width: 6rem; height: 6rem"
-    flag-fallback
-  />
+  <match-card-flag [team]="match().homeTeam!"></match-card-flag>
   <div class="flex-1 w-full flex flex-row gap-2 justify-center items-center">
-    <div class="flex-1 text-2xl font-semibold text-right">{{ match().homeTeam?.nameEn }}</div>
+    <match-card-team-name [team]="match().homeTeam!" [homeAway]="'home'"></match-card-team-name>
     <div class="w-28 text-4xl font-bold my-2 flex flex-row justify-center items-center relative">
       @if (startIsInThePast()) {
         <div cass="text-right">{{ match().homeGoals }}</div>
@@ -32,7 +16,7 @@
           @if (bet()) {
             {{ bet()?.homeGoalsBet }} : {{ bet()?.awayGoalsBet }}
           } @else {
-            Sem palpite
+            {{ 'matchCard.noBet' | transloco }}
           }
         </div>
       } @else {
@@ -53,22 +37,16 @@
         </div>
       }
     </div>
-    <div class="flex-1 text-2xl font-semibold text-left">{{ match().awayTeam?.nameEn }}</div>
+    <match-card-team-name [team]="match().awayTeam!" [homeAway]="'away'"></match-card-team-name>
   </div>
-  <img
-    [src]="match().awayTeam?.flagUrl"
-    [alt]="match().awayTeam?.fifaCode"
-    class="object-cover rounded-full shadow-2xl bg-white"
-    style="width: 6rem; height: 6rem"
-    flag-fallback
-  />
+  <match-card-flag [team]="match().awayTeam!"></match-card-flag>
 
   <div class="absolute bottom-0.5 w-full flex justify-center items-center">
     <div
       [id]="'savedTip' + match().id"
       class="saved-tip text-sm px-4 py-px rounded-full bg-primary-500 text-gray-50"
     >
-      Palpite salvo!
+      {{ 'matchCard.betSaved' | transloco }}
     </div>
   </div>
 </div>

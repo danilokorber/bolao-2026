@@ -39,9 +39,7 @@ export const AUTH_CONFIG: AuthConfig = {
   strictDiscoveryDocumentValidation: false,
   checkOrigin: false,
 
-  customQueryParams: {
-    kc_idp_hint: 'google',
-  },
+  customQueryParams: {},
 
   tokenEndpoint: KEYCLOAK.TOKEN,
   userinfoEndpoint: KEYCLOAK.USERINFO,

@@ -68,7 +68,7 @@ export class IconComponent {
   onClick() {
     switch (this.icon()) {
       case ICON.HOME:
-        this.router.navigate(['/']);
+        this.router.navigate(['/dashboard']);
         break;
       case ICON.RANKING:
         this.router.navigate(['/ranking']);
@@ -77,7 +77,7 @@ export class IconComponent {
         this.router.navigate(['/matches']);
         break;
       case ICON.USER:
-        this.router.navigate(['/profile']);
+        this.router.navigate(['/account']);
         break;
     }
   }
@@ -91,7 +91,9 @@ export class IconComponent {
     };
 
     if (isActive('/', this.router, params)() && this.icon() === ICON.HOME) return true;
+    if (isActive('/dashboard', this.router, params)() && this.icon() === ICON.HOME) return true;
     if (isActive('/matches', this.router, params)() && this.icon() === ICON.BALL) return true;
+    if (isActive('/account', this.router, params)() && this.icon() === ICON.USER) return true;
     return false;
   });
 }
