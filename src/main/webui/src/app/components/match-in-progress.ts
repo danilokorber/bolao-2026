@@ -5,7 +5,7 @@ import { Component, input } from '@angular/core';
   imports: [],
   template: `
     @if (show()) {
-      <div class="text-4xl text-gray-500 loading-dots">
+      <div class="text-2xl sm:text-4xl text-gray-500 loading-dots">
         <span>.</span><span>.</span><span>.</span><span>.</span><span>.</span>
       </div>
     }

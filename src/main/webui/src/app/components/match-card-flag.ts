@@ -7,13 +7,15 @@ import { MatchCardHelper } from './match-card-helper';
   selector: 'match-card-flag',
   imports: [FlagFallbackDirective],
   template: `
-    <img
-      [imgSrc]="team().flagUrl ?? ''"
-      [alt]="team().fifaCode"
-      class="object-cover rounded-full shadow-2xl bg-white"
-      style="height: 6rem; width: 6rem;"
-      flag-fallback
-    />
+    <div class="shrink-0 rounded-full overflow-hidden shadow-2xl bg-white h-16 w-16 sm:h-24 sm:w-24 relative">
+      <img
+        [imgSrc]="team().flagUrl ?? ''"
+        [alt]="team().fifaCode"
+        class="absolute inset-0 w-full h-full object-cover"
+        style="height: 100%; max-width: none;"
+        flag-fallback
+      />
+    </div>
   `,
   styles: ``,
 })

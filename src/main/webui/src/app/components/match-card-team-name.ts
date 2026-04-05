@@ -8,14 +8,14 @@ import { MatchCardHelper } from './match-card-helper';
   imports: [],
   template: `
     <span
-      class="hidden md:block"
+      class="hidden sm:block"
       [class.text-right]="homeAway() === 'home'"
       [class.text-left]="homeAway() === 'away'"
     >
       {{ localizedName() }}
     </span>
     <span
-      class="block md:hidden"
+      class="block sm:hidden"
       [class.text-right]="homeAway() === 'home'"
       [class.text-left]="homeAway() === 'away'"
     >
@@ -23,7 +23,7 @@ import { MatchCardHelper } from './match-card-helper';
     </span>
   `,
   styles: ``,
-  host: { class: 'flex-1 text-2xl font-semibold' },
+  host: { class: 'flex-1 text-xs sm:text-2xl font-semibold' },
 })
 export class MatchCardTeamName extends MatchCardHelper {
   private readonly transloco = inject(TranslocoService);

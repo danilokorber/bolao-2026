@@ -8,14 +8,11 @@ import { AuthService } from '@auth/services/auth.service';
   imports: [TranslocoPipe],
   template: `
     <button
-      [class]="
-        buttonSettings().classes +
-        ' flex items-center gap-2'
-      "
+      [class]="buttonSettings().classes + ' flex items-center justify-center gap-2 w-16 h-16'"
       [title]="'login.loginWith' | transloco: { provider: providerName() }"
       (click)="click()"
     >
-      <i [class]="buttonSettings().icon" style="font-size: 2.5rem"></i>
+      <i [class]="buttonSettings().icon" style="font-size: 1.5rem"></i>
     </button>
   `,
   styles: ``,

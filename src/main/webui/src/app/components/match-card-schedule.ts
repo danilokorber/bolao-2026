@@ -8,7 +8,7 @@ import { Bet, Match } from '@interfaces/index';
   imports: [TranslocoPipe],
   template: `
     <div
-      class="flex text-sm rounded-full px-6 py-1 text-gray-50"
+      class="flex text-xs sm:text-sm rounded-full px-3 sm:px-6 py-0.5 sm:py-1 text-gray-50"
       [style.background-color]="startIsInThePast() ? scoreColor() : ''"
       [class.bg-primary-900]="!startIsInThePast()"
       [class.dark:border-primary-100]="!startIsInThePast()"
@@ -23,7 +23,7 @@ import { Bet, Match } from '@interfaces/index';
     </div>
   `,
   styles: ``,
-  host: { class: 'absolute -top-3.5 w-full flex justify-center' },
+  host: { class: 'absolute -top-3 sm:-top-3.5 w-full flex justify-center' },
 })
 export class MatchCardSchedule {
   match = input.required<Match>();

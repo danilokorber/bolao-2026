@@ -2,17 +2,15 @@
   <!-- Language selector -->
   <div class="flex items-center gap-2">
     <h1 class="flex-1 mb-0!">{{ 'account.language' | transloco }}</h1>
-      @for (lang of languages; track lang.code) {
-        <button
-          [class.active]="activeLang() === lang.code"
-          (click)="changeLang(lang.code)"
-        >
-          {{ lang.label }}
-        </button>
-      }
+    @for (lang of languages; track lang.code) {
+      <button [class.active]="activeLang() === lang.code" (click)="changeLang(lang.code)">
+        {{ lang.label.split(' ')[0]
+        }}<span class="hidden sm:block">{{ lang.label.split(' ')[1] }}</span>
+      </button>
+    }
   </div>
 
-  <hr>
+  <hr />
 
   <!-- Scoring rules — title + open button -->
   <div class="flex items-center gap-2">
@@ -22,7 +20,7 @@
     </button>
   </div>
 
-  <hr>
+  <hr />
 
   <!-- Logout -->
   <div class="flex items-center justify-end gap-2">
@@ -41,12 +39,7 @@
   <div class="flex flex-col gap-4">
     <div class="flex items-center justify-between">
       <h2 class="text-2xl font-bold text-primary-700">{{ 'account.scoring.title' | transloco }}</h2>
-      <button
-        class="!px-3 !py-1 !border-0 text-lg"
-        (click)="closeScoringDialog()"
-      >
-        ✕
-      </button>
+      <button class="!px-3 !py-1 !border-0 text-lg" (click)="closeScoringDialog()">✕</button>
     </div>
     <p class="text-sm opacity-75">{{ 'account.scoring.subtitle' | transloco }}</p>
 
@@ -95,7 +88,9 @@
 
     <!-- Champion bets -->
     <div class="flex flex-col gap-2">
-      <h3 class="text-lg font-semibold">🏆 {{ 'account.scoring.championBets.title' | transloco }}</h3>
+      <h3 class="text-lg font-semibold">
+        🏆 {{ 'account.scoring.championBets.title' | transloco }}
+      </h3>
       <div class="flex flex-col gap-1 pl-2">
         <div class="flex items-center gap-2">
           <span class="score-badge score-10">20</span>
