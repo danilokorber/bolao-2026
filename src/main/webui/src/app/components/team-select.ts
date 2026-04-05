@@ -1,7 +1,17 @@
-import { Component, computed, ElementRef, HostListener, inject, input, output, signal, viewChild } from '@angular/core';
-import { TranslocoService } from '@jsverse/transloco';
+import {
+  Component,
+  computed,
+  ElementRef,
+  HostListener,
+  inject,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
 import { Team } from '@interfaces/team.interface';
+import { TeamService } from '@services/team.service';
 
 @Component({
   selector: 'team-select',
@@ -16,6 +26,9 @@ import { Team } from '@interfaces/team.interface';
         [class.ring-1]="open()"
         [class.ring-primary-500]="open()"
         [class.border-gray-300]="!open()"
+        [class.opacity-60]="disabled()"
+        [class.cursor-not-allowed]="disabled()"
+        [disabled]="disabled()"
         (click)="toggle()"
       >
         @if (selectedTeam(); as team) {
@@ -66,11 +79,11 @@ import { Team } from '@interfaces/team.interface';
             />
           </div>
           <!-- Scrollable team list -->
-          <div class="max-h-[156px] overflow-y-auto">
+          <div class="overflow-y-auto max-h-52">
             @for (team of filteredTeams(); track team.id) {
               <button
                 type="button"
-                class="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-primary-50 transition-colors rounded-none!"
+                class="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-primary-50 transition-colors border-none! rounded-none!"
                 [class.bg-primary-100]="team.id === value()"
                 [class.font-semibold]="team.id === value()"
                 (click)="select(team)"
@@ -102,22 +115,20 @@ import { Team } from '@interfaces/team.interface';
 })
 export class TeamSelect {
   private readonly el = inject(ElementRef);
-  private readonly transloco = inject(TranslocoService);
+  private readonly teamService = inject(TeamService);
   private readonly filterInput = viewChild<ElementRef>('filterInput');
 
   teams = input.required<Team[]>();
   value = input<string | null>(null);
   placeholder = input<string>('');
-
+  disabled = input<boolean>(false);
   selected = output<string>();
 
   open = signal(false);
   filter = signal('');
 
   sortedTeams = computed(() =>
-    [...this.teams()]
-      .filter((t) => !!t.flagUrl)
-      .sort((a, b) => this.localizedName(a).localeCompare(this.localizedName(b), this.transloco.getActiveLang()))
+    this.teamService.sortByName(this.teams().filter((t) => !!t.flagUrl)),
   );
 
   filteredTeams = computed(() => {
@@ -128,7 +139,7 @@ export class TeamSelect {
         t.nameEn.toLowerCase().includes(q) ||
         t.nameDe.toLowerCase().includes(q) ||
         t.namePt.toLowerCase().includes(q) ||
-        t.fifaCode.toLowerCase().includes(q)
+        t.fifaCode.toLowerCase().includes(q),
     );
   });
 
@@ -139,15 +150,7 @@ export class TeamSelect {
   };
 
   localizedName(team: Team): string {
-    const lang = this.transloco.getActiveLang();
-    switch (lang) {
-      case 'de':
-        return team.nameDe;
-      case 'pt':
-        return team.namePt;
-      default:
-        return team.nameEn;
-    }
+    return this.teamService.localizedName(team);
   }
 
   toggle() {

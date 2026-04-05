@@ -1,10 +1,13 @@
 import { httpResource } from '@angular/common/http';
 import { Component, computed, inject, linkedSignal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
 import { Bet, Match, Team } from '@interfaces/index';
+import { ScoreService } from '@services/score.service';
+import { StageService } from '@services/stage.service';
+import { TeamService } from '@services/team.service';
 import { SignalStore } from '../store/signal-store';
 
 @Component({
@@ -16,9 +19,11 @@ import { SignalStore } from '../store/signal-store';
 })
 export class MatchDetail {
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private readonly transloco = inject(TranslocoService);
   private readonly store = inject(SignalStore);
+  protected readonly scoreService = inject(ScoreService);
+  private readonly stageService = inject(StageService);
+  private readonly teamService = inject(TeamService);
 
   matchId = this.route.snapshot.paramMap.get('id') ?? '';
   private userId = computed(() => this.store.appuser()?.id);
@@ -32,38 +37,12 @@ export class MatchDetail {
   });
 
   localizedName(team?: Team): string {
-    if (!team) return '';
-    const lang = this.transloco.getActiveLang();
-    switch (lang) {
-      case 'de':
-        return team.nameDe;
-      case 'pt':
-        return team.namePt;
-      default:
-        return team.nameEn;
-    }
+    return team ? this.teamService.localizedName(team) : '';
   }
 
-  stageLabel = linkedSignal(() => {
-    const stage = this.match.value()?.stage;
-    if (!stage) return '';
-    if (stage.startsWith('GROUP_'))
-      return this.transloco.translate('matchDetail.group') + ' ' + stage.charAt(6);
-    switch (stage) {
-      case 'ROUND_OF_32':
-        return this.transloco.translate('matchDetail.stages.r32');
-      case 'ROUND_OF_16':
-        return this.transloco.translate('matchDetail.stages.r16');
-      case 'QUARTER_FINALS':
-        return this.transloco.translate('matchDetail.stages.qf');
-      case 'SEMI_FINALS':
-        return this.transloco.translate('matchDetail.stages.sf');
-      case 'FINAL':
-        return this.transloco.translate('matchDetail.stages.final');
-      default:
-        return '';
-    }
-  });
+  stageLabel = linkedSignal(() =>
+    this.stageService.fullLabel(this.match.value()?.stage)
+  );
 
   formattedDate = linkedSignal(() => {
     const dt = this.match.value()?.matchDatetime;
@@ -78,15 +57,6 @@ export class MatchDetail {
       minute: '2-digit',
     });
   });
-
-  scoreColor(points: number): string {
-    const style = getComputedStyle(document.documentElement);
-    if (points >= 10) return style.getPropertyValue('--color-score-10').trim();
-    if (points >= 5) return style.getPropertyValue('--color-score-5').trim();
-    if (points >= 3) return style.getPropertyValue('--color-score-3').trim();
-    if (points >= 1) return style.getPropertyValue('--color-score-1').trim();
-    return style.getPropertyValue('--color-score-0').trim();
-  }
 
   goBack() {
     window.history.back();

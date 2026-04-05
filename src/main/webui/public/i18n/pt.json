@@ -115,7 +115,8 @@
     "firstPlace": "1º Lugar",
     "secondPlace": "2º Lugar",
     "selectTeam": "Selecione um time...",
-    "saved": "Salvo"
+    "saved": "Salvo",
+    "locked": "Bloqueado"
   },
   "championBet": {
     "title": "Palpite do Campeão",
@@ -127,6 +128,27 @@
     "champion": "Campeão",
     "runnerUp": "Vice-campeão",
     "selectTeam": "Selecione um time...",
-    "saved": "Salvo"
+    "saved": "Salvo",
+    "locked": "Bloqueado"
+  },
+  "ranking": {
+    "title": "Classificação",
+    "loading": "Carregando classificação...",
+    "noData": "Nenhum dado de classificação ainda.",
+    "player": "Jogador",
+    "total": "Total",
+    "special": "Especial"
+  },
+  "userBets": {
+    "title": "Palpites",
+    "subtitle": "Palpites de partidas que já começaram",
+    "loading": "Carregando palpites...",
+    "noData": "Nenhum palpite para partidas iniciadas ainda.",
+    "match": "Partida",
+    "result": "Resultado",
+    "prediction": "Palpite",
+    "betTime": "Palpite feito",
+    "live": "AO VIVO",
+    "betsCount": "palpites"
   }
 }

@@ -1,0 +1,137 @@
+<div class="flex flex-col gap-4">
+  <!-- Back + title -->
+  <div>
+    <button
+      (click)="goBack()"
+      class="mb-2 text-sm text-primary-600 dark:text-primary-400 cursor-pointer flex items-center gap-1"
+    >
+      ← {{ 'matchDetail.back' | transloco }}
+    </button>
+    <h1 class="text-xl sm:text-2xl font-bold text-primary-700">
+      {{ userName() || ('userBets.title' | transloco) }}
+    </h1>
+    <p class="text-sm opacity-60 mt-0.5">
+      {{ 'userBets.subtitle' | transloco }}
+    </p>
+  </div>
+
+  @if (userBets.isLoading()) {
+    <p class="text-sm opacity-60">{{ 'userBets.loading' | transloco }}</p>
+  } @else if (sortedBets().length === 0) {
+    <p class="text-sm opacity-60">{{ 'userBets.noData' | transloco }}</p>
+  } @else {
+    <!-- Desktop table -->
+    <div class="hidden sm:block overflow-x-auto border border-gray-200 rounded-xl">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-primary-700 text-white text-xs uppercase tracking-wide">
+            <th class="px-3 py-2 text-left">{{ 'userBets.match' | transloco }}</th>
+            <th class="px-3 py-2 text-center">{{ 'userBets.result' | transloco }}</th>
+            <th class="px-3 py-2 text-center">{{ 'userBets.prediction' | transloco }}</th>
+            <th class="px-3 py-2 text-center">{{ 'userBets.betTime' | transloco }}</th>
+            <th class="px-3 py-2 text-right">{{ 'matchSchedule.points' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (bet of sortedBets(); track bet.id) {
+            <tr class="border-t border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
+                [routerLink]="['/matches', bet.matchId]">
+              <!-- Match: flags + teams -->
+              <td class="px-3 py-2">
+                <div class="flex items-center gap-2">
+                  <div class="shrink-0 rounded-full overflow-hidden bg-white h-6 w-6 relative">
+                    <img [imgSrc]="bet.match?.homeTeam?.flagUrl ?? ''" [alt]="bet.match?.homeTeam?.fifaCode ?? ''" class="absolute inset-0 w-full h-full object-cover" style="height: 100%; max-width: none;" flag-fallback />
+                  </div>
+                  <span class="truncate max-w-[100px]">{{ localizedName(bet.match?.homeTeam) }}</span>
+                  <span class="opacity-40 text-xs">vs</span>
+                  <span class="truncate max-w-[100px]">{{ localizedName(bet.match?.awayTeam) }}</span>
+                  <div class="shrink-0 rounded-full overflow-hidden bg-white h-6 w-6 relative">
+                    <img [imgSrc]="bet.match?.awayTeam?.flagUrl ?? ''" [alt]="bet.match?.awayTeam?.fifaCode ?? ''" class="absolute inset-0 w-full h-full object-cover" style="height: 100%; max-width: none;" flag-fallback />
+                  </div>
+                </div>
+              </td>
+              <!-- Actual result -->
+              <td class="px-3 py-2 text-center font-mono tabular-nums">
+                @if (bet.match?.status === 'FINISHED') {
+                  {{ bet.match?.homeGoals }} : {{ bet.match?.awayGoals }}
+                } @else {
+                  <span class="text-xs text-green-600 font-semibold">{{ 'userBets.live' | transloco }}</span>
+                }
+              </td>
+              <!-- User prediction -->
+              <td class="px-3 py-2 text-center font-mono tabular-nums opacity-60">
+                {{ bet.homeGoalsBet }} : {{ bet.awayGoalsBet }}
+              </td>
+              <!-- Bet time -->
+              <td class="px-3 py-2 text-center text-xs opacity-50">
+                {{ formatDate(bet.betAt) }}
+              </td>
+              <!-- Points -->
+              <td class="px-3 py-2 text-right">
+                <div
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold text-white"
+                  [style.background-color]="scoreService.color(bet.pointsEarned ?? 0)"
+                >
+                  {{ bet.pointsEarned ?? 0 }}
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile cards -->
+    <div class="sm:hidden flex flex-col gap-2">
+      @for (bet of sortedBets(); track bet.id) {
+        <a [routerLink]="['/matches', bet.matchId]"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-gray-200 bg-white no-underline text-inherit">
+          <!-- Flags stacked -->
+          <div class="shrink-0 flex flex-col items-center gap-0.5">
+            <div class="rounded-full overflow-hidden bg-white h-5 w-5 relative">
+              <img [imgSrc]="bet.match?.homeTeam?.flagUrl ?? ''" [alt]="bet.match?.homeTeam?.fifaCode ?? ''" class="absolute inset-0 w-full h-full object-cover" style="height: 100%; max-width: none;" flag-fallback />
+            </div>
+            <div class="rounded-full overflow-hidden bg-white h-5 w-5 relative">
+              <img [imgSrc]="bet.match?.awayTeam?.flagUrl ?? ''" [alt]="bet.match?.awayTeam?.fifaCode ?? ''" class="absolute inset-0 w-full h-full object-cover" style="height: 100%; max-width: none;" flag-fallback />
+            </div>
+          </div>
+
+          <!-- Match info -->
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-semibold truncate">
+              {{ bet.match?.homeTeam?.fifaCode }} vs {{ bet.match?.awayTeam?.fifaCode }}
+            </div>
+            <div class="flex gap-3 text-xs opacity-50 mt-0.5">
+              <!-- Result -->
+              @if (bet.match?.status === 'FINISHED') {
+                <span>{{ 'userBets.result' | transloco }}: {{ bet.match?.homeGoals }}:{{ bet.match?.awayGoals }}</span>
+              } @else {
+                <span class="text-green-600 font-semibold">{{ 'userBets.live' | transloco }}</span>
+              }
+              <span>{{ 'userBets.prediction' | transloco }}: {{ bet.homeGoalsBet }}:{{ bet.awayGoalsBet }}</span>
+            </div>
+            <div class="text-[10px] opacity-40 mt-0.5">
+              {{ formatDate(bet.betAt) }}
+            </div>
+          </div>
+
+          <!-- Points badge -->
+          <div
+            class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white"
+            [style.background-color]="scoreService.color(bet.pointsEarned ?? 0)"
+          >
+            {{ bet.pointsEarned ?? 0 }}
+          </div>
+        </a>
+      }
+    </div>
+
+    <!-- Summary -->
+    <div class="flex justify-end px-2">
+      <span class="text-sm opacity-50">
+        {{ sortedBets().length }} {{ 'userBets.betsCount' | transloco }}
+        · {{ totalPoints() }} {{ 'matchSchedule.points' | transloco }}
+      </span>
+    </div>
+  }
+</div>

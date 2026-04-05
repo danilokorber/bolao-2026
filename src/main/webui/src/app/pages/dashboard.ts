@@ -1,6 +1,5 @@
 import { httpResource } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
@@ -9,6 +8,7 @@ import { RecentResultsCard } from '@components/recent-results-card';
 import { UpcomingMatchesCard } from '@components/upcoming-matches-card';
 import { Bet, ChampionBet, GroupWinnerBet, Match } from '@interfaces/index';
 import { RankingEntry } from '@interfaces/ranking-entry.interface';
+import { resourceValueOr404 } from '@utils/resource-utils';
 import { SignalStore } from '../store/signal-store';
 
 @Component({
@@ -38,9 +38,7 @@ export class Dashboard {
   groupBetsComplete = computed(() => (this.groupBets.value()?.length ?? 0) >= 12);
 
   championBetComplete = computed(() => {
-    const error = this.championBetResource.error() as HttpErrorResponse | null;
-    if (error && error.status === 404) return false;
-    const bet = this.championBetResource.value();
+    const bet = resourceValueOr404(this.championBetResource);
     if (!bet) return false;
     return !!(bet.championTeamId && bet.runnerUpTeamId &&
       bet.semifinalist1TeamId && bet.semifinalist2TeamId &&

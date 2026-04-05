@@ -2,8 +2,8 @@ import { Component, inject, input, linkedSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
 import { Bet, Match, MatchStatus } from '@interfaces/index';
+import { ScoreService } from '@services/score.service';
 import { MatchInProgress } from './match-in-progress';
 import { MatchCardFlag } from './match-card-flag';
 import { MatchCardTeamName } from './match-card-team-name';
@@ -52,6 +52,7 @@ import { MatchCardBetForm } from './match-card-bet-form';
 })
 export class MatchCard {
   private readonly router = inject(Router);
+  private readonly scoreService = inject(ScoreService);
 
   match = input.required<Match>();
   bet = input.required<Bet | undefined>();
@@ -64,15 +65,9 @@ export class MatchCard {
 
   matchInProgress = linkedSignal(() => this.match().status == MatchStatus.LIVE);
 
-  scoreColor = linkedSignal(() => {
-    const points = this.bet()?.pointsEarned ?? 0;
-    const style = getComputedStyle(document.documentElement);
-    if (points >= 10) return style.getPropertyValue('--color-score-10').trim();
-    if (points >= 5) return style.getPropertyValue('--color-score-5').trim();
-    if (points >= 3) return style.getPropertyValue('--color-score-3').trim();
-    if (points >= 1) return style.getPropertyValue('--color-score-1').trim();
-    return style.getPropertyValue('--color-score-0').trim();
-  });
+  scoreColor = linkedSignal(() =>
+    this.scoreService.color(this.bet()?.pointsEarned ?? 0)
+  );
 
   onCardClick() {
     if (this.startIsInThePast()) {

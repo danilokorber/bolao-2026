@@ -6,13 +6,17 @@ import io.easyware.bolao.entities.ChampionBet;
 import io.easyware.bolao.mappers.ChampionBetMapper;
 import io.easyware.bolao.repositories.AppUserRepository;
 import io.easyware.bolao.repositories.ChampionBetRepository;
+import io.easyware.bolao.repositories.MatchRepository;
 import io.easyware.bolao.repositories.TeamRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -26,6 +30,9 @@ public class ChampionBetService {
 
     @Inject
     TeamRepository teamRepository;
+
+    @Inject
+    MatchRepository matchRepository;
 
     @Inject
     ChampionBetMapper championBetMapper;
@@ -60,6 +67,14 @@ public class ChampionBetService {
 
     @Transactional
     public ChampionBetDTO save(ChampionBetRequestDTO request) {
+        // Check deadline: bets are locked once the knockout phase starts
+        matchRepository.findKnockoutPhaseStart().ifPresent(deadline -> {
+            if (!LocalDateTime.now().isBefore(deadline)) {
+                throw new BadRequestException(
+                        "Champion/semifinalist betting is closed. The knockout phase has already started.");
+            }
+        });
+
         ChampionBet bet = championBetRepository.findByUser(request.getUserId());
 
         if (bet == null) {
@@ -139,5 +154,15 @@ public class ChampionBetService {
         if (!championBetRepository.deleteById(id)) {
             throw new NotFoundException("ChampionBet not found with id: " + id);
         }
+    }
+
+    /**
+     * Returns the deadline for champion/semifinalist bets.
+     * The deadline is the start of the first knockout-phase match (Round of 32).
+     *
+     * @return the deadline datetime, or empty if no knockout matches exist yet
+     */
+    public Optional<LocalDateTime> getDeadline() {
+        return matchRepository.findKnockoutPhaseStart();
     }
 }

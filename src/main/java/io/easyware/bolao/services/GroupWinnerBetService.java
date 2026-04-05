@@ -4,16 +4,22 @@ import io.easyware.bolao.dto.GroupWinnerBetDTO;
 import io.easyware.bolao.dto.GroupWinnerBetRequestDTO;
 import io.easyware.bolao.entities.GroupWinnerBet;
 import io.easyware.bolao.enums.GroupName;
+import io.easyware.bolao.enums.MatchStage;
 import io.easyware.bolao.mappers.GroupWinnerBetMapper;
 import io.easyware.bolao.repositories.AppUserRepository;
 import io.easyware.bolao.repositories.GroupWinnerBetRepository;
+import io.easyware.bolao.repositories.MatchRepository;
 import io.easyware.bolao.repositories.TeamRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
+import java.time.LocalDateTime;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -27,6 +33,9 @@ public class GroupWinnerBetService {
 
     @Inject
     TeamRepository teamRepository;
+
+    @Inject
+    MatchRepository matchRepository;
 
     @Inject
     GroupWinnerBetMapper groupWinnerBetMapper;
@@ -61,6 +70,16 @@ public class GroupWinnerBetService {
 
     @Transactional
     public GroupWinnerBetDTO save(GroupWinnerBetRequestDTO request) {
+        // Check deadline: bets are locked once the second matchday of the group starts
+        MatchStage stage = MatchStage.valueOf(request.getGroupName().name());
+        matchRepository.findSecondMatchdayStart(stage).ifPresent(deadline -> {
+            if (!LocalDateTime.now().isBefore(deadline)) {
+                throw new BadRequestException(
+                        "Betting for " + request.getGroupName() + " is closed. " +
+                        "The second matchday has already started.");
+            }
+        });
+
         GroupWinnerBet bet = groupWinnerBetRepository.findByUserAndGroup(
                 request.getUserId(), request.getGroupName());
 
@@ -123,5 +142,21 @@ public class GroupWinnerBetService {
         if (!groupWinnerBetRepository.deleteById(id)) {
             throw new NotFoundException("GroupWinnerBet not found with id: " + id);
         }
+    }
+
+    /**
+     * Returns the betting deadline for each group.
+     * The deadline is the start of the first match on the second matchday.
+     *
+     * @return map of group name to deadline datetime
+     */
+    public Map<GroupName, LocalDateTime> getDeadlines() {
+        Map<GroupName, LocalDateTime> deadlines = new EnumMap<>(GroupName.class);
+        for (GroupName gn : GroupName.values()) {
+            MatchStage stage = MatchStage.valueOf(gn.name());
+            matchRepository.findSecondMatchdayStart(stage)
+                    .ifPresent(deadline -> deadlines.put(gn, deadline));
+        }
+        return deadlines;
     }
 }

@@ -8,7 +8,9 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Path("/v1/champion-bets")
@@ -46,6 +48,14 @@ public class ChampionBetResource {
     @Path("/stats/runner-up/id/{teamId}")
     public long countByRunnerUp(@PathParam("teamId") UUID teamId) {
         return championBetService.countByRunnerUpTeam(teamId);
+    }
+
+    @GET
+    @Path("/deadline")
+    public Response getDeadline() {
+        return championBetService.getDeadline()
+                .map(deadline -> Response.ok(Map.of("deadline", deadline)).build())
+                .orElse(Response.ok(Map.of()).build());
     }
 
     @POST

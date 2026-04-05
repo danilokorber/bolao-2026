@@ -1,0 +1,115 @@
+<div class="flex flex-col gap-4">
+  <h1 class="text-xl sm:text-2xl font-bold text-primary-700">
+    {{ 'ranking.title' | transloco }}
+  </h1>
+
+  @if (ranking.isLoading()) {
+    <p class="text-sm opacity-60">{{ 'ranking.loading' | transloco }}</p>
+  } @else if (!ranking.hasValue() || ranking.value()!.length === 0) {
+    <p class="text-sm opacity-60">{{ 'ranking.noData' | transloco }}</p>
+  } @else {
+    <!-- Desktop table -->
+    <div class="hidden sm:block overflow-x-auto border border-gray-200 rounded-xl">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-primary-700 text-white text-xs uppercase tracking-wide">
+            <th class="px-3 py-2 text-left">#</th>
+            <th class="px-3 py-2 text-left">{{ 'ranking.player' | transloco }}</th>
+            <th class="px-3 py-2 text-center">
+              <span class="score-badge score-10">10</span>
+            </th>
+            <th class="px-3 py-2 text-center">
+              <span class="score-badge score-5">5</span>
+            </th>
+            <th class="px-3 py-2 text-center">
+              <span class="score-badge score-3">3</span>
+            </th>
+            <th class="px-3 py-2 text-center">
+              <span class="score-badge score-1">1</span>
+            </th>
+            <th class="px-3 py-2 text-center">⭐</th>
+            <th class="px-3 py-2 text-right font-bold">{{ 'ranking.total' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entry of ranking.value()!; track entry.userId) {
+            <tr
+              class="border-t border-gray-100 transition-colors hover:bg-gray-50 cursor-pointer"
+              [class.bg-primary-50]="entry.userId === currentUserId()"
+              [class.font-semibold]="entry.userId === currentUserId()"
+              [routerLink]="['/bets', entry.userId]"
+            >
+              <td class="px-3 py-2">
+                <div
+                  class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                  [class.bg-yellow-500]="entry.position === 1"
+                  [class.bg-gray-400]="entry.position === 2"
+                  [class.bg-amber-700]="entry.position === 3"
+                  [class.bg-gray-200]="entry.position > 3"
+                  [class.!text-gray-500]="entry.position > 3"
+                >
+                  {{ entry.position }}
+                </div>
+              </td>
+              <td class="px-3 py-2 truncate max-w-[200px]">{{ entry.userName }}</td>
+              <td class="px-3 py-2 text-center font-mono tabular-nums">{{ entry.count10 || '–' }}</td>
+              <td class="px-3 py-2 text-center font-mono tabular-nums">{{ entry.count5 || '–' }}</td>
+              <td class="px-3 py-2 text-center font-mono tabular-nums">{{ entry.count3 || '–' }}</td>
+              <td class="px-3 py-2 text-center font-mono tabular-nums">{{ entry.count1 || '–' }}</td>
+              <td class="px-3 py-2 text-center font-mono tabular-nums">{{ entry.specialPoints || '–' }}</td>
+              <td class="px-3 py-2 text-right font-mono tabular-nums font-bold text-primary-700">
+                {{ entry.totalPoints }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile cards -->
+    <div class="sm:hidden flex flex-col gap-2">
+      @for (entry of ranking.value()!; track entry.userId) {
+        <a
+          [routerLink]="['/bets', entry.userId]"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-gray-200 bg-white no-underline text-inherit"
+          [class.border-primary-300]="entry.userId === currentUserId()"
+          [class.bg-primary-50]="entry.userId === currentUserId()"
+        >
+          <!-- Position -->
+          <div
+            class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white"
+            [class.bg-yellow-500]="entry.position === 1"
+            [class.bg-gray-400]="entry.position === 2"
+            [class.bg-amber-700]="entry.position === 3"
+            [class.bg-gray-200]="entry.position > 3"
+            [class.!text-gray-500]="entry.position > 3"
+          >
+            {{ entry.position }}
+          </div>
+
+          <!-- Name + breakdown -->
+          <div class="flex-1 min-w-0">
+            <div class="font-semibold truncate" [class.text-primary-700]="entry.userId === currentUserId()">
+              {{ entry.userName }}
+            </div>
+            <div class="flex gap-2 text-xs text-gray-400 mt-0.5">
+              @if (entry.count10) { <span><span class="score-badge score-10 !text-[10px] !w-4 !h-4">10</span> ×{{ entry.count10 }}</span> }
+              @if (entry.count5) { <span><span class="score-badge score-5 !text-[10px] !w-4 !h-4">5</span> ×{{ entry.count5 }}</span> }
+              @if (entry.count3) { <span><span class="score-badge score-3 !text-[10px] !w-4 !h-4">3</span> ×{{ entry.count3 }}</span> }
+              @if (entry.count1) { <span><span class="score-badge score-1 !text-[10px] !w-4 !h-4">1</span> ×{{ entry.count1 }}</span> }
+              @if (entry.specialPoints) { <span>⭐{{ entry.specialPoints }}</span> }
+            </div>
+          </div>
+
+          <!-- Total -->
+          <div class="shrink-0 text-right">
+            <span class="text-lg font-bold font-mono tabular-nums text-primary-700">
+              {{ entry.totalPoints }}
+            </span>
+            <div class="text-[10px] opacity-40">{{ 'matchSchedule.points' | transloco }}</div>
+          </div>
+        </a>
+      }
+    </div>
+  }
+</div>

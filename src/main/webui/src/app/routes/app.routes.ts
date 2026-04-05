@@ -7,6 +7,8 @@ import { Dashboard } from '../pages/dashboard';
 import { GroupWinnerBets } from '../pages/group-winner-bets';
 import { MatchDetail } from '../pages/match-detail';
 import { Matches } from '../pages/matches';
+import { RankingPage } from '../pages/ranking';
+import { UserBetsPage } from '../pages/user-bets';
 import { NavigationLayout } from '@layout/navigation-layout';
 
 export const routes: Routes = [
@@ -37,6 +39,8 @@ export const routes: Routes = [
       { path: 'dashboard', component: Dashboard, title: 'Bolão da Copa' },
       { path: 'matches', component: Matches, title: 'Bolão da Copa' },
       { path: 'matches/:id', component: MatchDetail, title: 'Bolão da Copa' },
+      { path: 'ranking', component: RankingPage, title: 'Bolão da Copa' },
+      { path: 'bets/:userId', component: UserBetsPage, title: 'Bolão da Copa' },
       { path: 'account', component: Account, title: 'Bolão da Copa' },
     ],
   },

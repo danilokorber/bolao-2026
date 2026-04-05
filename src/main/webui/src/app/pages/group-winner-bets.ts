@@ -1,10 +1,11 @@
-import { HttpClient, httpResource } from '@angular/common/http';
+import { httpResource } from '@angular/common/http';
 import { Component, computed, effect, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
-import { TeamSelect } from '@components/team-select';
-import { GroupName, GroupWinnerBet, GroupWinnerBetRequest, Team } from '@interfaces/index';
+import { GroupBetCard } from '@components/group-bet-card';
+import { GroupName, GroupWinnerBet, Team } from '@interfaces/index';
+import { TeamService } from '@services/team.service';
 import { SignalStore } from '../store/signal-store';
 
 interface GroupData {
@@ -13,34 +14,17 @@ interface GroupData {
   teams: Team[];
   firstPlaceTeamId: string | null;
   secondPlaceTeamId: string | null;
-  saving: boolean;
-  saved: boolean;
+  locked: boolean;
 }
 
 @Component({
   selector: 'group-winner-bets',
-  imports: [TranslocoPipe, TeamSelect],
+  imports: [TranslocoPipe, GroupBetCard],
   templateUrl: './group-winner-bets.html',
-  styles: `
-    .saved-flash {
-      animation: flash 2.5s ease-in-out;
-    }
-    @keyframes flash {
-      0%,
-      100% {
-        opacity: 0;
-      }
-      10%,
-      70% {
-        opacity: 1;
-      }
-    }
-  `,
 })
 export class GroupWinnerBets {
-  private readonly http = inject(HttpClient);
   private readonly store = inject(SignalStore);
-  private readonly transloco = inject(TranslocoService);
+  private readonly teamService = inject(TeamService);
   private readonly router = inject(Router);
 
   private userId = computed(() => this.store.appuser()?.id);
@@ -54,6 +38,7 @@ export class GroupWinnerBets {
     const id = this.userId();
     return id ? API.GROUP_WINNER_BETS.GET_BY_USER(id) : undefined;
   });
+  deadlines = httpResource<Record<string, string>>(() => API.GROUP_WINNER_BETS.GET_DEADLINES());
 
   private readonly redirectIfComplete = effect(() => {
     const bets = this.userBets.value();
@@ -67,12 +52,16 @@ export class GroupWinnerBets {
   groups = computed<GroupData[]>(() => {
     const allTeams = this.teams.value() ?? [];
     const bets = this.userBets.value() ?? [];
+    const deadlineMap = this.deadlines.value() ?? {};
+    const now = new Date();
 
     return Object.values(GroupName).map((gn) => {
-      const groupTeams = allTeams
-        .filter((t) => t.groupName === gn)
-        .sort((a, b) => this.localizedName(a).localeCompare(this.localizedName(b)));
+      const groupTeams = this.teamService.sortByName(
+        allTeams.filter((t) => t.groupName === gn)
+      );
       const existingBet = bets.find((b) => b.groupName === gn);
+      const deadline = deadlineMap[gn];
+      const locked = deadline ? now >= new Date(deadline) : false;
 
       return {
         groupName: gn,
@@ -80,71 +69,8 @@ export class GroupWinnerBets {
         teams: groupTeams,
         firstPlaceTeamId: existingBet?.firstPlaceTeamId ?? null,
         secondPlaceTeamId: existingBet?.secondPlaceTeamId ?? null,
-        saving: false,
-        saved: false,
+        locked,
       };
     });
   });
-
-  localizedName(team: Team): string {
-    const lang = this.transloco.getActiveLang();
-    switch (lang) {
-      case 'de':
-        return team.nameDe;
-      case 'pt':
-        return team.namePt;
-      default:
-        return team.nameEn;
-    }
-  }
-
-  availableForFirst(group: GroupData): Team[] {
-    return group.teams.filter((t) => t.id !== group.secondPlaceTeamId);
-  }
-
-  availableForSecond(group: GroupData): Team[] {
-    return group.teams.filter((t) => t.id !== group.firstPlaceTeamId);
-  }
-
-  onFirstPlaceChange(group: GroupData, teamId: string) {
-    group.firstPlaceTeamId = teamId;
-    this.onSelectionChange(group);
-  }
-
-  onSecondPlaceChange(group: GroupData, teamId: string) {
-    group.secondPlaceTeamId = teamId;
-    this.onSelectionChange(group);
-  }
-
-  onSelectionChange(group: GroupData) {
-    if (!group.firstPlaceTeamId || !group.secondPlaceTeamId) return;
-    this.saveGroupBet(group);
-  }
-
-  private saveGroupBet(group: GroupData) {
-    const userId = this.userId();
-    if (!userId || !group.firstPlaceTeamId || !group.secondPlaceTeamId) return;
-
-    group.saving = true;
-    group.saved = false;
-
-    const body: GroupWinnerBetRequest = {
-      userId,
-      groupName: group.groupName,
-      firstPlaceTeamId: group.firstPlaceTeamId,
-      secondPlaceTeamId: group.secondPlaceTeamId,
-    };
-
-    this.http.post<GroupWinnerBet>(API.GROUP_WINNER_BETS.SAVE(), body).subscribe({
-      next: () => {
-        group.saving = false;
-        group.saved = true;
-        setTimeout(() => (group.saved = false), 2500);
-      },
-      error: (err) => {
-        group.saving = false;
-        console.error('Failed to save group winner bet', err);
-      },
-    });
-  }
 }

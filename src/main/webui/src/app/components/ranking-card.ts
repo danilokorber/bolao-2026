@@ -1,17 +1,18 @@
 import { Component, computed, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { RankingEntry } from '@interfaces/ranking-entry.interface';
 import { SignalStore } from '../store/signal-store';
 
 @Component({
   selector: 'ranking-card',
-  imports: [TranslocoPipe],
+  imports: [TranslocoPipe, RouterLink],
   template: `
     <div class="flex flex-col border border-gray-200 dark:border-gray-700 rounded-t-xl">
       <div class="border-b border-gray-200 dark:border-gray-700 -mx-4 p-4">
-        <h2 class="text-lg sm:text-xl font-bold text-primary-700 dark:text-primary-300">
+        <a routerLink="/ranking" class="text-lg sm:text-xl font-bold text-primary-700 dark:text-primary-300 hover:underline">
           {{ 'dashboard.ranking.title' | transloco }}
-        </h2>
+        </a>
       </div>
       <div class="p-0">
         @if (displayEntries().length === 0) {
@@ -37,7 +38,7 @@ import { SignalStore } from '../store/signal-store';
                 >
                   {{ entry.position }}
                 </div>
-                <span class="flex-1 text-sm sm:text-base truncate">{{ entry.userName }}</span>
+                <span class="flex-1 text-sm sm:text-base truncate"><a [routerLink]="['/bets', entry.userId]" class="hover:underline text-inherit">{{ entry.userName }}</a></span>
                 @if (entry.separator) {
                   <span class="text-xs opacity-40">⋯</span>
                 }

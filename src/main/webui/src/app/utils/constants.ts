@@ -1,0 +1,1 @@
+export const SAVE_FEEDBACK_DURATION_MS = 2500;

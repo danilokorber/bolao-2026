@@ -1,7 +1,8 @@
 import { DatePipe } from '@angular/common';
-import { Component, input, linkedSignal } from '@angular/core';
+import { Component, inject, input, linkedSignal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Bet, Match } from '@interfaces/index';
+import { ScoreService } from '@services/score.service';
 
 @Component({
   selector: 'match-card-schedule',
@@ -26,6 +27,8 @@ import { Bet, Match } from '@interfaces/index';
   host: { class: 'absolute -top-3 sm:-top-3.5 w-full flex justify-center' },
 })
 export class MatchCardSchedule {
+  private readonly scoreService = inject(ScoreService);
+
   match = input.required<Match>();
   bet = input.required<Bet | undefined>();
 
@@ -40,13 +43,7 @@ export class MatchCardSchedule {
     return NOW > SCHEDULE;
   });
 
-  scoreColor = linkedSignal(() => {
-    const points = this.bet()?.pointsEarned ?? 0;
-    const style = getComputedStyle(document.documentElement);
-    if (points >= 10) return style.getPropertyValue('--color-score-10').trim();
-    if (points >= 5) return style.getPropertyValue('--color-score-5').trim();
-    if (points >= 3) return style.getPropertyValue('--color-score-3').trim();
-    if (points >= 1) return style.getPropertyValue('--color-score-1').trim();
-    return style.getPropertyValue('--color-score-0').trim();
-  });
+  scoreColor = linkedSignal(() =>
+    this.scoreService.color(this.bet()?.pointsEarned ?? 0)
+  );
 }

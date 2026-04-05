@@ -1,8 +1,10 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
 import { Bet, MatchStatus } from '@interfaces/index';
+import { ScoreService } from '@services/score.service';
+import { StageService } from '@services/stage.service';
 import { SignalStore } from '../store/signal-store';
 
 @Component({
@@ -31,7 +33,7 @@ import { SignalStore } from '../store/signal-store';
                 <span
                   class="shrink-0 text-[10px] sm:text-xs font-medium opacity-50 w-6 sm:w-8 text-center"
                 >
-                  {{ stageLabel(bet.match?.stage) }}
+                  {{ stageService.shortLabel(bet.match?.stage) }}
                 </span>
 
                 <!-- Match result with flags -->
@@ -75,7 +77,7 @@ import { SignalStore } from '../store/signal-store';
                 <!-- Points badge -->
                 <div
                   class="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold text-white"
-                  [style.background-color]="scoreColor(bet.pointsEarned ?? 0)"
+                  [style.background-color]="scoreService.color(bet.pointsEarned ?? 0)"
                 >
                   {{ bet.pointsEarned ?? 0 }}
                 </div>
@@ -91,6 +93,8 @@ import { SignalStore } from '../store/signal-store';
 export class RecentResultsCard {
   private readonly store = inject(SignalStore);
   private readonly router = inject(Router);
+  protected readonly scoreService = inject(ScoreService);
+  protected readonly stageService = inject(StageService);
 
   bets = input.required<Bet[]>();
 
@@ -122,36 +126,6 @@ export class RecentResultsCard {
       })
       .slice(0, 5);
   });
-
-  scoreColor(points: number): string {
-    const style = getComputedStyle(document.documentElement);
-    if (points >= 10) return style.getPropertyValue('--color-score-10').trim();
-    if (points >= 5) return style.getPropertyValue('--color-score-5').trim();
-    if (points >= 3) return style.getPropertyValue('--color-score-3').trim();
-    if (points >= 1) return style.getPropertyValue('--color-score-1').trim();
-    return style.getPropertyValue('--color-score-0').trim();
-  }
-
-  stageLabel(stage?: string): string {
-    if (!stage) return '';
-    if (stage.startsWith('GROUP_')) return stage.charAt(6);
-    switch (stage) {
-      case 'ROUND_OF_32':
-        return 'R32';
-      case 'ROUND_OF_16':
-        return 'R16';
-      case 'QUARTER_FINALS':
-        return 'QF';
-      case 'SEMI_FINALS':
-        return 'SF';
-      case 'THIRD_PLACE':
-        return '3rd';
-      case 'FINAL':
-        return 'F';
-      default:
-        return '';
-    }
-  }
 
   goToMatch(matchId: string) {
     this.router.navigate(['/matches', matchId]);

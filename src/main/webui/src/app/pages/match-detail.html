@@ -91,7 +91,7 @@
               <!-- Points badge -->
               <div
                 class="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm font-bold text-white"
-                [style.background-color]="scoreColor(bet.pointsEarned ?? 0)"
+                [style.background-color]="scoreService.color(bet.pointsEarned ?? 0)"
               >
                 {{ bet.pointsEarned ?? 0 }}
               </div>

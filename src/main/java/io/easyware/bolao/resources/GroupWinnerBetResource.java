@@ -9,7 +9,9 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Path("/v1/group-winner-bets")
@@ -41,6 +43,12 @@ public class GroupWinnerBetResource {
     @Path("/group/{groupName}")
     public List<GroupWinnerBetDTO> getByGroup(@PathParam("groupName") GroupName groupName) {
         return groupWinnerBetService.findByGroup(groupName);
+    }
+
+    @GET
+    @Path("/deadlines")
+    public Map<GroupName, LocalDateTime> getDeadlines() {
+        return groupWinnerBetService.getDeadlines();
     }
 
     @GET

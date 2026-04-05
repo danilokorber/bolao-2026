@@ -115,7 +115,8 @@
     "firstPlace": "1st Place",
     "secondPlace": "2nd Place",
     "selectTeam": "Select a team...",
-    "saved": "Saved"
+    "saved": "Saved",
+    "locked": "Locked"
   },
   "championBet": {
     "title": "Champion Prediction",
@@ -127,6 +128,27 @@
     "champion": "Champion",
     "runnerUp": "Runner-up",
     "selectTeam": "Select a team...",
-    "saved": "Saved"
+    "saved": "Saved",
+    "locked": "Locked"
+  },
+  "ranking": {
+    "title": "Ranking",
+    "loading": "Loading ranking...",
+    "noData": "No ranking data yet.",
+    "player": "Player",
+    "total": "Total",
+    "special": "Special"
+  },
+  "userBets": {
+    "title": "Bets",
+    "subtitle": "Bets for matches that have already started",
+    "loading": "Loading bets...",
+    "noData": "No bets for started matches yet.",
+    "match": "Match",
+    "result": "Result",
+    "prediction": "Bet",
+    "betTime": "Bet placed",
+    "live": "LIVE",
+    "betsCount": "bets"
   }
 }

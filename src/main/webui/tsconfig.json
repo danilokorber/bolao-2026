@@ -50,7 +50,8 @@
       "@settings/*": ["./src/app/settings/*"],
       "@shared/*": ["./src/app/shared/*"],
       "@store/*": ["./src/app/store/*"],
-      "@styles/*": ["./src/app/styles/*"]
+      "@styles/*": ["./src/app/styles/*"],
+      "@utils/*": ["./src/app/utils/*"]
     }
   },
   "angularCompilerOptions": {

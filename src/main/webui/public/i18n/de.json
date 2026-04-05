@@ -115,7 +115,8 @@
     "firstPlace": "1. Platz",
     "secondPlace": "2. Platz",
     "selectTeam": "Team auswählen...",
-    "saved": "Gespeichert"
+    "saved": "Gespeichert",
+    "locked": "Gesperrt"
   },
   "championBet": {
     "title": "Meistertipp",
@@ -127,6 +128,27 @@
     "champion": "Meister",
     "runnerUp": "Zweiter",
     "selectTeam": "Team auswählen...",
-    "saved": "Gespeichert"
+    "saved": "Gespeichert",
+    "locked": "Gesperrt"
+  },
+  "ranking": {
+    "title": "Rangliste",
+    "loading": "Rangliste wird geladen...",
+    "noData": "Noch keine Ranglistendaten.",
+    "player": "Spieler",
+    "total": "Gesamt",
+    "special": "Spezial"
+  },
+  "userBets": {
+    "title": "Tipps",
+    "subtitle": "Tipps für bereits gestartete Spiele",
+    "loading": "Tipps werden geladen...",
+    "noData": "Noch keine Tipps für gestartete Spiele.",
+    "match": "Spiel",
+    "result": "Ergebnis",
+    "prediction": "Tipp",
+    "betTime": "Tipp abgegeben",
+    "live": "LIVE",
+    "betsCount": "Tipps"
   }
 }
