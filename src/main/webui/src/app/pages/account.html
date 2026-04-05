@@ -4,8 +4,11 @@
     <h1 class="flex-1 mb-0!">{{ 'account.language' | transloco }}</h1>
     @for (lang of languages; track lang.code) {
       <button [class.active]="activeLang() === lang.code" (click)="changeLang(lang.code)">
-        {{ lang.label.split(' ')[0]
-        }}<span class="hidden sm:block">{{ lang.label.split(' ')[1] }}</span>
+        <div class="flex flex-row gap-2">
+          <span>{{ lang.label.split(' ')[0] }}</span>
+          <span class="hidden sm:block">{{ lang.label.split(' ')[1] }}</span>
+        </div>
+
       </button>
     }
   </div>

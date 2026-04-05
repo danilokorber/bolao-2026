@@ -1,6 +1,6 @@
 <div
   [id]="match().matchDatetime.substring(0, 10)"
-  class="relative w-full flex flex-row h-16 sm:h-24 rounded-full cursor-pointer bg-white border-t border-l border-r"
+  class="relative w-full flex flex-row h-16 sm:h-24 rounded-full bg-white border-t border-l border-r"
   [class.shadow-lg]="!startIsInThePast()"
   [class.hover:shadow-xl]="!startIsInThePast()"
   [class.hover:bg-primary-50]="!startIsInThePast()"
@@ -8,7 +8,9 @@
   [class.opacity-75]="startIsInThePast()"
   [class.border-primary-900]="!startIsInThePast()"
   [class.border-primary-300]="startIsInThePast()"
+  [class.cursor-pointer]="startIsInThePast()"
   [style.border-color]="startIsInThePast() ? scoreColor() : 'border-primary-900'"
+  (click)="onCardClick()"
 >
   <match-card-schedule [match]="match()" [bet]="bet()"></match-card-schedule>
   <match-in-progress class="absolute -top-1" [show]="matchInProgress()"></match-in-progress>

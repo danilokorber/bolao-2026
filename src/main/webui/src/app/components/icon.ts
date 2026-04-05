@@ -83,17 +83,23 @@ export class IconComponent {
   }
 
   isActive = linkedSignal<boolean>(() => {
-    const params: IsActiveMatchOptions = {
+    const exact: IsActiveMatchOptions = {
       paths: 'exact',
       queryParams: 'ignored',
       fragment: 'ignored',
       matrixParams: 'ignored',
     };
+    const subset: IsActiveMatchOptions = {
+      paths: 'subset',
+      queryParams: 'ignored',
+      fragment: 'ignored',
+      matrixParams: 'ignored',
+    };
 
-    if (isActive('/', this.router, params)() && this.icon() === ICON.HOME) return true;
-    if (isActive('/dashboard', this.router, params)() && this.icon() === ICON.HOME) return true;
-    if (isActive('/matches', this.router, params)() && this.icon() === ICON.BALL) return true;
-    if (isActive('/account', this.router, params)() && this.icon() === ICON.USER) return true;
+    if (isActive('/', this.router, exact)() && this.icon() === ICON.HOME) return true;
+    if (isActive('/dashboard', this.router, exact)() && this.icon() === ICON.HOME) return true;
+    if (isActive('/matches', this.router, subset)() && this.icon() === ICON.BALL) return true;
+    if (isActive('/account', this.router, exact)() && this.icon() === ICON.USER) return true;
     return false;
   });
 }

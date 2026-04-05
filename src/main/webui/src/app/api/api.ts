@@ -24,6 +24,10 @@ export const API = {
     DELETE: (id: string) => `/api/v1/matches/id/${id}`,
   },
 
+  RANKING: {
+    GET_ALL: () => `/api/v1/ranking`,
+  },
+
   BETS: {
     GET_ALL: () => `/api/v1/bets`,
     GET_BY_ID: (id: string) => `/api/v1/bets/id/${id}`,

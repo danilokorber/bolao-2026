@@ -1,4 +1,22 @@
 {
+  "matchDetail": {
+    "loading": "Detalhes da partida carregando...",
+    "back": "Voltar",
+    "group": "Grupo",
+    "penalties": "Após pênaltis",
+    "extraTime": "Após prorrogação",
+    "betsTitle": "Palpites",
+    "loadingBets": "Carregando palpites...",
+    "noBets": "Nenhum palpite para esta partida.",
+    "stages": {
+      "r32": "Oitavas de Final (32)",
+      "r16": "Oitavas de Final",
+      "qf": "Quartas de Final",
+      "sf": "Semifinais",
+      "third": "Disputa do 3º Lugar",
+      "final": "Final"
+    }
+  },
   "matchCard": {
     "noBet": "Sem palpite",
     "betSaved": "Palpite salvo!"
@@ -49,7 +67,23 @@
   },
   "dashboard": {
     "loading": "Carregando próximas partidas...",
-    "error": "Erro ao carregar partidas:"
+    "error": "Erro ao carregar partidas:",
+    "ranking": {
+      "title": "Classificação",
+      "loading": "Carregando classificação...",
+      "noData": "Ainda não há dados de classificação."
+    },
+    "recentResults": {
+      "title": "Resultados Recentes",
+      "loading": "Carregando resultados...",
+      "noData": "Ainda não há resultados."
+    },
+    "upcomingMatches": {
+      "title": "Próximas Partidas",
+      "latestTitle": "Últimas Partidas",
+      "loading": "Carregando próximas partidas...",
+      "noData": "Nenhuma partida agendada."
+    }
   },
   "matches": {
     "loading": "Carregando próximas partidas...",

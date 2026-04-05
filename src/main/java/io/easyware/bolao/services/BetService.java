@@ -84,7 +84,9 @@ public class BetService {
         }
         bet.setHomeGoalsBet(betDTO.getHomeGoalsBet());
         bet.setAwayGoalsBet(betDTO.getAwayGoalsBet());
-        bet.setPointsEarned(betDTO.getPointsEarned());
+        if (betDTO.getPointsEarned() != null) {
+            bet.setPointsEarned(betDTO.getPointsEarned());
+        }
 
         if (betDTO.getUserId() != null) {
             bet.setUser(appUserRepository.findById(betDTO.getUserId()));

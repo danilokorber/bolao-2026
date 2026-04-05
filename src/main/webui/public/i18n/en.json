@@ -1,4 +1,22 @@
 {
+  "matchDetail": {
+    "loading": "Loading match details...",
+    "back": "Back",
+    "group": "Group",
+    "penalties": "After penalties",
+    "extraTime": "After extra time",
+    "betsTitle": "Predictions",
+    "loadingBets": "Loading predictions...",
+    "noBets": "No predictions for this match.",
+    "stages": {
+      "r32": "Round of 32",
+      "r16": "Round of 16",
+      "qf": "Quarter-Finals",
+      "sf": "Semi-Finals",
+      "third": "Third Place",
+      "final": "Final"
+    }
+  },
   "matchCard": {
     "noBet": "No prediction",
     "betSaved": "Prediction saved!"
@@ -49,7 +67,23 @@
   },
   "dashboard": {
     "loading": "Loading upcoming matches...",
-    "error": "Error loading matches:"
+    "error": "Error loading matches:",
+    "ranking": {
+      "title": "Ranking",
+      "loading": "Loading ranking...",
+      "noData": "No ranking data yet."
+    },
+    "recentResults": {
+      "title": "Recent Results",
+      "loading": "Loading results...",
+      "noData": "No results yet."
+    },
+    "upcomingMatches": {
+      "title": "Upcoming Matches",
+      "latestTitle": "Latest Matches",
+      "loading": "Loading upcoming matches...",
+      "noData": "No upcoming matches scheduled."
+    }
   },
   "matches": {
     "loading": "Loading upcoming matches...",

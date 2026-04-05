@@ -1,0 +1,103 @@
+@if (match.isLoading()) {
+  <p class="text-center py-8 opacity-60">{{ 'matchDetail.loading' | transloco }}</p>
+} @else if (match.hasValue()) {
+    <!-- Back button -->
+    <button
+      (click)="goBack()"
+      class="mb-4 text-sm text-primary-600 dark:text-primary-400 cursor-pointer flex justify-center items-center gap-1"
+    >
+      ← {{ 'matchDetail.back' | transloco }}
+    </button>
+
+    <!-- Match header card -->
+    <div class="w-full bg-white dark:bg-gray-800 rounded-t-2xl shadow-lg overflow-hidden mb-6">
+      <!-- Stage & date bar -->
+      <div class="bg-primary-700 dark:bg-primary-900 text-white text-center py-2 px-4">
+        <span class="text-sm font-semibold">{{ stageLabel() }}</span>
+        <span class="mx-8 opacity-40">&nbsp;&nbsp;·&nbsp;&nbsp;</span>
+        <span class="text-sm opacity-80">{{ formattedDate() }}</span>
+      </div>
+
+      <!-- Teams & score -->
+      <div class="flex items-center justify-center gap-4 sm:gap-8 py-6 px-4">
+        <!-- Home team -->
+        <div class="flex flex-col items-center gap-2 flex-1">
+          <div class="shrink-0 rounded-full overflow-hidden shadow-lg bg-white h-16 w-16 sm:h-20 sm:w-20 relative">
+            <img
+              [imgSrc]="match.value()!.homeTeam?.flagUrl ?? ''"
+              [alt]="match.value()!.homeTeam?.fifaCode ?? ''"
+              class="absolute inset-0 w-full h-full object-cover"
+              style="height: 100%; max-width: none;"
+              flag-fallback
+            />
+          </div>
+          <span class="text-sm sm:text-lg font-bold text-center">{{ localizedName(match.value()!.homeTeam) }}</span>
+          <span class="text-xs opacity-50">{{ match.value()!.homeTeam?.fifaCode }}</span>
+        </div>
+
+        <!-- Score -->
+        <div class="flex flex-col items-center">
+          <div class="text-4xl sm:text-5xl font-bold flex items-center gap-2 sm:gap-3">
+            <span>{{ match.value()!.homeGoals }}</span>
+            <span class="opacity-30">:</span>
+            <span>{{ match.value()!.awayGoals }}</span>
+          </div>
+          @if (match.value()!.wentToPenalties) {
+            <span class="text-xs mt-1 opacity-50">{{ 'matchDetail.penalties' | transloco }}</span>
+          } @else if (match.value()!.wentToExtraTime) {
+            <span class="text-xs mt-1 opacity-50">{{ 'matchDetail.extraTime' | transloco }}</span>
+          }
+        </div>
+
+        <!-- Away team -->
+        <div class="flex flex-col items-center gap-2 flex-1">
+          <div class="shrink-0 rounded-full overflow-hidden shadow-lg bg-white h-16 w-16 sm:h-20 sm:w-20 relative">
+            <img
+              [imgSrc]="match.value()!.awayTeam?.flagUrl ?? ''"
+              [alt]="match.value()!.awayTeam?.fifaCode ?? ''"
+              class="absolute inset-0 w-full h-full object-cover"
+              style="height: 100%; max-width: none;"
+              flag-fallback
+            />
+          </div>
+          <span class="text-sm sm:text-lg font-bold text-center">{{ localizedName(match.value()!.awayTeam) }}</span>
+          <span class="text-xs opacity-50">{{ match.value()!.awayTeam?.fifaCode }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bets list -->
+    <div class="bg-white dark:bg-gray-800 rounded-t-2xl shadow-lg overflow-hidden">
+      <div class="bg-primary-700 dark:bg-primary-900 text-white text-center py-2 px-4">
+        <span class="text-sm font-semibold">{{ 'matchDetail.betsTitle' | transloco }}</span>
+      </div>
+
+      @if (bets.isLoading()) {
+        <p class="text-center py-4 opacity-60 text-sm">{{ 'matchDetail.loadingBets' | transloco }}</p>
+      } @else if (sortedBets().length === 0) {
+        <p class="text-center py-4 opacity-60 text-sm">{{ 'matchDetail.noBets' | transloco }}</p>
+      } @else {
+        <div class="divide-y divide-gray-100 dark:divide-gray-700">
+          @for (bet of sortedBets(); track bet.id) {
+            <div class="flex items-center gap-3 px-4 py-2.5 sm:py-3">
+              <!-- User name -->
+              <span class="flex-1 text-sm sm:text-base truncate">{{ bet.user?.name ?? '—' }}</span>
+
+              <!-- User's bet -->
+              <span class="text-sm sm:text-base font-mono tabular-nums opacity-60">
+                {{ bet.homeGoalsBet }} : {{ bet.awayGoalsBet }}
+              </span>
+
+              <!-- Points badge -->
+              <div
+                class="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-sm font-bold text-white"
+                [style.background-color]="scoreColor(bet.pointsEarned ?? 0)"
+              >
+                {{ bet.pointsEarned ?? 0 }}
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+}

@@ -3,6 +3,7 @@ import { isAuthenticated } from '@auth/guards/is-authenticated';
 import { CleanLayout } from '../layout/clean-layout';
 import { Account } from '../pages/account';
 import { Dashboard } from '../pages/dashboard';
+import { MatchDetail } from '../pages/match-detail';
 import { Matches } from '../pages/matches';
 
 export const routes: Routes = [
@@ -21,6 +22,7 @@ export const routes: Routes = [
       { path: '', component: Dashboard, title: 'Bolão da Copa' },
       { path: 'dashboard', component: Dashboard, title: 'Bolão da Copa' },
       { path: 'matches', component: Matches, title: 'Bolão da Copa' },
+      { path: 'matches/:id', component: MatchDetail, title: 'Bolão da Copa' },
       { path: 'account', component: Account, title: 'Bolão da Copa' },
     ],
   },

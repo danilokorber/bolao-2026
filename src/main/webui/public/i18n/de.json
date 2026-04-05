@@ -1,4 +1,22 @@
 {
+  "matchDetail": {
+    "loading": "Spieldetails werden geladen...",
+    "back": "Zurück",
+    "group": "Gruppe",
+    "penalties": "Nach Elfmeterschießen",
+    "extraTime": "Nach Verlängerung",
+    "betsTitle": "Tipps",
+    "loadingBets": "Tipps werden geladen...",
+    "noBets": "Keine Tipps für dieses Spiel.",
+    "stages": {
+      "r32": "Runde der letzten 32",
+      "r16": "Achtelfinale",
+      "qf": "Viertelfinale",
+      "sf": "Halbfinale",
+      "third": "Spiel um Platz 3",
+      "final": "Finale"
+    }
+  },
   "matchCard": {
     "noBet": "Kein Tipp",
     "betSaved": "Tipp gespeichert!"
@@ -49,7 +67,23 @@
   },
   "dashboard": {
     "loading": "Kommende Spiele werden geladen...",
-    "error": "Fehler beim Laden der Spiele:"
+    "error": "Fehler beim Laden der Spiele:",
+    "ranking": {
+      "title": "Rangliste",
+      "loading": "Rangliste wird geladen...",
+      "noData": "Noch keine Ranglistendaten."
+    },
+    "recentResults": {
+      "title": "Letzte Ergebnisse",
+      "loading": "Ergebnisse werden geladen...",
+      "noData": "Noch keine Ergebnisse."
+    },
+    "upcomingMatches": {
+      "title": "Kommende Spiele",
+      "latestTitle": "Letzte Spiele",
+      "loading": "Kommende Spiele werden geladen...",
+      "noData": "Keine Spiele geplant."
+    }
   },
   "matches": {
     "loading": "Kommende Spiele werden geladen...",

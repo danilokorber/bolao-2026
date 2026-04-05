@@ -1,9 +1,13 @@
 import { DatePipe } from '@angular/common';
-import { Component, effect, input, linkedSignal, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, effect, inject, input, linkedSignal, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { API } from '@api/api';
 import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
 import { Bet, Match, MatchStatus } from '@interfaces/index';
+import { SignalStore } from '../store/signal-store';
 import { MatchInProgress } from './match-in-progress';
 import { MatchCardFlag } from './match-card-flag';
 import { MatchCardTeamName } from './match-card-team-name';
@@ -49,8 +53,16 @@ import { MatchCardSchedule } from './match-card-schedule';
   `,
 })
 export class MatchCard {
+  private readonly router = inject(Router);
+  private readonly http = inject(HttpClient);
+  private readonly store = inject(SignalStore);
+
   match = input.required<Match>();
   bet = input.required<Bet | undefined>();
+
+  private savedBetId = signal<string | undefined>(undefined);
+  private saveTimeout: ReturnType<typeof setTimeout> | null = null;
+  private initialized = false;
 
   startIsInThePast = linkedSignal(() => {
     const NOW = new Date().getTime();
@@ -63,23 +75,67 @@ export class MatchCard {
   homePrediction = signal<number | null>(null);
   awayPrediction = signal<number | null>(null);
 
+  // Initialize predictions from existing bet
+  private initFromBet = effect(() => {
+    const bet = this.bet();
+    if (bet && !this.initialized) {
+      this.initialized = true;
+      this.savedBetId.set(bet.id);
+      this.homePrediction.set(bet.homeGoalsBet);
+      this.awayPrediction.set(bet.awayGoalsBet);
+    }
+  });
+
   onPredictionChange = effect(() => {
     const home = this.homePrediction();
     const away = this.awayPrediction();
 
-    // Here you can handle the prediction change, e.g., send it to a service or update state
-    if (home !== null && away !== null) {
-      this.showSavedLabel();
-    }
+    if (home === null || away === null) return;
+
+    // Skip the initial sync from existing bet
+    if (!this.initialized) return;
+
+    // Debounce saves by 800ms
+    if (this.saveTimeout) clearTimeout(this.saveTimeout);
+    this.saveTimeout = setTimeout(() => this.saveBet(home, away), 800);
   });
+
+  private saveBet(home: number, away: number) {
+    const userId = this.store.appuser()?.id;
+    const matchId = this.match().id;
+    if (!userId || !matchId) return;
+
+    const body = {
+      userId,
+      matchId,
+      homeGoalsBet: home,
+      awayGoalsBet: away,
+    };
+
+    const betId = this.savedBetId();
+
+    if (betId) {
+      // Update existing bet
+      this.http.put<Bet>(API.BETS.UPDATE(betId), body).subscribe({
+        next: () => this.showSavedLabel(),
+        error: (err) => console.error('Failed to update bet', err),
+      });
+    } else {
+      // Create new bet
+      this.http.post<Bet>(API.BETS.CREATE(), body).subscribe({
+        next: (created) => {
+          this.savedBetId.set(created.id);
+          this.showSavedLabel();
+        },
+        error: (err) => console.error('Failed to create bet', err),
+      });
+    }
+  }
 
   showSavedLabel() {
     const savedTip = document.getElementById('savedTip' + this.match().id);
     if (savedTip) {
-      // Fade in
       savedTip.classList.add('show');
-
-      // Fade out after 10 seconds
       setTimeout(() => {
         savedTip.classList.remove('show');
       }, 2700);
@@ -95,4 +151,10 @@ export class MatchCard {
     if (points >= 1) return style.getPropertyValue('--color-score-1').trim();
     return style.getPropertyValue('--color-score-0').trim();
   });
+
+  onCardClick() {
+    if (this.startIsInThePast()) {
+      this.router.navigate(['/matches', this.match().id]);
+    }
+  }
 }

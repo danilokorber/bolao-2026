@@ -327,3 +327,7 @@ button {
     @apply bg-primary-500 text-white shadow-primary-400;
   }
 }
+
+.card-title {
+  @apply bg-primary-700 dark:bg-primary-900 text-white;
+}
