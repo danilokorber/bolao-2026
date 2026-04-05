@@ -32,7 +32,7 @@ export class PostLoginPage {
   redirectToDashboard = effect(() => {
     const user = this.appUser();
     if (user) {
-      this.router.navigate(['dashboard']);
+      this.router.navigate(['group-bets']);
     }
   });
 }

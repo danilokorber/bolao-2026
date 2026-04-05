@@ -1,4 +1,10 @@
 {
+  "buttons": {
+    "save": "SPEICHERN",
+    "cancel": "ABBRECHEN",
+    "close": "SCHLIESSEN",
+    "continue": "WEITER"
+  },
   "matchDetail": {
     "loading": "Spieldetails werden geladen...",
     "back": "Zurück",
@@ -83,7 +89,9 @@
       "latestTitle": "Letzte Spiele",
       "loading": "Kommende Spiele werden geladen...",
       "noData": "Keine Spiele geplant."
-    }
+    },
+    "groupBetsLink": "Du hast die Tipps für die 2 Klassifizierten jeder Gruppe noch nicht abgegeben",
+    "championBetLink": "Du hast die Tipps für Halbfinalisten, Meister und Zweiter noch nicht abgegeben"
   },
   "matches": {
     "loading": "Kommende Spiele werden geladen...",
@@ -98,5 +106,27 @@
   },
   "postLogout": {
     "message": "ABGEMELDET"
+  },
+  "groupWinnerBets": {
+    "title": "Gruppentipps",
+    "subtitle": "Tippe den 1. und 2. Platz jeder Gruppe. Wird automatisch gespeichert, wenn beide Plätze gewählt sind.",
+    "loading": "Gruppen werden geladen...",
+    "group": "Gruppe",
+    "firstPlace": "1. Platz",
+    "secondPlace": "2. Platz",
+    "selectTeam": "Team auswählen...",
+    "saved": "Gespeichert"
+  },
+  "championBet": {
+    "title": "Meistertipp",
+    "subtitle": "Wähle die vier Halbfinalisten, den Meister und den Zweitplatzierten. Meister und Zweiter können sich von den Halbfinalisten unterscheiden.",
+    "loading": "Teams werden geladen...",
+    "semifinalists": "Halbfinalisten",
+    "semifinalist": "Halbfinalist",
+    "final": "Finale",
+    "champion": "Meister",
+    "runnerUp": "Zweiter",
+    "selectTeam": "Team auswählen...",
+    "saved": "Gespeichert"
   }
 }

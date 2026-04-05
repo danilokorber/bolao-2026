@@ -1,4 +1,10 @@
 {
+  "buttons": {
+    "save": "SAVE",
+    "cancel": "CANCEL",
+    "close": "CLOSE",
+    "continue": "CONTINUE"
+  },
   "matchDetail": {
     "loading": "Loading match details...",
     "back": "Back",
@@ -83,7 +89,9 @@
       "latestTitle": "Latest Matches",
       "loading": "Loading upcoming matches...",
       "noData": "No upcoming matches scheduled."
-    }
+    },
+    "groupBetsLink": "You haven't completed the prediction of the 2 qualified teams from each group yet",
+    "championBetLink": "You haven't completed the prediction of the semifinalists, champion and runner-up yet"
   },
   "matches": {
     "loading": "Loading upcoming matches...",
@@ -98,5 +106,27 @@
   },
   "postLogout": {
     "message": "LOGGED OUT"
+  },
+  "groupWinnerBets": {
+    "title": "Group Winner Predictions",
+    "subtitle": "Predict the 1st and 2nd place teams for each group. Auto-saves when both positions are selected.",
+    "loading": "Loading groups...",
+    "group": "Group",
+    "firstPlace": "1st Place",
+    "secondPlace": "2nd Place",
+    "selectTeam": "Select a team...",
+    "saved": "Saved"
+  },
+  "championBet": {
+    "title": "Champion Prediction",
+    "subtitle": "Pick the four semifinalists, the champion and the runner-up. Champion and runner-up can be different from the semifinalists.",
+    "loading": "Loading teams...",
+    "semifinalists": "Semifinalists",
+    "semifinalist": "Semifinalist",
+    "final": "Final",
+    "champion": "Champion",
+    "runnerUp": "Runner-up",
+    "selectTeam": "Select a team...",
+    "saved": "Saved"
   }
 }

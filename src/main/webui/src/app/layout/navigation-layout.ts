@@ -6,12 +6,20 @@ import { BolaoModule } from '@modules/bolao/bolao.module';
 import { filter, map } from 'rxjs/operators';
 
 @Component({
-  selector: 'clean-layout',
-  imports: [RouterModule, BolaoModule],
+  selector: 'navigation-layout',
+  imports: [RouterModule, BolaoModule, IconComponent],
   template: `
+    <!-- Main container: full screen height -->
     <div
-      class="h-dvh w-dvw flex flex-col items-center gap-4 overflow-y-auto p-4 bg-linear-to-br from-primary-50 via-success-50 to-secondary-50 dark:bg-linear-to-br dark:from-primary-950 dark:via-success-950 dark:to-secondary-950"
+      class="h-dvh w-dvw pb-24 lg:pb-8 flex flex-col items-center gap-4 overflow-y-auto p-4 bg-linear-to-br from-primary-50 via-success-50 to-secondary-50 dark:bg-linear-to-br dark:from-primary-950 dark:via-success-950 dark:to-secondary-950"
     >
+      <aside>
+        <icon [icon]="ICON.HOME"></icon>
+        <icon [icon]="ICON.BALL"></icon>
+        <icon [icon]="ICON.RANKING"></icon>
+        <icon [icon]="ICON.USER"></icon>
+      </aside>
+
       <div
         id="content"
         class="flex flex-col w-4xl max-w-full bg-white border border-gray-300 rounded-t-3xl p-8"
@@ -22,7 +30,7 @@ import { filter, map } from 'rxjs/operators';
   `,
   styles: ``,
 })
-export class CleanLayout {
+export class NavigationLayout {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);

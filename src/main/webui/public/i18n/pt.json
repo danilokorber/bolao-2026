@@ -1,4 +1,10 @@
 {
+  "buttons": {
+    "save": "SALVAR",
+    "cancel": "CANCELAR",
+    "close": "FECHAR",
+    "continue": "CONTINUAR"
+  },
   "matchDetail": {
     "loading": "Detalhes da partida carregando...",
     "back": "Voltar",
@@ -83,7 +89,9 @@
       "latestTitle": "Últimas Partidas",
       "loading": "Carregando próximas partidas...",
       "noData": "Nenhuma partida agendada."
-    }
+    },
+    "groupBetsLink": "Você ainda não definiu a aposta dos 2 classificados de cada grupo",
+    "championBetLink": "Você ainda não completou a escolha de semifinalistas, campeão e vice"
   },
   "matches": {
     "loading": "Carregando próximas partidas...",
@@ -98,5 +106,27 @@
   },
   "postLogout": {
     "message": "DESCONECTADO"
+  },
+  "groupWinnerBets": {
+    "title": "Palpites dos Grupos",
+    "subtitle": "Escolha o 1º e 2º colocado de cada grupo. Salva automaticamente quando ambas as posições forem selecionadas.",
+    "loading": "Carregando grupos...",
+    "group": "Grupo",
+    "firstPlace": "1º Lugar",
+    "secondPlace": "2º Lugar",
+    "selectTeam": "Selecione um time...",
+    "saved": "Salvo"
+  },
+  "championBet": {
+    "title": "Palpite do Campeão",
+    "subtitle": "Escolha os quatro semifinalistas, o campeão e o vice-campeão. Campeão e vice podem ser diferentes dos semifinalistas.",
+    "loading": "Carregando times...",
+    "semifinalists": "Semifinalistas",
+    "semifinalist": "Semifinalista",
+    "final": "Final",
+    "champion": "Campeão",
+    "runnerUp": "Vice-campeão",
+    "selectTeam": "Selecione um time...",
+    "saved": "Salvo"
   }
 }

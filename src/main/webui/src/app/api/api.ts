@@ -47,8 +47,7 @@ export const API = {
     GET_BY_USER: (userId: string) => `/api/v1/champion-bets/user/id/${userId}`,
     COUNT_BY_CHAMPION: (teamId: string) => `/api/v1/champion-bets/stats/champion/id/${teamId}`,
     COUNT_BY_RUNNER_UP: (teamId: string) => `/api/v1/champion-bets/stats/runner-up/id/${teamId}`,
-    CREATE: () => `/api/v1/champion-bets`,
-    UPDATE: (id: string) => `/api/v1/champion-bets/id/${id}`,
+    SAVE: () => `/api/v1/champion-bets`,
     DELETE: (id: string) => `/api/v1/champion-bets/id/${id}`,
   },
 
@@ -59,8 +58,7 @@ export const API = {
     GET_BY_GROUP: (groupName: string) => `/api/v1/group-winner-bets/group/${groupName}`,
     GET_BY_USER_AND_GROUP: (userId: string, groupName: string) =>
       `/api/v1/group-winner-bets/user/id/${userId}/group/${groupName}`,
-    CREATE: () => `/api/v1/group-winner-bets`,
-    UPDATE: (id: string) => `/api/v1/group-winner-bets/id/${id}`,
+    SAVE: () => `/api/v1/group-winner-bets`,
     DELETE: (id: string) => `/api/v1/group-winner-bets/id/${id}`,
   },
 

@@ -17,5 +17,7 @@ export * from './payment.interface';
 export * from './bet.interface';
 export * from './bet-request.interface';
 export * from './champion-bet.interface';
+export * from './champion-bet-request.interface';
 export * from './group-winner-bet.interface';
+export * from './group-winner-bet-request.interface';
 export * from './ranking-entry.interface';

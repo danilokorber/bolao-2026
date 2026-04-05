@@ -1,6 +1,7 @@
 package io.easyware.bolao.services;
 
 import io.easyware.bolao.dto.ChampionBetDTO;
+import io.easyware.bolao.dto.ChampionBetRequestDTO;
 import io.easyware.bolao.entities.ChampionBet;
 import io.easyware.bolao.mappers.ChampionBetMapper;
 import io.easyware.bolao.repositories.AppUserRepository;
@@ -55,6 +56,42 @@ public class ChampionBetService {
 
     public long countByRunnerUpTeam(UUID teamId) {
         return championBetRepository.countByRunnerUpTeam(teamId);
+    }
+
+    @Transactional
+    public ChampionBetDTO save(ChampionBetRequestDTO request) {
+        ChampionBet bet = championBetRepository.findByUser(request.getUserId());
+
+        if (bet == null) {
+            bet = new ChampionBet();
+            var user = appUserRepository.findById(request.getUserId());
+            if (user == null) {
+                throw new NotFoundException("User not found: " + request.getUserId());
+            }
+            bet.setUser(user);
+        }
+
+        if (request.getChampionTeamId() != null) {
+            bet.setChampionTeam(teamRepository.findById(request.getChampionTeamId()));
+        }
+        if (request.getRunnerUpTeamId() != null) {
+            bet.setRunnerUpTeam(teamRepository.findById(request.getRunnerUpTeamId()));
+        }
+        if (request.getSemifinalist1TeamId() != null) {
+            bet.setSemifinalist1Team(teamRepository.findById(request.getSemifinalist1TeamId()));
+        }
+        if (request.getSemifinalist2TeamId() != null) {
+            bet.setSemifinalist2Team(teamRepository.findById(request.getSemifinalist2TeamId()));
+        }
+        if (request.getSemifinalist3TeamId() != null) {
+            bet.setSemifinalist3Team(teamRepository.findById(request.getSemifinalist3TeamId()));
+        }
+        if (request.getSemifinalist4TeamId() != null) {
+            bet.setSemifinalist4Team(teamRepository.findById(request.getSemifinalist4TeamId()));
+        }
+
+        championBetRepository.persist(bet);
+        return championBetMapper.toDTO(bet);
     }
 
     @Transactional

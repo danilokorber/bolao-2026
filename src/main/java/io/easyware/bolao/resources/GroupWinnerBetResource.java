@@ -1,6 +1,7 @@
 package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.GroupWinnerBetDTO;
+import io.easyware.bolao.dto.GroupWinnerBetRequestDTO;
 import io.easyware.bolao.enums.GroupName;
 import io.easyware.bolao.services.GroupWinnerBetService;
 import jakarta.inject.Inject;
@@ -51,15 +52,9 @@ public class GroupWinnerBetResource {
     }
 
     @POST
-    public Response create(GroupWinnerBetDTO groupWinnerBetDTO) {
-        GroupWinnerBetDTO created = groupWinnerBetService.create(groupWinnerBetDTO);
-        return Response.status(Response.Status.CREATED).entity(created).build();
-    }
-
-    @PUT
-    @Path("/id/{id}")
-    public GroupWinnerBetDTO update(@PathParam("id") UUID id, GroupWinnerBetDTO groupWinnerBetDTO) {
-        return groupWinnerBetService.update(id, groupWinnerBetDTO);
+    public Response save(GroupWinnerBetRequestDTO request) {
+        GroupWinnerBetDTO saved = groupWinnerBetService.save(request);
+        return Response.ok(saved).build();
     }
 
     @DELETE

@@ -1,6 +1,7 @@
 package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.ChampionBetDTO;
+import io.easyware.bolao.dto.ChampionBetRequestDTO;
 import io.easyware.bolao.services.ChampionBetService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -48,15 +49,9 @@ public class ChampionBetResource {
     }
 
     @POST
-    public Response create(ChampionBetDTO championBetDTO) {
-        ChampionBetDTO created = championBetService.create(championBetDTO);
-        return Response.status(Response.Status.CREATED).entity(created).build();
-    }
-
-    @PUT
-    @Path("/id/{id}")
-    public ChampionBetDTO update(@PathParam("id") UUID id, ChampionBetDTO championBetDTO) {
-        return championBetService.update(id, championBetDTO);
+    public Response save(ChampionBetRequestDTO request) {
+        ChampionBetDTO saved = championBetService.save(request);
+        return Response.ok(saved).build();
     }
 
     @DELETE

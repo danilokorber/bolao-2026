@@ -1,6 +1,7 @@
 package io.easyware.bolao.services;
 
 import io.easyware.bolao.dto.GroupWinnerBetDTO;
+import io.easyware.bolao.dto.GroupWinnerBetRequestDTO;
 import io.easyware.bolao.entities.GroupWinnerBet;
 import io.easyware.bolao.enums.GroupName;
 import io.easyware.bolao.mappers.GroupWinnerBetMapper;
@@ -56,6 +57,36 @@ public class GroupWinnerBetService {
             throw new NotFoundException("GroupWinnerBet not found for user: " + userId + " and group: " + groupName);
         }
         return groupWinnerBetMapper.toDTO(groupWinnerBet);
+    }
+
+    @Transactional
+    public GroupWinnerBetDTO save(GroupWinnerBetRequestDTO request) {
+        GroupWinnerBet bet = groupWinnerBetRepository.findByUserAndGroup(
+                request.getUserId(), request.getGroupName());
+
+        if (bet == null) {
+            bet = new GroupWinnerBet();
+            var user = appUserRepository.findById(request.getUserId());
+            if (user == null) {
+                throw new NotFoundException("User not found: " + request.getUserId());
+            }
+            bet.setUser(user);
+            bet.setGroupName(request.getGroupName());
+        }
+
+        var firstTeam = teamRepository.findById(request.getFirstPlaceTeamId());
+        if (firstTeam == null) {
+            throw new NotFoundException("Team not found: " + request.getFirstPlaceTeamId());
+        }
+        var secondTeam = teamRepository.findById(request.getSecondPlaceTeamId());
+        if (secondTeam == null) {
+            throw new NotFoundException("Team not found: " + request.getSecondPlaceTeamId());
+        }
+
+        bet.setFirstPlaceTeam(firstTeam);
+        bet.setSecondPlaceTeam(secondTeam);
+        groupWinnerBetRepository.persist(bet);
+        return groupWinnerBetMapper.toDTO(bet);
     }
 
     @Transactional
