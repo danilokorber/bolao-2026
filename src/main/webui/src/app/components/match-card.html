@@ -34,7 +34,7 @@
           }
         </div>
       } @else {
-        <match-card-bet-form [match]="match()"></match-card-bet-form>
+        <match-card-bet-form [match]="match()" (matchStarted)="startIsInThePast.set(true)"></match-card-bet-form>
       }
     </div>
     <match-card-team-name [team]="match().awayTeam!" [homeAway]="'away'"></match-card-team-name>

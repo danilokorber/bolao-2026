@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.extern.java.Log;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -77,6 +78,14 @@ public class BetService {
         log.info("Saving bet: userId=" + request.getUserId() + ", matchId=" + request.getMatchId()
                 + ", home=" + request.getHomeGoalsBet() + ", away=" + request.getAwayGoalsBet());
 
+        var match = matchRepository.findById(request.getMatchId());
+        if (match == null) {
+            throw new NotFoundException("Match not found: " + request.getMatchId());
+        }
+        if (match.getMatchDatetime() != null && !LocalDateTime.now().isBefore(match.getMatchDatetime())) {
+            throw new jakarta.ws.rs.BadRequestException("Bets cannot be placed after the match has started");
+        }
+
         Bet bet = betRepository.findByUserAndMatch(request.getUserId(), request.getMatchId());
 
         if (bet == null) {
@@ -84,10 +93,6 @@ public class BetService {
             var user = appUserRepository.findById(request.getUserId());
             if (user == null) {
                 throw new NotFoundException("User not found: " + request.getUserId());
-            }
-            var match = matchRepository.findById(request.getMatchId());
-            if (match == null) {
-                throw new NotFoundException("Match not found: " + request.getMatchId());
             }
             bet.setUser(user);
             bet.setMatch(match);

@@ -1,13 +1,9 @@
-import { DatePipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Component, effect, inject, input, linkedSignal, signal } from '@angular/core';
+import { Component, inject, input, linkedSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { API } from '@api/api';
 import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
-import { Bet, BetRequest, Match, MatchStatus } from '@interfaces/index';
-import { SignalStore } from '../store/signal-store';
+import { Bet, Match, MatchStatus } from '@interfaces/index';
 import { MatchInProgress } from './match-in-progress';
 import { MatchCardFlag } from './match-card-flag';
 import { MatchCardTeamName } from './match-card-team-name';
@@ -56,14 +52,9 @@ import { MatchCardBetForm } from './match-card-bet-form';
 })
 export class MatchCard {
   private readonly router = inject(Router);
-  private readonly http = inject(HttpClient);
-  private readonly store = inject(SignalStore);
 
   match = input.required<Match>();
   bet = input.required<Bet | undefined>();
-
-  private saveTimeout: ReturnType<typeof setTimeout> | null = null;
-  private initialized = false;
 
   startIsInThePast = linkedSignal(() => {
     const NOW = new Date().getTime();
@@ -72,9 +63,6 @@ export class MatchCard {
   });
 
   matchInProgress = linkedSignal(() => this.match().status == MatchStatus.LIVE);
-
-  homePrediction = signal<number | null>(null);
-  awayPrediction = signal<number | null>(null);
 
   scoreColor = linkedSignal(() => {
     const points = this.bet()?.pointsEarned ?? 0;

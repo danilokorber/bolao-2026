@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, linkedSignal, model, signal } from '@angular/core';
+import { Component, effect, inject, input, linkedSignal, model, output, signal } from '@angular/core';
 import { debounce, form, FormField, required } from '@angular/forms/signals';
 import { API } from '@api/api';
 import { Bet } from '@interfaces/bet.interface';
@@ -37,6 +37,7 @@ export class MatchCardBetForm {
   private readonly store = inject(SignalStore);
 
   match = model.required<Match>();
+  matchStarted = output<void>();
 
   bet = linkedSignal<BetRequest>(
     () =>
@@ -87,7 +88,12 @@ export class MatchCardBetForm {
 
     this.http.post<Bet>(API.BETS.SAVE(), body).subscribe({
       next: () => this.showSavedLabel(),
-      error: (err) => console.error('Failed to save bet', err),
+      error: (err) => {
+        if (err.status === 400) {
+          this.matchStarted.emit();
+        }
+        console.error('Failed to save bet', err);
+      },
     });
   }
 
