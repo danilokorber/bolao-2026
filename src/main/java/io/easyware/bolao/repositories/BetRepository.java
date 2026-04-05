@@ -33,4 +33,28 @@ public class BetRepository implements PanacheRepositoryBase<Bet, UUID> {
                 .project(Long.class)
                 .firstResult();
     }
+
+    /**
+     * Finds all bets for a given set of match UUIDs.
+     * Used to efficiently recalculate points only for bets on recently finished matches.
+     *
+     * @param matchIds the match UUIDs whose bets should be fetched
+     * @return all bets placed on any of the given matches
+     */
+    public List<Bet> findByMatchIds(List<UUID> matchIds) {
+        if (matchIds == null || matchIds.isEmpty()) {
+            return List.of();
+        }
+        return list("match.id in ?1", matchIds);
+    }
+
+    /**
+     * Counts bets for a given match that have not yet been scored (points still 0).
+     *
+     * @param matchId the match UUID
+     * @return number of unscored bets for this match
+     */
+    public long countUnscoredByMatch(UUID matchId) {
+        return count("match.id = ?1 and pointsEarned = 0", matchId);
+    }
 }

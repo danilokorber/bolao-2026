@@ -8,7 +8,12 @@ import { Bet, Match } from '@interfaces/index';
   imports: [TranslocoPipe],
   template: `
     <div
-      class="flex text-sm rounded-full px-6 py-1 bg-primary-900 text-gray-50 dark:border-primary-100 dark:bg-primary-100 dark:text-gray-900"
+      class="flex text-sm rounded-full px-6 py-1 text-gray-50"
+      [style.background-color]="startIsInThePast() ? scoreColor() : ''"
+      [class.bg-primary-900]="!startIsInThePast()"
+      [class.dark:border-primary-100]="!startIsInThePast()"
+      [class.dark:bg-primary-100]="!startIsInThePast()"
+      [class.dark:text-gray-900]="!startIsInThePast()"
     >
       @if (startIsInThePast()) {
         {{ bet()?.pointsEarned ?? 0 }} {{ bet()?.pointsEarned != 1 ? ('matchSchedule.points' | transloco) : ('matchSchedule.point' | transloco) }}
@@ -33,5 +38,15 @@ export class MatchCardSchedule {
     const NOW = new Date().getTime();
     const SCHEDULE = new Date(this.match().matchDatetime).getTime();
     return NOW > SCHEDULE;
+  });
+
+  scoreColor = linkedSignal(() => {
+    const points = this.bet()?.pointsEarned ?? 0;
+    const style = getComputedStyle(document.documentElement);
+    if (points >= 10) return style.getPropertyValue('--color-score-10').trim();
+    if (points >= 5) return style.getPropertyValue('--color-score-5').trim();
+    if (points >= 3) return style.getPropertyValue('--color-score-3').trim();
+    if (points >= 1) return style.getPropertyValue('--color-score-1').trim();
+    return style.getPropertyValue('--color-score-0').trim();
   });
 }

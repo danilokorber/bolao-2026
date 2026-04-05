@@ -11,7 +11,7 @@ import { MatchCardHelper } from './match-card-helper';
       [imgSrc]="team().flagUrl ?? ''"
       [alt]="team().fifaCode"
       class="object-cover rounded-full shadow-2xl bg-white"
-      style="width: 6rem; height: 6rem"
+      style="height: 6rem; width: 6rem;"
       flag-fallback
     />
   `,

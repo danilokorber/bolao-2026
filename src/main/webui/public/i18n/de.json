@@ -19,7 +19,33 @@
   "account": {
     "logout": "ABMELDEN",
     "language": "Sprache",
-    "languageChanged": "Sprache geändert!"
+    "languageChanged": "Sprache geändert!",
+    "scoring": {
+      "title": "Punktevergabe",
+      "subtitle": "Punkte werden in Echtzeit während der Spiele berechnet.",
+      "matchBets": {
+        "title": "Spieltipps",
+        "note90min": "Nur das Ergebnis nach 90 Minuten wird gewertet.",
+        "exact": "Exaktes Ergebnis",
+        "goalDiff": "Richtige Tordifferenz (impliziert richtigen Gewinner)",
+        "winner": "Richtiger Gewinner, falsche Differenz",
+        "inverted": "Gespiegeltes Ergebnis (z.B. Spiel 2:0, Tipp 0:2)"
+      },
+      "groupBets": {
+        "title": "Gruppensieger-Tipps",
+        "first": "Richtiger 1. Platz",
+        "second": "Richtiger 2. Platz",
+        "both": "Bonus: beide Platzierungen richtig (gesamt: 10)"
+      },
+      "championBets": {
+        "title": "Champion-Tipps",
+        "champion": "Richtiger Champion",
+        "runnerUp": "Richtiger Zweiter",
+        "semifinalist": "Jeder richtige Halbfinalist (außer wenn bereits als Champion/Zweiter gewertet)"
+      },
+      "open": "REGELN",
+      "close": "SCHLIESSEN"
+    }
   },
   "dashboard": {
     "loading": "Kommende Spiele werden geladen...",

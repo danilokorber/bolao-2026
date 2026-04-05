@@ -1,6 +1,13 @@
 <div
   [id]="match().matchDatetime.substring(0, 10)"
-  class="relative w-full flex flex-row h-24 rounded-full shadow-lg cursor-pointer hover:shadow-xl bg-white hover:bg-primary-50 focus-within:bg-primary-50 border-t border-l border-r border-primary-900"
+  class="relative w-full flex flex-row h-24 rounded-full cursor-pointer bg-white border-t border-l border-r"
+  [class.shadow-lg]="!startIsInThePast()"
+  [class.hover:shadow-xl]="!startIsInThePast()"
+  [class.hover:bg-primary-50]="!startIsInThePast()"
+  [class.focus-within:bg-primary-50]="!startIsInThePast()"
+  [class.opacity-75]="startIsInThePast()"
+  [class.border-primary-900]="!startIsInThePast()"
+  [class.border-primary-300]="startIsInThePast()"
 >
   <match-card-schedule [match]="match()" [bet]="bet()"></match-card-schedule>
   <match-in-progress class="absolute -top-1" [show]="matchInProgress()"></match-in-progress>
@@ -9,9 +16,9 @@
     <match-card-team-name [team]="match().homeTeam!" [homeAway]="'home'"></match-card-team-name>
     <div class="w-28 text-4xl font-bold my-2 flex flex-row justify-center items-center relative">
       @if (startIsInThePast()) {
-        <div cass="text-right">{{ match().homeGoals }}</div>
+        <div class="text-right">{{ match().homeGoals }}</div>
         <div class="w-8 text-center">:</div>
-        <div cass="text-left">{{ match().awayGoals }}</div>
+        <div class="text-left">{{ match().awayGoals }}</div>
         <div class="absolute -bottom-6 text-lg text-gray-500">
           @if (bet()) {
             {{ bet()?.homeGoalsBet }} : {{ bet()?.awayGoalsBet }}

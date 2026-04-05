@@ -35,4 +35,26 @@ public class MatchRepository implements PanacheRepositoryBase<Match, UUID> {
     public List<Match> findByDateRange(LocalDateTime start, LocalDateTime end) {
         return list("matchDatetime between ?1 and ?2 order by matchDatetime", start, end);
     }
+
+    /**
+     * Finds all finished matches for a given group stage (e.g. GROUP_A).
+     *
+     * @param stage the group stage to query
+     * @return finished matches in that group
+     */
+    public List<Match> findFinishedByStage(MatchStage stage) {
+        return list("stage = ?1 and status = ?2", stage, MatchStatus.FINISHED);
+    }
+
+    /**
+     * Checks whether all matches in a given group stage are finished.
+     *
+     * @param stage the group stage to check
+     * @return true if every match in the group has status FINISHED
+     */
+    public boolean isGroupComplete(MatchStage stage) {
+        long total = count("stage", stage);
+        long finished = count("stage = ?1 and status = ?2", stage, MatchStatus.FINISHED);
+        return total > 0 && total == finished;
+    }
 }

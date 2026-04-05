@@ -4,6 +4,10 @@ import { OAuthEvent, OAuthService } from 'angular-oauth2-oidc';
 import { AUTH_CONFIG } from '../config/auth.config';
 import { AuthProvider } from '../enums/auth-providers';
 import { OAuthEventType } from '../enums/o-auth-event-type';
+import { HttpClient } from '@angular/common/http';
+import { API } from '@api/api';
+import { AppUser } from '@interfaces/app-user.interface';
+import { firstValueFrom, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +15,7 @@ import { OAuthEventType } from '../enums/o-auth-event-type';
 export class AuthService {
   protected readonly oAuthService = inject(OAuthService);
   protected readonly router = inject(Router);
+  private readonly httpClient = inject(HttpClient);
   private initialized = false;
 
   private initialize(): void {

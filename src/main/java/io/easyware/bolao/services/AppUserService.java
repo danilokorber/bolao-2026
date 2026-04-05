@@ -7,11 +7,15 @@ import io.easyware.bolao.repositories.AppUserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Service layer for {@link AppUser} operations.
+ */
 @ApplicationScoped
 public class AppUserService {
 
@@ -21,10 +25,22 @@ public class AppUserService {
     @Inject
     AppUserMapper appUserMapper;
 
+    /**
+     * Lists all registered users.
+     *
+     * @return all users as DTOs
+     */
     public List<AppUserDTO> findAll() {
         return appUserMapper.toDTOList(appUserRepository.listAll());
     }
 
+    /**
+     * Finds a user by internal UUID.
+     *
+     * @param id the user's UUID
+     * @return the matching user DTO
+     * @throws NotFoundException if no user exists with the given id
+     */
     public AppUserDTO findById(UUID id) {
         AppUser user = appUserRepository.findById(id);
         if (user == null) {
@@ -33,6 +49,13 @@ public class AppUserService {
         return appUserMapper.toDTO(user);
     }
 
+    /**
+     * Finds a user by their Keycloak subject identifier.
+     *
+     * @param keycloakId the Keycloak subject id
+     * @return the matching user DTO
+     * @throws NotFoundException if no user exists with the given keycloakId
+     */
     public AppUserDTO findByKeycloakId(String keycloakId) {
         AppUser user = appUserRepository.findByKeycloakId(keycloakId);
         if (user == null) {
@@ -41,6 +64,13 @@ public class AppUserService {
         return appUserMapper.toDTO(user);
     }
 
+    /**
+     * Finds a user by email address.
+     *
+     * @param email the user's email
+     * @return the matching user DTO
+     * @throws NotFoundException if no user exists with the given email
+     */
     public AppUserDTO findByEmail(String email) {
         AppUser user = appUserRepository.findByEmail(email);
         if (user == null) {
@@ -49,17 +79,68 @@ public class AppUserService {
         return appUserMapper.toDTO(user);
     }
 
+    /**
+     * Lists all active users.
+     *
+     * @return active users as DTOs
+     */
     public List<AppUserDTO> findActiveUsers() {
         return appUserMapper.toDTOList(appUserRepository.findActiveUsers());
     }
 
+    /**
+     * Result of a find-or-create operation, carrying both the user DTO
+     * and a flag indicating whether the user was newly created.
+     */
+    public record CreateResult(AppUserDTO user, boolean created) {}
+
+    /**
+     * Finds an existing user by {@code keycloakId} or creates a new one.
+     * <p>
+     * If a user with the given {@code keycloakId} already exists, it is
+     * returned as-is (no fields are updated). Otherwise a new user is
+     * persisted with the supplied data.
+     *
+     * @param userDTO the user data (keycloakId, name, email are required)
+     * @return a {@link CreateResult} with the user and whether it was newly created
+     * @throws BadRequestException if keycloakId, name, or email is missing
+     */
     @Transactional
-    public AppUserDTO create(AppUserDTO userDTO) {
+    public CreateResult findOrCreate(AppUserDTO userDTO) {
+        if (userDTO.getKeycloakId() == null || userDTO.getKeycloakId().isBlank()) {
+            throw new BadRequestException("keycloakId is required");
+        }
+        if (userDTO.getName() == null || userDTO.getName().isBlank()) {
+            throw new BadRequestException("name is required");
+        }
+        if (userDTO.getEmail() == null || userDTO.getEmail().isBlank()) {
+            throw new BadRequestException("email is required");
+        }
+
+        AppUser existing = appUserRepository.findByKeycloakId(userDTO.getKeycloakId());
+        if (existing != null) {
+            return new CreateResult(appUserMapper.toDTO(existing), false);
+        }
+
         AppUser user = appUserMapper.toEntity(userDTO);
+        if (user.getActive() == null) {
+            user.setActive(true);
+        }
+        if (user.getCreatedAt() == null) {
+            user.setCreatedAt(java.time.LocalDateTime.now());
+        }
         appUserRepository.persist(user);
-        return appUserMapper.toDTO(user);
+        return new CreateResult(appUserMapper.toDTO(user), true);
     }
 
+    /**
+     * Updates an existing user's mutable fields (name, email, active).
+     *
+     * @param id      the user's UUID
+     * @param userDTO the new field values
+     * @return the updated user DTO
+     * @throws NotFoundException if no user exists with the given id
+     */
     @Transactional
     public AppUserDTO update(UUID id, AppUserDTO userDTO) {
         AppUser user = appUserRepository.findById(id);
@@ -72,6 +153,12 @@ public class AppUserService {
         return appUserMapper.toDTO(user);
     }
 
+    /**
+     * Deletes a user by UUID.
+     *
+     * @param id the user's UUID
+     * @throws NotFoundException if no user exists with the given id
+     */
     @Transactional
     public void delete(UUID id) {
         if (!appUserRepository.deleteById(id)) {

@@ -219,6 +219,34 @@ hr {
   color: var(--color-primary-700);
 }
 
+/* Scoring tier colors — used in match cards and scoring explanation */
+:root {
+  --color-score-10: #16a34a; /* 10 pts — exact score (green-600) */
+  --color-score-5:  #eab308; /* 5 pts  — correct goal diff (yellow-500) */
+  --color-score-3:  #f97316; /* 3 pts  — correct winner (orange-500) */
+  --color-score-1:  #9333ea; /* 1 pt   — inverted exact (purple-600) */
+  --color-score-0:  #6b7280; /* 0 pts  — no points (gray-500) */
+}
+
+/* Shared badge style for point indicators */
+.score-badge {
+  @apply inline-flex items-center justify-center w-8 h-8 rounded-full text-white font-bold text-sm;
+}
+.score-10 { background-color: var(--color-score-10); }
+.score-5  { background-color: var(--color-score-5); }
+.score-3  { background-color: var(--color-score-3); }
+.score-1  { background-color: var(--color-score-1); }
+.score-0  { background-color: var(--color-score-0); }
+
+/* Dialog centering */
+dialog[open] {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
 /* 16. Set header sizes */
 h1 {
   @apply text-4xl font-bold leading-relaxed;

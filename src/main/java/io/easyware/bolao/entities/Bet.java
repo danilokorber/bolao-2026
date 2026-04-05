@@ -54,13 +54,15 @@ public class Bet {
     private LocalDateTime betAt = LocalDateTime.now();
 
     /**
-     * Calculates points achieved for this bet based on the actual match result.
+     * Calculates points achieved for this bet based on the actual 90-minute match result.
      *
-     * Scoring rules:
-     * - Exact score: 5 points
-     * - Correct goal difference: 3 points
-     * - Correct winner (or draw): 1 point
-     * - For knockout matches that went to penalties: bonus 2 points if winnerBet is correct
+     * Scoring rules (highest applicable tier wins):
+     * <ol>
+     *   <li>Exact score: 10 points</li>
+     *   <li>Correct goal difference (implies correct winner): 5 points</li>
+     *   <li>Correct winner (or draw), wrong margin: 3 points</li>
+     *   <li>Inverted exact score (e.g. match 2:0, bet 0:2) — fun factor: 1 point</li>
+     * </ol>
      *
      * @return the calculated points for this bet
      */
@@ -72,33 +74,31 @@ public class Bet {
 
         Integer actualHome = match.getHomeGoals();
         Integer actualAway = match.getAwayGoals();
-        int points = 0;
+        int actualDiff = actualHome - actualAway;
+        int betDiff = homeGoalsBet - awayGoalsBet;
 
-        // Check for exact score
+        // 1. Exact score
         if (homeGoalsBet.equals(actualHome) && awayGoalsBet.equals(actualAway)) {
-            points = 5;
-        }
-        // Check for correct goal difference
-        else if ((homeGoalsBet - awayGoalsBet) == (actualHome - actualAway)) {
-            points = 3;
-        }
-        // Check for correct winner or draw
-        else {
-            int betResult = Integer.compare(homeGoalsBet, awayGoalsBet);
-            int actualResult = Integer.compare(actualHome, actualAway);
-            if (betResult == actualResult) {
-                points = 1;
-            }
+            return 10;
         }
 
-        // Bonus points for correctly predicting penalty winner in knockout matches
-        if (Boolean.TRUE.equals(match.getWentToPenalties()) &&
-            winnerBet != null &&
-            match.getWinner() != null &&
-            winnerBet.getId().equals(match.getWinner().getId())) {
-            points += 2;
+        // 2. Correct goal difference (same team winning by same margin)
+        if (betDiff == actualDiff) {
+            return 5;
         }
 
-        return points;
+        // 3. Correct winner (or correct draw — already handled above since draw diff = 0)
+        int betResult = Integer.compare(homeGoalsBet, awayGoalsBet);
+        int actualResult = Integer.compare(actualHome, actualAway);
+        if (betResult == actualResult) {
+            return 3;
+        }
+
+        // 4. Inverted exact score — fun factor (draws naturally excluded: inversion = exact)
+        if (homeGoalsBet.equals(actualAway) && awayGoalsBet.equals(actualHome)) {
+            return 1;
+        }
+
+        return 0;
     }
 }

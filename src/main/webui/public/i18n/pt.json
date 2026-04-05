@@ -19,7 +19,33 @@
   "account": {
     "logout": "SAIR",
     "language": "Idioma",
-    "languageChanged": "Idioma alterado!"
+    "languageChanged": "Idioma alterado!",
+    "scoring": {
+      "title": "Pontuação",
+      "subtitle": "Os pontos são calculados em tempo real durante as partidas.",
+      "matchBets": {
+        "title": "Palpites de Partidas",
+        "note90min": "Apenas o resultado dos 90 minutos é considerado.",
+        "exact": "Placar exato",
+        "goalDiff": "Saldo de gols correto (implica vencedor correto)",
+        "winner": "Vencedor correto, margem errada",
+        "inverted": "Placar exato invertido (ex: jogo 2:0, palpite 0:2)"
+      },
+      "groupBets": {
+        "title": "Palpites de Classificação do Grupo",
+        "first": "1º lugar correto",
+        "second": "2º lugar correto",
+        "both": "Bônus: ambas as posições corretas (total: 10)"
+      },
+      "championBets": {
+        "title": "Palpites de Campeão",
+        "champion": "Campeão correto",
+        "runnerUp": "Vice-campeão correto",
+        "semifinalist": "Cada semifinalista correto (exceto se já pontuou como campeão/vice)"
+      },
+      "open": "REGRAS",
+      "close": "FECHAR"
+    }
   },
   "dashboard": {
     "loading": "Carregando próximas partidas...",

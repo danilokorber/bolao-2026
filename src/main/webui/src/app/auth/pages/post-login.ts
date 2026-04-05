@@ -1,6 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, effect, inject, linkedSignal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { API } from '@api/api';
+import { AuthService } from '@auth/services/auth.service';
+import { AppUser } from '@interfaces/app-user.interface';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { SignalStore } from '../../store/signal-store';
 
 @Component({
   selector: 'post-login',
@@ -18,10 +23,16 @@ import { TranslocoPipe } from '@jsverse/transloco';
     </div>
   `,
 })
-export class PostLoginPage implements OnInit {
+export class PostLoginPage {
   private readonly router = inject(Router);
+  protected readonly signalStore = inject(SignalStore);
 
-  ngOnInit(): void {
-    this.router.navigate(['dashboard']);
-  }
+  appUser = this.signalStore.getAppUser();
+
+  redirectToDashboard = effect(() => {
+    const user = this.appUser();
+    if (user) {
+      this.router.navigate(['dashboard']);
+    }
+  });
 }

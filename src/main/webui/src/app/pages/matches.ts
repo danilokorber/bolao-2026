@@ -18,7 +18,7 @@ export class Matches {
   bets = httpResource<Bet[]>(() => API.BETS.GET_ALL());
 
   _ = afterRenderEffect(() => {
-    if (this.matches.hasValue()) {
+    if (this.matches.hasValue() && this.bets.hasValue()) {
       const dateAnchor = new Date().toISOString().split('T')[0];
       const element = document.getElementById(dateAnchor);
       if (element) {

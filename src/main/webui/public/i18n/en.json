@@ -19,7 +19,33 @@
   "account": {
     "logout": "LOGOUT",
     "language": "Language",
-    "languageChanged": "Language changed!"
+    "languageChanged": "Language changed!",
+    "scoring": {
+      "title": "Scoring",
+      "subtitle": "Points are calculated in real time during matches.",
+      "matchBets": {
+        "title": "Match Predictions",
+        "note90min": "Only the 90-minute result is considered.",
+        "exact": "Exact score",
+        "goalDiff": "Correct goal difference (implies correct winner)",
+        "winner": "Correct winner, wrong margin",
+        "inverted": "Inverted exact score (e.g. match 2:0, bet 0:2)"
+      },
+      "groupBets": {
+        "title": "Group Winner Predictions",
+        "first": "Correct 1st place",
+        "second": "Correct 2nd place",
+        "both": "Bonus: both positions correct (total: 10)"
+      },
+      "championBets": {
+        "title": "Champion Predictions",
+        "champion": "Correct champion",
+        "runnerUp": "Correct runner-up",
+        "semifinalist": "Each correct semifinalist (except if already scored as champion/runner-up)"
+      },
+      "open": "RULES",
+      "close": "CLOSE"
+    }
   },
   "dashboard": {
     "loading": "Loading upcoming matches...",
