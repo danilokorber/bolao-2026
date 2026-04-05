@@ -30,4 +30,5 @@ public class MatchDTO {
     private TeamDTO winner;
     private MatchStatus status;
     private Boolean inProgress;
+    private BetDTO userBet;
 }

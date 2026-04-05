@@ -1,10 +1,14 @@
 package io.easyware.bolao.services;
 
+import io.easyware.bolao.dto.BetDTO;
 import io.easyware.bolao.dto.MatchDTO;
+import io.easyware.bolao.entities.Bet;
 import io.easyware.bolao.entities.Match;
 import io.easyware.bolao.enums.MatchStage;
 import io.easyware.bolao.enums.MatchStatus;
+import io.easyware.bolao.mappers.BetMapper;
 import io.easyware.bolao.mappers.MatchMapper;
+import io.easyware.bolao.repositories.BetRepository;
 import io.easyware.bolao.repositories.MatchRepository;
 import io.easyware.bolao.repositories.TeamRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -14,7 +18,9 @@ import jakarta.ws.rs.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class MatchService {
@@ -26,43 +32,56 @@ public class MatchService {
     TeamRepository teamRepository;
 
     @Inject
+    BetRepository betRepository;
+
+    @Inject
     MatchMapper matchMapper;
 
-    public List<MatchDTO> findAll() {
-            return matchMapper.toDTOList(
-                matchRepository.listAll()
-                    .stream()
-                    .sorted((m1, m2) -> m1.getMatchDatetime().compareTo(m2.getMatchDatetime()))
-                    .toList()
-            );
-        }
+    @Inject
+    BetMapper betMapper;
 
-    public MatchDTO findById(UUID id) {
+    public List<MatchDTO> findAll(UUID userId) {
+        List<MatchDTO> dtos = matchMapper.toDTOList(
+            matchRepository.listAll()
+                .stream()
+                .sorted((m1, m2) -> m1.getMatchDatetime().compareTo(m2.getMatchDatetime()))
+                .toList()
+        );
+        return enrichWithUserBets(dtos, userId);
+    }
+
+    public MatchDTO findById(UUID id, UUID userId) {
         Match match = matchRepository.findById(id);
         if (match == null) {
             throw new NotFoundException("Match not found with id: " + id);
         }
-        return matchMapper.toDTO(match);
+        MatchDTO dto = matchMapper.toDTO(match);
+        return enrichWithUserBet(dto, userId);
     }
 
-    public List<MatchDTO> findByStage(MatchStage stage) {
-        return matchMapper.toDTOList(matchRepository.findByStage(stage));
+    public List<MatchDTO> findByStage(MatchStage stage, UUID userId) {
+        List<MatchDTO> dtos = matchMapper.toDTOList(matchRepository.findByStage(stage));
+        return enrichWithUserBets(dtos, userId);
     }
 
-    public List<MatchDTO> findByStatus(MatchStatus status) {
-        return matchMapper.toDTOList(matchRepository.findByStatus(status));
+    public List<MatchDTO> findByStatus(MatchStatus status, UUID userId) {
+        List<MatchDTO> dtos = matchMapper.toDTOList(matchRepository.findByStatus(status));
+        return enrichWithUserBets(dtos, userId);
     }
 
-    public List<MatchDTO> findByTeam(UUID teamId) {
-        return matchMapper.toDTOList(matchRepository.findByTeam(teamId));
+    public List<MatchDTO> findByTeam(UUID teamId, UUID userId) {
+        List<MatchDTO> dtos = matchMapper.toDTOList(matchRepository.findByTeam(teamId));
+        return enrichWithUserBets(dtos, userId);
     }
 
-    public List<MatchDTO> findUpcoming(int next) {
-        return matchMapper.toDTOList(matchRepository.findUpcoming(next));
+    public List<MatchDTO> findUpcoming(int next, UUID userId) {
+        List<MatchDTO> dtos = matchMapper.toDTOList(matchRepository.findUpcoming(next));
+        return enrichWithUserBets(dtos, userId);
     }
 
-    public List<MatchDTO> findByDateRange(LocalDateTime start, LocalDateTime end) {
-        return matchMapper.toDTOList(matchRepository.findByDateRange(start, end));
+    public List<MatchDTO> findByDateRange(LocalDateTime start, LocalDateTime end, UUID userId) {
+        List<MatchDTO> dtos = matchMapper.toDTOList(matchRepository.findByDateRange(start, end));
+        return enrichWithUserBets(dtos, userId);
     }
 
     @Transactional
@@ -104,5 +123,36 @@ public class MatchService {
         if (!matchRepository.deleteById(id)) {
             throw new NotFoundException("Match not found with id: " + id);
         }
+    }
+
+    private MatchDTO enrichWithUserBet(MatchDTO dto, UUID userId) {
+        if (userId == null) {
+            dto.setUserBet(new BetDTO());
+            return dto;
+        }
+        Bet bet = betRepository.findByUserAndMatch(userId, dto.getId());
+        dto.setUserBet(bet != null ? toBetDtoWithoutMatch(bet) : new BetDTO());
+        return dto;
+    }
+
+    private List<MatchDTO> enrichWithUserBets(List<MatchDTO> dtos, UUID userId) {
+        if (userId == null) {
+            dtos.forEach(d -> d.setUserBet(new BetDTO()));
+            return dtos;
+        }
+        List<Bet> userBets = betRepository.findByUser(userId);
+        Map<UUID, Bet> betByMatch = userBets.stream()
+            .collect(Collectors.toMap(b -> b.getMatch().getId(), b -> b, (a, b) -> a));
+        for (MatchDTO dto : dtos) {
+            Bet bet = betByMatch.get(dto.getId());
+            dto.setUserBet(bet != null ? toBetDtoWithoutMatch(bet) : new BetDTO());
+        }
+        return dtos;
+    }
+
+    private BetDTO toBetDtoWithoutMatch(Bet bet) {
+        BetDTO dto = betMapper.toDTO(bet);
+        dto.setMatch(null);
+        return dto;
     }
 }

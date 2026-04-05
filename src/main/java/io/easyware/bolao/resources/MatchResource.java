@@ -22,48 +22,49 @@ public class MatchResource {
     MatchService matchService;
 
     @GET
-    public List<MatchDTO> getAll() {
-        return matchService.findAll();
+    public List<MatchDTO> getAll(@QueryParam("userId") UUID userId) {
+        return matchService.findAll(userId);
     }
 
     @GET
     @Path("/id/{id}")
-    public MatchDTO getById(@PathParam("id") UUID id) {
-        return matchService.findById(id);
+    public MatchDTO getById(@PathParam("id") UUID id, @QueryParam("userId") UUID userId) {
+        return matchService.findById(id, userId);
     }
 
     @GET
     @Path("/stage/{stage}")
-    public List<MatchDTO> getByStage(@PathParam("stage") MatchStage stage) {
-        return matchService.findByStage(stage);
+    public List<MatchDTO> getByStage(@PathParam("stage") MatchStage stage, @QueryParam("userId") UUID userId) {
+        return matchService.findByStage(stage, userId);
     }
 
     @GET
     @Path("/status/{status}")
-    public List<MatchDTO> getByStatus(@PathParam("status") MatchStatus status) {
-        return matchService.findByStatus(status);
+    public List<MatchDTO> getByStatus(@PathParam("status") MatchStatus status, @QueryParam("userId") UUID userId) {
+        return matchService.findByStatus(status, userId);
     }
 
     @GET
     @Path("/team/id/{teamId}")
-    public List<MatchDTO> getByTeam(@PathParam("teamId") UUID teamId) {
-        return matchService.findByTeam(teamId);
+    public List<MatchDTO> getByTeam(@PathParam("teamId") UUID teamId, @QueryParam("userId") UUID userId) {
+        return matchService.findByTeam(teamId, userId);
     }
 
     @GET
     @Path("/upcoming")
-    public List<MatchDTO> getUpcoming(@QueryParam("next") @DefaultValue("10") int next) {
-        return matchService.findUpcoming(next);
+    public List<MatchDTO> getUpcoming(@QueryParam("next") @DefaultValue("10") int next, @QueryParam("userId") UUID userId) {
+        return matchService.findUpcoming(next, userId);
     }
 
     @GET
     @Path("/date-range")
     public List<MatchDTO> getByDateRange(
             @QueryParam("start") String start,
-            @QueryParam("end") String end) {
+            @QueryParam("end") String end,
+            @QueryParam("userId") UUID userId) {
         LocalDateTime startDate = LocalDateTime.parse(start);
         LocalDateTime endDate = LocalDateTime.parse(end);
-        return matchService.findByDateRange(startDate, endDate);
+        return matchService.findByDateRange(startDate, endDate, userId);
     }
 
     @POST

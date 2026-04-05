@@ -1,6 +1,7 @@
 package io.easyware.bolao.services;
 
 import io.easyware.bolao.dto.BetDTO;
+import io.easyware.bolao.dto.BetRequestDTO;
 import io.easyware.bolao.entities.Bet;
 import io.easyware.bolao.mappers.BetMapper;
 import io.easyware.bolao.repositories.AppUserRepository;
@@ -11,10 +12,12 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import lombok.extern.java.Log;
 
 import java.util.List;
 import java.util.UUID;
 
+@Log
 @ApplicationScoped
 public class BetService {
 
@@ -70,34 +73,33 @@ public class BetService {
     }
 
     @Transactional
-    public BetDTO create(BetDTO betDTO) {
-        Bet bet = betMapper.toEntity(betDTO);
-        betRepository.persist(bet);
-        return betMapper.toDTO(bet);
-    }
+    public BetDTO save(BetRequestDTO request) {
+        log.info("Saving bet: userId=" + request.getUserId() + ", matchId=" + request.getMatchId()
+                + ", home=" + request.getHomeGoalsBet() + ", away=" + request.getAwayGoalsBet());
 
-    @Transactional
-    public BetDTO update(UUID id, BetDTO betDTO) {
-        Bet bet = betRepository.findById(id);
+        Bet bet = betRepository.findByUserAndMatch(request.getUserId(), request.getMatchId());
+
         if (bet == null) {
-            throw new NotFoundException("Bet not found with id: " + id);
-        }
-        bet.setHomeGoalsBet(betDTO.getHomeGoalsBet());
-        bet.setAwayGoalsBet(betDTO.getAwayGoalsBet());
-        if (betDTO.getPointsEarned() != null) {
-            bet.setPointsEarned(betDTO.getPointsEarned());
-        }
-
-        if (betDTO.getUserId() != null) {
-            bet.setUser(appUserRepository.findById(betDTO.getUserId()));
-        }
-        if (betDTO.getMatchId() != null) {
-            bet.setMatch(matchRepository.findById(betDTO.getMatchId()));
-        }
-        if (betDTO.getWinnerBetId() != null) {
-            bet.setWinnerBet(teamRepository.findById(betDTO.getWinnerBetId()));
+            bet = new Bet();
+            var user = appUserRepository.findById(request.getUserId());
+            if (user == null) {
+                throw new NotFoundException("User not found: " + request.getUserId());
+            }
+            var match = matchRepository.findById(request.getMatchId());
+            if (match == null) {
+                throw new NotFoundException("Match not found: " + request.getMatchId());
+            }
+            bet.setUser(user);
+            bet.setMatch(match);
         }
 
+        bet.setHomeGoalsBet(request.getHomeGoalsBet());
+        bet.setAwayGoalsBet(request.getAwayGoalsBet());
+        if (request.getWinnerBetId() != null) {
+            bet.setWinnerBet(teamRepository.findById(request.getWinnerBetId()));
+        }
+
+        betRepository.persist(bet);
         return betMapper.toDTO(bet);
     }
 

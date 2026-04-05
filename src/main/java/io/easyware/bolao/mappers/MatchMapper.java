@@ -14,6 +14,7 @@ public interface MatchMapper {
     @Mapping(source = "homeTeam.id", target = "homeTeamId")
     @Mapping(source = "awayTeam.id", target = "awayTeamId")
     @Mapping(source = "winner.id", target = "winnerId")
+    @Mapping(target = "userBet", ignore = true)
     MatchDTO toDTO(Match entity);
 
     @Mapping(source = "homeTeamId", target = "homeTeam.id")

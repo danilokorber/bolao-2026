@@ -1,11 +1,12 @@
 import { httpResource } from '@angular/common/http';
-import { afterRenderEffect, Component } from '@angular/core';
+import { afterRenderEffect, Component, computed, inject } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { MatchCard } from '@components/match-card';
 import { Bet } from '@interfaces/index';
 import { Match } from '@interfaces/match.interface';
 import { BolaoModule } from '@modules/bolao/bolao.module';
+import { SignalStore } from '../store/signal-store';
 
 @Component({
   selector: 'matches',
@@ -14,7 +15,10 @@ import { BolaoModule } from '@modules/bolao/bolao.module';
   styles: ``,
 })
 export class Matches {
-  matches = httpResource<Match[]>(() => API.MATCHES.GET_ALL());
+  private readonly store = inject(SignalStore);
+  private userId = computed(() => this.store.appuser()?.id);
+
+  matches = httpResource<Match[]>(() => API.MATCHES.GET_ALL(this.userId()));
   bets = httpResource<Bet[]>(() => API.BETS.GET_ALL());
 
   _ = afterRenderEffect(() => {
@@ -27,10 +31,7 @@ export class Matches {
     }
   });
 
-  getBetForMatch(matchId: string | undefined): Bet | undefined {
-    if (this.bets.hasValue() && matchId) {
-      return this.bets.value().find((bet) => bet.matchId === matchId);
-    }
-    return undefined;
+  getBetForMatch(match: Match): Bet | undefined {
+    return match.userBet?.id ? match.userBet : undefined;
   }
 }

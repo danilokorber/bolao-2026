@@ -1,3 +1,4 @@
+import { Bet } from './bet.interface';
 import { MatchStage } from './match-stage.enum';
 import { MatchStatus } from './match-status.enum';
 import { Team } from './team.interface';
@@ -20,4 +21,5 @@ export interface Match {
   winner?: Team;
   status: MatchStatus;
   inProgress?: boolean;
+  userBet: Bet;
 }

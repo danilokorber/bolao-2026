@@ -1,6 +1,7 @@
 package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.BetDTO;
+import io.easyware.bolao.dto.BetRequestDTO;
 import io.easyware.bolao.services.BetService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
@@ -71,15 +72,9 @@ public class BetResource {
     }
 
     @POST
-    public Response create(BetDTO betDTO) {
-        BetDTO created = betService.create(betDTO);
-        return Response.status(Response.Status.CREATED).entity(created).build();
-    }
-
-    @PUT
-    @Path("/id/{id}")
-    public BetDTO update(@PathParam("id") UUID id, BetDTO betDTO) {
-        return betService.update(id, betDTO);
+    public Response save(BetRequestDTO request) {
+        BetDTO saved = betService.save(request);
+        return Response.ok(saved).build();
     }
 
     @DELETE

@@ -6,12 +6,13 @@ import { Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
-import { Bet, Match, MatchStatus } from '@interfaces/index';
+import { Bet, BetRequest, Match, MatchStatus } from '@interfaces/index';
 import { SignalStore } from '../store/signal-store';
 import { MatchInProgress } from './match-in-progress';
 import { MatchCardFlag } from './match-card-flag';
 import { MatchCardTeamName } from './match-card-team-name';
 import { MatchCardSchedule } from './match-card-schedule';
+import { MatchCardBetForm } from './match-card-bet-form';
 
 @Component({
   selector: 'match-card',
@@ -22,6 +23,7 @@ import { MatchCardSchedule } from './match-card-schedule';
     MatchCardTeamName,
     MatchInProgress,
     MatchCardSchedule,
+    MatchCardBetForm,
   ],
   templateUrl: './match-card.html',
   styles: `
@@ -60,7 +62,6 @@ export class MatchCard {
   match = input.required<Match>();
   bet = input.required<Bet | undefined>();
 
-  private savedBetId = signal<string | undefined>(undefined);
   private saveTimeout: ReturnType<typeof setTimeout> | null = null;
   private initialized = false;
 
@@ -80,7 +81,6 @@ export class MatchCard {
     const bet = this.bet();
     if (bet && !this.initialized) {
       this.initialized = true;
-      this.savedBetId.set(bet.id);
       this.homePrediction.set(bet.homeGoalsBet);
       this.awayPrediction.set(bet.awayGoalsBet);
     }
@@ -105,31 +105,17 @@ export class MatchCard {
     const matchId = this.match().id;
     if (!userId || !matchId) return;
 
-    const body = {
+    const body: BetRequest = {
       userId,
       matchId,
       homeGoalsBet: home,
       awayGoalsBet: away,
     };
 
-    const betId = this.savedBetId();
-
-    if (betId) {
-      // Update existing bet
-      this.http.put<Bet>(API.BETS.UPDATE(betId), body).subscribe({
-        next: () => this.showSavedLabel(),
-        error: (err) => console.error('Failed to update bet', err),
-      });
-    } else {
-      // Create new bet
-      this.http.post<Bet>(API.BETS.CREATE(), body).subscribe({
-        next: (created) => {
-          this.savedBetId.set(created.id);
-          this.showSavedLabel();
-        },
-        error: (err) => console.error('Failed to create bet', err),
-      });
-    }
+    this.http.post<Bet>(API.BETS.SAVE(), body).subscribe({
+      next: () => this.showSavedLabel(),
+      error: (err) => console.error('Failed to save bet', err),
+    });
   }
 
   showSavedLabel() {

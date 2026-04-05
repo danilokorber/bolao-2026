@@ -11,12 +11,12 @@ export const API = {
   },
 
   MATCHES: {
-    GET_ALL: () => `/api/v1/matches`,
-    GET_BY_ID: (id: string) => `/api/v1/matches/id/${id}`,
+    GET_ALL: (userId?: string) => `/api/v1/matches${userId ? '?userId=' + userId : ''}`,
+    GET_BY_ID: (id: string, userId?: string) => `/api/v1/matches/id/${id}${userId ? '?userId=' + userId : ''}`,
     GET_BY_STAGE: (stage: string) => `/api/v1/matches/stage/${stage}`,
     GET_BY_STATUS: (status: string) => `/api/v1/matches/status/${status}`,
     GET_BY_TEAM: (teamId: string) => `/api/v1/matches/team/id/${teamId}`,
-    GET_UPCOMING: (next: number = 128) => `/api/v1/matches/upcoming?next=${next}`,
+    GET_UPCOMING: (next: number = 128, userId?: string) => `/api/v1/matches/upcoming?next=${next}${userId ? '&userId=' + userId : ''}`,
     GET_BY_DATE_RANGE: (start: string, end: string) =>
       `/api/v1/matches/date-range?start=${start}&end=${end}`,
     CREATE: () => `/api/v1/matches`,
@@ -37,8 +37,7 @@ export const API = {
       `/api/v1/bets/user/id/${userId}/match/id/${matchId}`,
     GET_LEADERBOARD: (limit: number = 10) => `/api/v1/bets/leaderboard?limit=${limit}`,
     GET_TOTAL_POINTS: (userId: string) => `/api/v1/bets/user/id/${userId}/total-points`,
-    CREATE: () => `/api/v1/bets`,
-    UPDATE: (id: string) => `/api/v1/bets/id/${id}`,
+    SAVE: () => `/api/v1/bets`,
     DELETE: (id: string) => `/api/v1/bets/id/${id}`,
   },
 

@@ -5,6 +5,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
 import { Bet, Match, Team } from '@interfaces/index';
+import { SignalStore } from '../store/signal-store';
 
 @Component({
   selector: 'match-detail',
@@ -17,10 +18,12 @@ export class MatchDetail {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly transloco = inject(TranslocoService);
+  private readonly store = inject(SignalStore);
 
   matchId = this.route.snapshot.paramMap.get('id') ?? '';
+  private userId = computed(() => this.store.appuser()?.id);
 
-  match = httpResource<Match>(() => API.MATCHES.GET_BY_ID(this.matchId));
+  match = httpResource<Match>(() => API.MATCHES.GET_BY_ID(this.matchId, this.userId()));
   bets = httpResource<Bet[]>(() => API.BETS.GET_BY_MATCH(this.matchId));
 
   sortedBets = computed(() => {

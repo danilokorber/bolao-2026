@@ -15,7 +15,7 @@ import { SignalStore } from '../store/signal-store';
       </div>
       <div class="p-0">
         @if (displayEntries().length === 0) {
-          <p class="text-sm opacity-60">{{ 'dashboard.ranking.noData' | transloco }}</p>
+          <p class="text-sm opacity-60 px-3 py-2">{{ 'dashboard.ranking.noData' | transloco }}</p>
         } @else {
           <div class="flex flex-col">
             @for (entry of displayEntries(); track entry.userId) {

@@ -1,11 +1,11 @@
-@if (matches.isLoading() || bets.isLoading()) {
+@if (matches.isLoading()) {
   <p>{{ 'matches.loading' | transloco }}</p>
-} @else if (matches.error() || bets.error()) {
-  <p class="text-red-500">{{ 'matches.error' | transloco }} {{ matches.error() || bets.error() }}</p>
+} @else if (matches.error()) {
+  <p class="text-red-500">{{ 'matches.error' | transloco }} {{ matches.error() }}</p>
 } @else {
   <div class="flex flex-col gap-8">
     @for ((match of matches.value() || []); track match.id) {
-      <match-card [match]="match" [bet]="getBetForMatch(match.id)"></match-card>
+      <match-card [match]="match" [bet]="getBetForMatch(match)"></match-card>
     }
   </div>
 }
