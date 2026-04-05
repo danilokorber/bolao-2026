@@ -11,7 +11,14 @@ import { MatchCardSchedule } from './match-card-schedule';
 
 @Component({
   selector: 'match-card',
-  imports: [FormsModule, TranslocoPipe, MatchCardFlag, MatchCardTeamName, MatchInProgress, MatchCardSchedule],
+  imports: [
+    FormsModule,
+    TranslocoPipe,
+    MatchCardFlag,
+    MatchCardTeamName,
+    MatchInProgress,
+    MatchCardSchedule,
+  ],
   templateUrl: './match-card.html',
   styles: `
     /* Chrome, Safari, Edge, Opera */
@@ -78,4 +85,14 @@ export class MatchCard {
       }, 2700);
     }
   }
+
+  scoreColor = linkedSignal(() => {
+    const points = this.bet()?.pointsEarned ?? 0;
+    const style = getComputedStyle(document.documentElement);
+    if (points >= 10) return style.getPropertyValue('--color-score-10').trim();
+    if (points >= 5) return style.getPropertyValue('--color-score-5').trim();
+    if (points >= 3) return style.getPropertyValue('--color-score-3').trim();
+    if (points >= 1) return style.getPropertyValue('--color-score-1').trim();
+    return style.getPropertyValue('--color-score-0').trim();
+  });
 }

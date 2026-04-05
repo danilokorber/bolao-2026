@@ -8,6 +8,7 @@
   [class.opacity-75]="startIsInThePast()"
   [class.border-primary-900]="!startIsInThePast()"
   [class.border-primary-300]="startIsInThePast()"
+  [style.border-color]="startIsInThePast() ? scoreColor() : 'border-primary-900'"
 >
   <match-card-schedule [match]="match()" [bet]="bet()"></match-card-schedule>
   <match-in-progress class="absolute -top-1" [show]="matchInProgress()"></match-in-progress>
