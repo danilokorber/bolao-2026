@@ -76,58 +76,6 @@ export class MatchCard {
   homePrediction = signal<number | null>(null);
   awayPrediction = signal<number | null>(null);
 
-  // Initialize predictions from existing bet
-  private initFromBet = effect(() => {
-    const bet = this.bet();
-    if (bet && !this.initialized) {
-      this.initialized = true;
-      this.homePrediction.set(bet.homeGoalsBet);
-      this.awayPrediction.set(bet.awayGoalsBet);
-    }
-  });
-
-  onPredictionChange = effect(() => {
-    const home = this.homePrediction();
-    const away = this.awayPrediction();
-
-    if (home === null || away === null) return;
-
-    // Skip the initial sync from existing bet
-    if (!this.initialized) return;
-
-    // Debounce saves by 800ms
-    if (this.saveTimeout) clearTimeout(this.saveTimeout);
-    this.saveTimeout = setTimeout(() => this.saveBet(home, away), 800);
-  });
-
-  private saveBet(home: number, away: number) {
-    const userId = this.store.appuser()?.id;
-    const matchId = this.match().id;
-    if (!userId || !matchId) return;
-
-    const body: BetRequest = {
-      userId,
-      matchId,
-      homeGoalsBet: home,
-      awayGoalsBet: away,
-    };
-
-    this.http.post<Bet>(API.BETS.SAVE(), body).subscribe({
-      next: () => this.showSavedLabel(),
-      error: (err) => console.error('Failed to save bet', err),
-    });
-  }
-
-  showSavedLabel() {
-    const savedTip = document.getElementById('savedTip' + this.match().id);
-    if (savedTip) {
-      savedTip.classList.add('show');
-      setTimeout(() => {
-        savedTip.classList.remove('show');
-      }, 2700);
-    }
-  }
-
   scoreColor = linkedSignal(() => {
     const points = this.bet()?.pointsEarned ?? 0;
     const style = getComputedStyle(document.documentElement);

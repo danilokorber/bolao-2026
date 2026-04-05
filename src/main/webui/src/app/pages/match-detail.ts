@@ -89,6 +89,6 @@ export class MatchDetail {
   }
 
   goBack() {
-    this.router.navigate(['/dashboard']);
+    window.history.back();
   }
 }

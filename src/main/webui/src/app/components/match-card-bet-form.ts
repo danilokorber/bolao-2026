@@ -56,6 +56,12 @@ export class MatchCardBetForm {
   });
 
   onPredictionChange = effect(() => {
+    console.log(
+      this.form().dirty(),
+      this.form.homeGoalsBet().dirty(),
+      this.form.awayGoalsBet().dirty(),
+    );
+
     const homeDirty = this.form.homeGoalsBet().dirty();
     const awayDirty = this.form.awayGoalsBet().dirty();
     if (!homeDirty && !awayDirty) return; // No changes

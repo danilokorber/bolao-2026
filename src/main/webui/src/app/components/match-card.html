@@ -35,21 +35,6 @@
         </div>
       } @else {
         <match-card-bet-form [match]="match()"></match-card-bet-form>
-        <!-- <div>
-          <input
-            class="w-6 sm:w-8 text-lg sm:text-3xl text-center border-b border-primary-500 outline-0"
-            type="number"
-            [(ngModel)]="homePrediction"
-          />
-        </div>
-        <div class="w-4 sm:w-8 text-center">:</div>
-        <div>
-          <input
-            class="w-6 sm:w-8 text-lg sm:text-3xl text-center border-b border-primary-500 outline-0"
-            type="number"
-            [(ngModel)]="awayPrediction"
-          />
-        </div> -->
       }
     </div>
     <match-card-team-name [team]="match().awayTeam!" [homeAway]="'away'"></match-card-team-name>
