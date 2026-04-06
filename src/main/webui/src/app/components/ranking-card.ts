@@ -1,62 +1,35 @@
 import { Component, computed, inject, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { RankingEntry } from '@interfaces/ranking-entry.interface';
 import { SignalStore } from '../store/signal-store';
+import { Card } from './card';
+import { RankingCardItem } from './ranking-card-item';
 
 @Component({
   selector: 'ranking-card',
-  imports: [TranslocoPipe, RouterLink],
+  imports: [Card, RankingCardItem, TranslocoPipe],
   template: `
-    <div class="flex flex-col border border-gray-200 dark:border-gray-700 rounded-t-xl">
-      <div class="border-b border-gray-200 dark:border-gray-700 -mx-4 p-4">
-        <a routerLink="/ranking" class="text-lg sm:text-xl font-bold text-primary-700 dark:text-primary-300 hover:underline">
-          {{ 'dashboard.ranking.title' | transloco }}
-        </a>
+    <card>
+      <div card-header (click)="route()" class="cursor-pointer">
+        {{ 'dashboard.ranking.title' | transloco }}
       </div>
-      <div class="p-0">
-        @if (displayEntries().length === 0) {
-          <p class="text-sm opacity-60 px-3 py-2">{{ 'dashboard.ranking.noData' | transloco }}</p>
-        } @else {
-          <div class="flex flex-col">
-            @for (entry of displayEntries(); track entry.userId) {
-              <div
-                class="flex items-center gap-3 px-3 sm:px-4 py-2 sm:py-2.5 transition-colors"
-                [class.bg-primary-100]="entry.userId === currentUserId()"
-                [class.dark:bg-primary-900]="entry.userId === currentUserId()"
-                [class.font-bold]="entry.userId === currentUserId()"
-                [class.bg-gray-50]="entry.userId !== currentUserId()"
-                [class.dark:bg-gray-800]="entry.userId !== currentUserId()"
-              >
-                <div
-                  class="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold text-white"
-                  [class.bg-yellow-500]="entry.position === 1"
-                  [class.bg-gray-400]="entry.position === 2"
-                  [class.bg-amber-700]="entry.position === 3"
-                  [class.bg-gray-300]="entry.position > 3"
-                  [class.!text-gray-600]="entry.position > 3"
-                >
-                  {{ entry.position }}
-                </div>
-                <span class="flex-1 text-sm sm:text-base truncate"><a [routerLink]="['/bets', entry.userId]" class="hover:underline text-inherit">{{ entry.userName }}</a></span>
-                @if (entry.separator) {
-                  <span class="text-xs opacity-40">⋯</span>
-                }
-                <span class="text-sm sm:text-base font-mono tabular-nums">{{
-                  entry.totalPoints
-                }}</span>
-                <span class="text-xs opacity-50">{{ 'matchSchedule.points' | transloco }}</span>
-              </div>
-            }
-          </div>
+      <div class="p-0 flex flex-col">
+        @for (entry of displayEntries(); track entry.userId) {
+          <ranking-card-item [data]="entry"></ranking-card-item>
+        } @empty {
+          <p class="text-sm opacity-60 px-3 py-2">
+            {{ 'dashboard.ranking.noData' | transloco }}
+          </p>
         }
       </div>
-    </div>
+    </card>
   `,
   styles: ``,
 })
 export class RankingCard {
   private readonly store = inject(SignalStore);
+  private router = inject(Router);
 
   ranking = input.required<RankingEntry[]>();
 
@@ -83,4 +56,8 @@ export class RankingCard {
 
     return top4;
   });
+
+  route() {
+    this.router.navigate(['/ranking']);
+  }
 }

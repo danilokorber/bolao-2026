@@ -1,4 +1,13 @@
-import { Component, effect, inject, input, linkedSignal, model, output, signal } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+  model,
+  output,
+  signal,
+} from '@angular/core';
 import { debounce, form, FormField, required } from '@angular/forms/signals';
 import { API } from '@api/api';
 import { Bet } from '@interfaces/bet.interface';
@@ -57,12 +66,6 @@ export class MatchCardBetForm {
   });
 
   onPredictionChange = effect(() => {
-    console.log(
-      this.form().dirty(),
-      this.form.homeGoalsBet().dirty(),
-      this.form.awayGoalsBet().dirty(),
-    );
-
     const homeDirty = this.form.homeGoalsBet().dirty();
     const awayDirty = this.form.awayGoalsBet().dirty();
     if (!homeDirty && !awayDirty) return; // No changes

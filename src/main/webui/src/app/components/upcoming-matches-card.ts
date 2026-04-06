@@ -1,3 +1,4 @@
+import { Card } from './card';
 import { Component, computed, input } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Bet, Match } from '@interfaces/index';
@@ -5,26 +6,25 @@ import { MatchCard } from './match-card';
 
 @Component({
   selector: 'upcoming-matches-card',
-  imports: [TranslocoPipe, MatchCard],
+  imports: [Card, TranslocoPipe, MatchCard],
   template: `
-    <div class="flex flex-col border border-gray-200 dark:border-gray-700 rounded-t-xl">
-      <div class="border-b border-gray-200 dark:border-gray-700 -mx-4 p-4">
-        <h2 class="text-lg sm:text-xl font-bold text-primary-700 dark:text-primary-300">
-          {{ (showingPast() ? 'dashboard.upcomingMatches.latestTitle' : 'dashboard.upcomingMatches.title') | transloco }}
-        </h2>
+    <card>
+      <div card-header>
+        {{
+          (showingPast()
+            ? 'dashboard.upcomingMatches.latestTitle'
+            : 'dashboard.upcomingMatches.title'
+          ) | transloco
+        }}
       </div>
-      <div class="p-3 sm:p-4">
-        @if (upcomingMatches().length === 0) {
+      <div class="p-4 pt-6 flex flex-col gap-6 sm:gap-8">
+        @for (match of upcomingMatches(); track match.id) {
+          <match-card [match]="match" [bet]="betForMatch(match)"></match-card>
+        } @empty {
           <p class="text-sm opacity-60">{{ 'dashboard.upcomingMatches.noData' | transloco }}</p>
-        } @else {
-          <div class="flex flex-col gap-6 sm:gap-8">
-            @for (match of upcomingMatches(); track match.id) {
-              <match-card [match]="match" [bet]="betForMatch(match)"></match-card>
-            }
-          </div>
         }
       </div>
-    </div>
+    </card>
   `,
   styles: ``,
 })
@@ -42,7 +42,9 @@ export class UpcomingMatchesCard {
     const tomorrowStr = this.dateStr(tomorrow);
     return matches.every((m) => {
       const d = this.dateStr(new Date(m.matchDatetime));
-      return d !== todayStr && d !== tomorrowStr && new Date(m.matchDatetime).getTime() < now.getTime();
+      return (
+        d !== todayStr && d !== tomorrowStr && new Date(m.matchDatetime).getTime() < now.getTime()
+      );
     });
   });
 
@@ -82,22 +84,16 @@ export class UpcomingMatchesCard {
     if (todayTomorrow.length > 0) return todayTomorrow;
 
     // No matches today/tomorrow — find the next future matchday
-    const futureMatches = sorted.filter(
-      (m) => new Date(m.matchDatetime).getTime() > now.getTime(),
-    );
+    const futureMatches = sorted.filter((m) => new Date(m.matchDatetime).getTime() > now.getTime());
 
     if (futureMatches.length > 0) {
       const nextDay = this.dateStr(new Date(futureMatches[0].matchDatetime));
-      return futureMatches.filter(
-        (m) => this.dateStr(new Date(m.matchDatetime)) === nextDay,
-      );
+      return futureMatches.filter((m) => this.dateStr(new Date(m.matchDatetime)) === nextDay);
     }
 
     // All matches in the past — show the most recent matchday
     const lastDay = this.dateStr(new Date(sorted[sorted.length - 1].matchDatetime));
-    return sorted.filter(
-      (m) => this.dateStr(new Date(m.matchDatetime)) === lastDay,
-    );
+    return sorted.filter((m) => this.dateStr(new Date(m.matchDatetime)) === lastDay);
   });
 
   private dateStr(d: Date): string {
