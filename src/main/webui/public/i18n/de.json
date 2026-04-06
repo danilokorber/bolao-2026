@@ -97,7 +97,9 @@
   },
   "matches": {
     "loading": "Kommende Spiele werden geladen...",
-    "error": "Fehler beim Laden der Spiele:"
+    "error": "Fehler beim Laden der Spiele:",
+    "filterAll": "Alle",
+    "noResults": "Keine Spiele für diesen Filter gefunden."
   },
   "login": {
     "welcome": "Willkommen zum WM-Tippspiel!",

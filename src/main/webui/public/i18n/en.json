@@ -97,7 +97,9 @@
   },
   "matches": {
     "loading": "Loading upcoming matches...",
-    "error": "Error loading matches:"
+    "error": "Error loading matches:",
+    "filterAll": "All",
+    "noResults": "No matches found for this filter."
   },
   "login": {
     "welcome": "Welcome to the World Cup Pool!",

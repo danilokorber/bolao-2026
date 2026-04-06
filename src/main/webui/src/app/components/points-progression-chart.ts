@@ -11,13 +11,16 @@ export interface HistoryEntry {
   cumulativePoints: number;
 }
 
-const CHART_COLORS = ['#16a34a', '#eab308', '#f97316', '#3b82f6', '#9333ea', '#dc2626'];
+const CHART_COLORS = ['#0d6537', '#e9a820', '#f97316', '#3b82f6', '#9333ea', '#dc2626'];
 
 @Component({
   selector: 'points-progression-chart',
   imports: [AgCharts],
   template: `
-    <ag-charts style="display: block; height: 350px; width: 100%;" [options]="chartOptions()"></ag-charts>
+    <ag-charts
+      style="display: block; height: 200px; width: 100%;"
+      [options]="chartOptions()"
+    ></ag-charts>
   `,
 })
 export class PointsProgressionChart {
@@ -33,12 +36,14 @@ export class PointsProgressionChart {
     if (!users.length || !historyData.length) return { data: [] };
 
     const today = new Date().toISOString().slice(0, 10);
-    const matchdays = [...new Set(historyData.map(h => h.matchday))].sort().filter(d => d <= today);
+    const matchdays = [...new Set(historyData.map((h) => h.matchday))]
+      .sort()
+      .filter((d) => d <= today);
 
-    const data = matchdays.map(day => {
+    const data = matchdays.map((day) => {
       const row: Record<string, unknown> = { matchday: this.formatMatchday(day) };
       for (const user of users) {
-        const entry = historyData.find(h => h.matchday === day && h.userId === user.userId);
+        const entry = historyData.find((h) => h.matchday === day && h.userId === user.userId);
         row[user.userId] = entry?.cumulativePoints ?? null;
       }
       return row;
@@ -70,7 +75,7 @@ export class PointsProgressionChart {
 
     return {
       data,
-      title: { text: this.transloco.translate('ranking.chartPoints') },
+      background: { fill: 'transparent' },
       series: users.map((u, i) => ({
         type: 'line' as const,
         xKey: 'matchday',
@@ -81,11 +86,22 @@ export class PointsProgressionChart {
         strokeWidth: u.userId === this.currentUserId() ? 3 : 1.5,
       })),
       axes: [
-        { type: 'category' as const, position: 'bottom' as const, label: { rotation: -45 } },
-        { type: 'number' as const, position: 'left' as const, min: minVal, max: safeMax },
+        {
+          type: 'category' as const,
+          position: 'bottom' as const,
+          label: { enabled: false, rotation: -45, fontSize: 11 },
+        },
+        {
+          type: 'number' as const,
+          position: 'left' as const,
+          preferredMin: minVal,
+          preferredMax: safeMax,
+          label: { fontSize: 11 },
+          nice: false,
+        },
       ],
-      legend: { position: 'bottom' as const },
-      height: 350,
+      legend: { enabled: false, position: 'bottom' as const, item: { label: { fontSize: 12 } } },
+      height: 200,
     };
   });
 

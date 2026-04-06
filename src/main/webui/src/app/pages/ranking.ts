@@ -3,6 +3,7 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
+import { Card } from '@components/card';
 import { HistoryEntry } from '@components/points-progression-chart';
 import { PointsProgressionChart } from '@components/points-progression-chart';
 import { PositionHistoryChart } from '@components/position-history-chart';
@@ -12,7 +13,7 @@ import { SignalStore } from '../store/signal-store';
 
 @Component({
   selector: 'ranking-page',
-  imports: [TranslocoPipe, RouterLink, PointsProgressionChart, PositionHistoryChart],
+  imports: [TranslocoPipe, RouterLink, PointsProgressionChart, PositionHistoryChart, Card],
   templateUrl: './ranking.html',
 })
 export class RankingPage {

@@ -5,13 +5,16 @@ import { AgChartOptions } from 'ag-charts-community';
 import { RankingEntry } from '@interfaces/ranking-entry.interface';
 import { HistoryEntry } from './points-progression-chart';
 
-const CHART_COLORS = ['#16a34a', '#eab308', '#f97316', '#3b82f6', '#9333ea', '#dc2626'];
+const CHART_COLORS = ['#0d6537', '#e9a820', '#f97316', '#3b82f6', '#9333ea', '#dc2626'];
 
 @Component({
   selector: 'position-history-chart',
   imports: [AgCharts],
   template: `
-    <ag-charts style="display: block; height: 350px; width: 100%;" [options]="chartOptions()"></ag-charts>
+    <ag-charts
+      style="display: block; height: 200px; width: 100%;"
+      [options]="chartOptions()"
+    ></ag-charts>
   `,
 })
 export class PositionHistoryChart {
@@ -26,9 +29,11 @@ export class PositionHistoryChart {
     const historyData = this.history();
     if (!users.length || !historyData.length) return { data: [] };
 
-    const allUsers = [...new Set(historyData.map(h => h.userId))];
+    const allUsers = [...new Set(historyData.map((h) => h.userId))];
     const today = new Date().toISOString().slice(0, 10);
-    const matchdays = [...new Set(historyData.map(h => h.matchday))].sort().filter(d => d <= today);
+    const matchdays = [...new Set(historyData.map((h) => h.matchday))]
+      .sort()
+      .filter((d) => d <= today);
 
     // Build cumulative map for ALL users to compute positions correctly
     const cumulativeMap = new Map<string, Map<string, number>>();
@@ -54,7 +59,7 @@ export class PositionHistoryChart {
     }
 
     // Compute positions per matchday (negated so rank 1 appears at top)
-    const data = matchdays.map(day => {
+    const data = matchdays.map((day) => {
       const dayMap = cumulativeMap.get(day)!;
       const sorted = [...dayMap.entries()].sort((a, b) => b[1] - a[1]);
       const row: Record<string, unknown> = { matchday: this.formatMatchday(day) };
@@ -69,7 +74,7 @@ export class PositionHistoryChart {
 
     return {
       data,
-      title: { text: this.transloco.translate('ranking.chartPosition') },
+      background: { fill: 'transparent' },
       series: users.map((u, i) => ({
         type: 'line' as const,
         xKey: 'matchday',
@@ -86,18 +91,25 @@ export class PositionHistoryChart {
         },
       })),
       axes: [
-        { type: 'category' as const, position: 'bottom' as const, label: { rotation: -45 } },
+        {
+          type: 'category' as const,
+          position: 'bottom' as const,
+          label: { enabled: false, rotation: -45, fontSize: 11 },
+        },
         {
           type: 'number' as const,
           position: 'left' as const,
           min: -totalUsers,
           max: -1,
           nice: false,
-          label: { formatter: (params: { value: number }) => String(Math.abs(params.value)) },
+          label: {
+            fontSize: 11,
+            formatter: (params: { value: number }) => String(Math.abs(params.value)),
+          },
         },
       ],
-      legend: { position: 'bottom' as const },
-      height: 350,
+      legend: { enabled: false, position: 'bottom' as const, item: { label: { fontSize: 12 } } },
+      height: 200,
     };
   });
 

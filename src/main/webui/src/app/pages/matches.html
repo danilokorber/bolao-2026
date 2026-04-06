@@ -3,9 +3,16 @@
 } @else if (matches.error()) {
   <p class="text-red-500">{{ 'matches.error' | transloco }} {{ matches.error() }}</p>
 } @else {
-  <div class="flex flex-col gap-8">
-    @for ((match of matches.value() || []); track match.id) {
-      <match-card [match]="match" [bet]="getBetForMatch(match)"></match-card>
-    }
+  <div class="flex flex-col gap-4">
+    <match-stage-filter [activeStage]="activeStage()" (stageChange)="onStageChange($event)"></match-stage-filter>
+
+    <!-- Matches list -->
+    <div class="flex flex-col gap-8">
+      @for (match of filteredMatches(); track match.id) {
+        <match-card [match]="match" [bet]="getBetForMatch(match)"></match-card>
+      } @empty {
+        <p class="text-sm opacity-60 text-center py-8">{{ 'matches.noResults' | transloco }}</p>
+      }
+    </div>
   </div>
 }

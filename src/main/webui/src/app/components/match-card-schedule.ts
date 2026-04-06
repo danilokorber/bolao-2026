@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, JsonPipe } from '@angular/common';
 import { Component, inject, input, linkedSignal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Bet, Match, MatchStage } from '@interfaces/index';
@@ -18,6 +18,7 @@ import { ScoreService } from '@services/score.service';
     >
       {{ phase() }}&nbsp;&nbsp;•&nbsp;&nbsp;
       @if (startIsInThePast()) {
+        {{ match().stage }}&nbsp;&nbsp;•&nbsp;&nbsp;
         {{ bet()?.pointsEarned ?? 0 }}
         {{
           bet()?.pointsEarned != 1

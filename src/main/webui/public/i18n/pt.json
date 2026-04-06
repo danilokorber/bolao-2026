@@ -97,7 +97,9 @@
   },
   "matches": {
     "loading": "Carregando próximas partidas...",
-    "error": "Erro ao carregar partidas:"
+    "error": "Erro ao carregar partidas:",
+    "filterAll": "Todos",
+    "noResults": "Nenhuma partida encontrada para este filtro."
   },
   "login": {
     "welcome": "Bem-vindo ao Bolão da Copa!",
