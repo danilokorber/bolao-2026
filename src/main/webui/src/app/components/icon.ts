@@ -99,6 +99,7 @@ export class IconComponent {
     if (isActive('/', this.router, exact)() && this.icon() === ICON.HOME) return true;
     if (isActive('/dashboard', this.router, exact)() && this.icon() === ICON.HOME) return true;
     if (isActive('/matches', this.router, subset)() && this.icon() === ICON.BALL) return true;
+    if (isActive('/ranking', this.router, exact)() && this.icon() === ICON.RANKING) return true;
     if (isActive('/account', this.router, exact)() && this.icon() === ICON.USER) return true;
     return false;
   });

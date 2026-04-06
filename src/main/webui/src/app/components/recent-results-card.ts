@@ -46,7 +46,9 @@ export class RecentResultsCard {
 
     const finished = this.bets().filter(
       (b) =>
-        b.match && (b.match.status === MatchStatus.FINISHED || b.match.status === MatchStatus.LIVE),
+        b.match &&
+        b.match.status === MatchStatus.FINISHED &&
+        new Date(b.match.matchDatetime).getTime() < now,
     );
 
     // Group bets by match, prefer current user's bet
