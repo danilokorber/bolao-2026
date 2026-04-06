@@ -17,6 +17,7 @@ public class RankingEntryDTO {
     private Long count5;
     private Long count3;
     private Long count1;
+    private Long countNeg;
     private Long specialPoints;
     private Long totalPoints;
 }

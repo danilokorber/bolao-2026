@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
  *   <li>Correct goal difference (implies correct winner): 5 points</li>
  *   <li>Correct winner, wrong margin: 3 points</li>
  *   <li>Inverted exact score (fun factor): 1 point</li>
+ *   <li>Wrong prediction: -3 points</li>
  * </ul>
  *
  * <h3>Group Winner Bet Scoring</h3>

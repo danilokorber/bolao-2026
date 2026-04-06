@@ -54,7 +54,8 @@
         "exact": "Exaktes Ergebnis",
         "goalDiff": "Richtige Tordifferenz (impliziert richtigen Gewinner)",
         "winner": "Richtiger Gewinner, falsche Differenz",
-        "inverted": "Gespiegeltes Ergebnis (z.B. Spiel 2:0, Tipp 0:2)"
+        "inverted": "Gespiegeltes Ergebnis (z.B. Spiel 2:0, Tipp 0:2)",
+        "wrong": "Falscher Tipp"
       },
       "groupBets": {
         "title": "Gruppensieger-Tipps",
@@ -138,7 +139,9 @@
     "noData": "Noch keine Ranglistendaten.",
     "player": "Spieler",
     "total": "Gesamt",
-    "special": "Spezial"
+    "special": "Spezial",
+    "chartPoints": "Punkteverlauf",
+    "chartPosition": "Ranglistenposition"
   },
   "userBets": {
     "title": "Tipps",

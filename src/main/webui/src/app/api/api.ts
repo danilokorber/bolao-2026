@@ -26,6 +26,7 @@ export const API = {
 
   RANKING: {
     GET_ALL: () => `/api/v1/ranking`,
+    GET_HISTORY: () => `/api/v1/ranking/history`,
   },
 
   BETS: {

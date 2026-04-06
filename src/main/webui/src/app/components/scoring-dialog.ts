@@ -38,6 +38,10 @@ import { TranslocoPipe } from '@jsverse/transloco';
               <span class="score-badge score-1">1</span>
               <span>{{ 'account.scoring.matchBets.inverted' | transloco }}</span>
             </div>
+            <div class="flex items-center gap-2">
+              <span class="score-badge score-neg">-3</span>
+              <span>{{ 'account.scoring.matchBets.wrong' | transloco }}</span>
+            </div>
           </div>
         </div>
 

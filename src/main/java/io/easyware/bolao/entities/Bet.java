@@ -62,6 +62,7 @@ public class Bet {
      *   <li>Correct goal difference (implies correct winner): 5 points</li>
      *   <li>Correct winner (or draw), wrong margin: 3 points</li>
      *   <li>Inverted exact score (e.g. match 2:0, bet 0:2) — fun factor: 1 point</li>
+     *   <li>Wrong prediction: -3 points</li>
      * </ol>
      *
      * @return the calculated points for this bet
@@ -99,6 +100,7 @@ public class Bet {
             return 1;
         }
 
-        return 0;
+        // 5. Wrong prediction — penalty
+        return -3;
     }
 }

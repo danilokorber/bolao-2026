@@ -6,6 +6,7 @@ export interface RankingEntry {
   count5: number;
   count3: number;
   count1: number;
+  countNeg: number;
   specialPoints: number;
   totalPoints: number;
 }

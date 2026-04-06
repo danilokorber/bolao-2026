@@ -54,7 +54,8 @@
         "exact": "Placar exato",
         "goalDiff": "Saldo de gols correto (implica vencedor correto)",
         "winner": "Vencedor correto, margem errada",
-        "inverted": "Placar exato invertido (ex: jogo 2:0, palpite 0:2)"
+        "inverted": "Placar exato invertido (ex: jogo 2:0, palpite 0:2)",
+        "wrong": "Palpite errado"
       },
       "groupBets": {
         "title": "Palpites de Classificação do Grupo",
@@ -138,7 +139,9 @@
     "noData": "Nenhum dado de classificação ainda.",
     "player": "Jogador",
     "total": "Total",
-    "special": "Especial"
+    "special": "Especial",
+    "chartPoints": "Evolução de Pontos",
+    "chartPosition": "Posição no Ranking"
   },
   "userBets": {
     "title": "Palpites",

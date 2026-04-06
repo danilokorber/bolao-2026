@@ -54,7 +54,8 @@
         "exact": "Exact score",
         "goalDiff": "Correct goal difference (implies correct winner)",
         "winner": "Correct winner, wrong margin",
-        "inverted": "Inverted exact score (e.g. match 2:0, bet 0:2)"
+        "inverted": "Inverted exact score (e.g. match 2:0, bet 0:2)",
+        "wrong": "Wrong prediction"
       },
       "groupBets": {
         "title": "Group Winner Predictions",
@@ -138,7 +139,9 @@
     "noData": "No ranking data yet.",
     "player": "Player",
     "total": "Total",
-    "special": "Special"
+    "special": "Special",
+    "chartPoints": "Points Progression",
+    "chartPosition": "Ranking Position"
   },
   "userBets": {
     "title": "Bets",

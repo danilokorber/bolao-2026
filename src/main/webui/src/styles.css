@@ -160,7 +160,6 @@ p {
 img,
 picture,
 video,
-canvas,
 svg {
   display: block;
   max-width: 100%;
@@ -226,6 +225,7 @@ hr {
   --color-score-3: #f97316; /* 3 pts  — correct winner (orange-500) */
   --color-score-1: #9333ea; /* 1 pt   — inverted exact (purple-600) */
   --color-score-0: #6b7280; /* 0 pts  — no points (gray-500) */
+  --color-score-neg: #dc2626; /* -3 pts — wrong prediction (red-600) */
 }
 
 /* Shared badge style for point indicators */
@@ -246,6 +246,9 @@ hr {
 }
 .score-0 {
   background-color: var(--color-score-0);
+}
+.score-neg {
+  background-color: var(--color-score-neg);
 }
 
 /* Dialog centering */
