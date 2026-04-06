@@ -15,7 +15,8 @@
     "loadingBets": "Carregando palpites...",
     "noBets": "Nenhum palpite para esta partida.",
     "stages": {
-      "r32": "Oitavas de Final (32)",
+      "group": "Grupo",
+      "r32": "2ª fase",
       "r16": "Oitavas de Final",
       "qf": "Quartas de Final",
       "sf": "Semifinais",

@@ -15,6 +15,7 @@
     "loadingBets": "Tipps werden geladen...",
     "noBets": "Keine Tipps für dieses Spiel.",
     "stages": {
+      "group": "Gruppe",
       "r32": "Runde der letzten 32",
       "r16": "Achtelfinale",
       "qf": "Viertelfinale",

@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject, input, linkedSignal } from '@angular/core';
-import { TranslocoPipe } from '@jsverse/transloco';
-import { Bet, Match } from '@interfaces/index';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { Bet, Match, MatchStage } from '@interfaces/index';
 import { ScoreService } from '@services/score.service';
 
 @Component({
@@ -16,8 +16,14 @@ import { ScoreService } from '@services/score.service';
       [class.dark:bg-primary-100]="!startIsInThePast()"
       [class.dark:text-gray-900]="!startIsInThePast()"
     >
+      {{ phase() }}&nbsp;&nbsp;•&nbsp;&nbsp;
       @if (startIsInThePast()) {
-        {{ bet()?.pointsEarned ?? 0 }} {{ bet()?.pointsEarned != 1 ? ('matchSchedule.points' | transloco) : ('matchSchedule.point' | transloco) }}
+        {{ bet()?.pointsEarned ?? 0 }}
+        {{
+          bet()?.pointsEarned != 1
+            ? ('matchSchedule.points' | transloco)
+            : ('matchSchedule.point' | transloco)
+        }}
       } @else {
         {{ formatMatchDate() }}
       }
@@ -28,9 +34,30 @@ import { ScoreService } from '@services/score.service';
 })
 export class MatchCardSchedule {
   private readonly scoreService = inject(ScoreService);
+  private readonly translocoSerice = inject(TranslocoService);
 
   match = input.required<Match>();
   bet = input.required<Bet | undefined>();
+
+  phase = linkedSignal(() => {
+    const match = this.match();
+    if (match.stage === MatchStage.ROUND_OF_32) {
+      return this.translocoSerice.translate('matchDetail.stages.r32');
+    } else if (match.stage === MatchStage.ROUND_OF_16) {
+      return this.translocoSerice.translate('matchDetail.stages.r16');
+    } else if (match.stage === MatchStage.QUARTER_FINALS) {
+      return this.translocoSerice.translate('matchDetail.stages.qf');
+    } else if (match.stage === MatchStage.SEMI_FINALS) {
+      return this.translocoSerice.translate('matchDetail.stages.sf');
+    } else if (match.stage === MatchStage.THIRD_PLACE) {
+      return this.translocoSerice.translate('matchDetail.stages.third');
+    } else if (match.stage === MatchStage.FINAL) {
+      return this.translocoSerice.translate('matchDetail.stages.final');
+    }
+    return (
+      this.translocoSerice.translate('matchDetail.stages.group') + ' ' + match.stage.split('_')[1]
+    );
+  });
 
   formatMatchDate = linkedSignal(() => {
     const datePipe = new DatePipe('en-US');
@@ -43,7 +70,5 @@ export class MatchCardSchedule {
     return NOW > SCHEDULE;
   });
 
-  scoreColor = linkedSignal(() =>
-    this.scoreService.color(this.bet()?.pointsEarned ?? 0)
-  );
+  scoreColor = linkedSignal(() => this.scoreService.color(this.bet()?.pointsEarned ?? 0));
 }

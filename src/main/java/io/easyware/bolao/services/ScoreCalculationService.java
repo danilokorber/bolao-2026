@@ -138,6 +138,8 @@ public class ScoreCalculationService {
     /**
      * Recalculates points for ALL bets on every match that has a result
      * (status LIVE or FINISHED with non-null scores).
+     * Also directly recalculates all group winner bets (for complete groups)
+     * and champion bets (if the final is finished).
      * Useful for a full re-score after a bug fix or scoring rule change.
      *
      * @return a summary with the number of matches processed and bets updated
@@ -160,13 +162,11 @@ public class ScoreCalculationService {
             }
         }
 
-        // Also trigger group winner and champion scoring for finished matches
-        List<UUID> finishedIds = matchesWithResults.stream()
-                .filter(m -> m.getStatus() == MatchStatus.FINISHED)
-                .map(Match::getId)
-                .toList();
-        totalBetsUpdated += checkAndScoreGroupWinnerBets(finishedIds);
-        totalBetsUpdated += checkAndScoreChampionBets(finishedIds);
+        // Directly score all complete groups
+        totalBetsUpdated += scoreAllCompleteGroupWinnerBets();
+
+        // Directly score champion bets if the final is finished
+        totalBetsUpdated += scoreChampionBetsIfFinalFinished();
 
         log.info("Full recalculation: {} match(es) processed, {} bet(s) updated",
                 matchesWithResults.size(), totalBetsUpdated);
@@ -254,6 +254,34 @@ public class ScoreCalculationService {
                 updated, groupName,
                 standings.first.getFifaCode(), standings.second.getFifaCode());
         return updated;
+    }
+
+    // ── Group winner bets (direct, for recalculateAll) ────────────────────────
+
+    /**
+     * Iterates all 12 groups and scores group winner bets for every completed group.
+     * Used by recalculateAll to avoid the indirect match-ID-based lookup.
+     */
+    private int scoreAllCompleteGroupWinnerBets() {
+        int totalUpdated = 0;
+        for (GroupName groupName : GroupName.values()) {
+            MatchStage groupStage = MatchStage.valueOf(groupName.name());
+            if (matchRepository.isGroupComplete(groupStage)) {
+                totalUpdated += scoreGroupWinnerBets(groupStage);
+            }
+        }
+        return totalUpdated;
+    }
+
+    /**
+     * Scores champion bets if the final match is finished.
+     * Used by recalculateAll to avoid the indirect match-ID-based lookup.
+     */
+    private int scoreChampionBetsIfFinalFinished() {
+        List<Match> finals = matchRepository.findByStage(MatchStage.FINAL);
+        boolean finalFinished = finals.stream()
+                .anyMatch(m -> m.getStatus() == MatchStatus.FINISHED && m.getWinner() != null);
+        return finalFinished ? scoreChampionBets() : 0;
     }
 
     // ── Champion bets ───────────────────────────────────────────────────────────
