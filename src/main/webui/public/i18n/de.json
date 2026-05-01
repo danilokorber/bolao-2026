@@ -57,6 +57,16 @@
         "inverted": "Gespiegeltes Ergebnis (z.B. Spiel 2:0, Tipp 0:2)",
         "wrong": "Falscher Tipp"
       },
+      "multipliers": {
+        "title": "Phasen-Multiplikatoren",
+        "subtitle": "Basispunkte werden je nach Spielphase multipliziert.",
+        "group": "Gruppenphase",
+        "r32": "Runde der letzten 32",
+        "r16": "Achtelfinale",
+        "qf": "Viertelfinale",
+        "sf": "Halbfinale / Spiel um Platz 3",
+        "final": "Finale"
+      },
       "groupBets": {
         "title": "Gruppensieger-Tipps",
         "first": "Richtiger 1. Platz",

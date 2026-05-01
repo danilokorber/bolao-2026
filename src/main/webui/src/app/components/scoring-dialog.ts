@@ -23,25 +23,45 @@ import { TranslocoPipe } from '@jsverse/transloco';
           <p class="text-xs opacity-60 pl-2">{{ 'account.scoring.matchBets.note90min' | transloco }}</p>
           <div class="flex flex-col gap-1 pl-2">
             <div class="flex items-center gap-2">
-              <span class="score-badge score-10">10</span>
+              <span class="score-badge score-10">20</span>
               <span>{{ 'account.scoring.matchBets.exact' | transloco }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="score-badge score-5">5</span>
+              <span class="score-badge score-5">10</span>
               <span>{{ 'account.scoring.matchBets.goalDiff' | transloco }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="score-badge score-3">3</span>
+              <span class="score-badge score-3">6</span>
               <span>{{ 'account.scoring.matchBets.winner' | transloco }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="score-badge score-1">1</span>
+              <span class="score-badge score-1">2</span>
               <span>{{ 'account.scoring.matchBets.inverted' | transloco }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="score-badge score-neg">-3</span>
+              <span class="score-badge score-neg">-6</span>
               <span>{{ 'account.scoring.matchBets.wrong' | transloco }}</span>
             </div>
+          </div>
+        </div>
+
+        <!-- Stage multipliers -->
+        <div class="flex flex-col gap-2">
+          <h3 class="text-lg font-semibold">📈 {{ 'account.scoring.multipliers.title' | transloco }}</h3>
+          <p class="text-xs opacity-60 pl-2">{{ 'account.scoring.multipliers.subtitle' | transloco }}</p>
+          <div class="grid grid-cols-2 gap-1 pl-2 text-sm">
+            <span class="opacity-75">{{ 'account.scoring.multipliers.group' | transloco }}</span>
+            <span class="font-semibold">×1</span>
+            <span class="opacity-75">{{ 'account.scoring.multipliers.r32' | transloco }}</span>
+            <span class="font-semibold">×1</span>
+            <span class="opacity-75">{{ 'account.scoring.multipliers.r16' | transloco }}</span>
+            <span class="font-semibold">×1.5</span>
+            <span class="opacity-75">{{ 'account.scoring.multipliers.qf' | transloco }}</span>
+            <span class="font-semibold">×2</span>
+            <span class="opacity-75">{{ 'account.scoring.multipliers.sf' | transloco }}</span>
+            <span class="font-semibold">×3</span>
+            <span class="opacity-75">{{ 'account.scoring.multipliers.final' | transloco }}</span>
+            <span class="font-semibold">×3</span>
           </div>
         </div>
 

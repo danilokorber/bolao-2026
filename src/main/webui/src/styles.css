@@ -220,12 +220,12 @@ hr {
 
 /* Scoring tier colors — used in match cards and scoring explanation */
 :root {
-  --color-score-10: #16a34a; /* 10 pts — exact score (green-600) */
-  --color-score-5: #eab308; /* 5 pts  — correct goal diff (yellow-500) */
-  --color-score-3: #f97316; /* 3 pts  — correct winner (orange-500) */
-  --color-score-1: #9333ea; /* 1 pt   — inverted exact (purple-600) */
-  --color-score-0: #6b7280; /* 0 pts  — no points (gray-500) */
-  --color-score-neg: #dc2626; /* -3 pts — wrong prediction (red-600) */
+  --color-score-10: #16a34a; /* ≥20 pts — exact score tier (green-600) */
+  --color-score-5: #eab308; /* ≥10 pts — correct goal diff tier (yellow-500) */
+  --color-score-3: #f97316; /* ≥6 pts  — correct winner tier (orange-500) */
+  --color-score-1: #9333ea; /* ≥1 pt   — inverted exact tier (purple-600) */
+  --color-score-0: #6b7280; /* 0 pts   — no points (gray-500) */
+  --color-score-neg: #dc2626; /* <0 pts  — wrong prediction (red-600) */
 }
 
 /* Shared badge style for point indicators */

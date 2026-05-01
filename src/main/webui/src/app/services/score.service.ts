@@ -13,9 +13,9 @@ export class ScoreService {
 
   color(points: number): string {
     const s = this.getStyle();
-    if (points >= 10) return s.getPropertyValue('--color-score-10').trim();
-    if (points >= 5)  return s.getPropertyValue('--color-score-5').trim();
-    if (points >= 3)  return s.getPropertyValue('--color-score-3').trim();
+    if (points >= 20) return s.getPropertyValue('--color-score-10').trim();
+    if (points >= 10) return s.getPropertyValue('--color-score-5').trim();
+    if (points >= 6)  return s.getPropertyValue('--color-score-3').trim();
     if (points >= 1)  return s.getPropertyValue('--color-score-1').trim();
     if (points < 0)   return s.getPropertyValue('--color-score-neg').trim();
     return s.getPropertyValue('--color-score-0').trim();

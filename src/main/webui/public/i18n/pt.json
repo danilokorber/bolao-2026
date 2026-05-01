@@ -57,6 +57,16 @@
         "inverted": "Placar exato invertido (ex: jogo 2:0, palpite 0:2)",
         "wrong": "Palpite errado"
       },
+      "multipliers": {
+        "title": "Multiplicadores por Fase",
+        "subtitle": "Os pontos base são multiplicados de acordo com a fase da partida.",
+        "group": "Fase de Grupos",
+        "r32": "2ª Fase",
+        "r16": "Oitavas de Final",
+        "qf": "Quartas de Final",
+        "sf": "Semifinais / 3º Lugar",
+        "final": "Final"
+      },
       "groupBets": {
         "title": "Palpites de Classificação do Grupo",
         "first": "1º lugar correto",
