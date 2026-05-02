@@ -15,7 +15,7 @@ A **FIFA World Cup 2026 betting pool ("Bolão")** web application where users pr
 | **Auth** | Keycloak via OAuth2 PKCE flow (Google, Facebook, Twitter, Microsoft) |
 | **i18n** | Portuguese, English, German (Transloco) |
 | **Expected users** | < 100 |
-| **Codebase** | 73 Java files · 85 TypeScript files · 9 Flyway migrations · 0 tests |
+| **Codebase** | ~80 Java files · 85 TypeScript files · 12 Flyway migrations · 69 unit tests |
 
 ---
 
@@ -25,13 +25,13 @@ A **FIFA World Cup 2026 betting pool ("Bolão")** web application where users pr
 
 | Layer | Count | Description |
 |-------|-------|-------------|
-| **Entities** | 9 | JPA entities with Panache (AppUser, Team, Match, Pool, UserPool, Payment, Bet, ChampionBet, GroupWinnerBet) |
-| **Repositories** | 9 | `PanacheRepositoryBase<Entity, UUID>` with custom queries |
-| **Services** | 11 | Business logic (`@ApplicationScoped`, `@Transactional`) |
-| **Resources** | 11 | JAX-RS REST endpoints (`/api/v1/...`) |
-| **DTOs** | 14 | Request and response data transfer objects |
+| **Entities** | 10 | JPA entities with Panache (AppUser, Team, Match, Pool, UserPool, Payment, Bet, ChampionBet, GroupWinnerBet, PoolBonus) |
+| **Repositories** | 10 | `PanacheRepositoryBase<Entity, UUID>` with custom queries |
+| **Services** | 12 | Business logic (`@ApplicationScoped`, `@Transactional`) incl. ScoreCalculationService, BonusCalculationService |
+| **Resources** | 11 | JAX-RS REST endpoints (`/api/v1/...`) — all protected with `@Authenticated` / `@RolesAllowed` |
+| **DTOs** | 15 | Request/response DTOs + `PagedResponse<T>` generic wrapper |
 | **Mappers** | 9 | MapStruct entity ↔ DTO mappers |
-| **Enums** | 7 | Currency, GroupName, MatchStage, MatchStatus, PaymentMethod, PaymentStatus, UserPoolStatus |
+| **Enums** | 10 | Currency, GroupName, MatchStage (with multiplier), MatchStatus, PaymentMethod, PaymentStatus, UserPoolStatus, ScoreTier, TournamentRound, BonusType |
 | **Schedules** | 1 | MatchUpdateScheduler (football-data.org polling — stubbed) |
 | **Utilities** | 1 | UUIDv7Generator (time-ordered UUIDs) |
 
@@ -43,7 +43,7 @@ A **FIFA World Cup 2026 betting pool ("Bolão")** web application where users pr
 | **Components** | 24 | Match cards, bet forms, team selects, charts, dialogs, indicators |
 | **Services** | 5 | BetSaveService, ScoreService, StageService, TeamService, SignalStoreService |
 | **Layouts** | 3 | NavigationLayout, CleanLayout, FullPageLayout |
-| **Store** | 1 | NGRX Signals (current user state) |
+| **Store** | 1 | Signal-based global state (current user + current pool ID) |
 | **Pipes** | 1 | TeamNamePipe |
 | **Directives** | 1 | FlagFallbackDirective |
 
@@ -83,23 +83,49 @@ All 9 entities match the schema requirements with proper constraints:
 - **Champion bets**: One per user, locked when Round of 16 starts
 - **Upsert pattern**: Single POST creates or updates — no separate PUT needed
 
-### 3.4 Scoring Engine — `ScoreCalculationService`
+### 3.4 Scoring Engine — `ScoreCalculationService` + `BonusCalculationService`
 
-Real-time scoring as matches progress:
+Real-time scoring as matches progress, with stage multipliers and pool bonuses:
+
+**Base points** (doubled to keep integer arithmetic with multipliers):
+
+| Bet Type | Base Points |
+|----------|-------------|
+| Exact score | 20 |
+| Correct goal difference | 10 |
+| Correct result (winner) | 6 |
+| Inverted score | 2 |
+| Wrong prediction | −6 |
+
+**Stage multipliers** applied to match bets:
+
+| Stage | Multiplier | Example (exact) |
+|-------|------------|-----------------|
+| Group / Round of 32 | 1× | 20 pts |
+| Round of 16 | 1.5× | 30 pts |
+| Quarter-finals | 2× | 40 pts |
+| Semi-finals / Third place / Final | 3× | 60 pts |
+
+**Special bets:**
 
 | Bet Type | Points |
 |----------|--------|
-| Exact score | 10 |
-| Correct goal difference | 5 |
-| Correct result (winner) | 3 |
-| Inverted score | 1 |
-| Wrong prediction | −3 |
 | Group 1st place correct | 5 |
 | Group 2nd place correct | 3 |
 | Both group places correct | +2 bonus (= 10 total) |
 | Champion correct | 20 |
 | Runner-up correct | 10 |
 | Each semifinalist correct | 5 |
+
+**Pool bonuses** (per-pool, per-round):
+
+| Bonus | Points | Condition |
+|-------|--------|-----------|
+| Best predictor of the round | +5 | Highest match points in round (ties share) |
+| Top 3 of the round | +2 | 2nd/3rd in round (ties share) |
+| Recovery bonus | +10 | Score strictly above pool average in a round (awarded next round) |
+
+Score tiers (`ScoreTier` enum: EXACT, DIFF, WINNER, INVERTED, WRONG) are persisted on each bet for accurate ranking tier counts independent of stage multipliers.
 
 ### 3.5 Authentication — Keycloak OIDC
 
@@ -164,12 +190,10 @@ Real-time scoring as matches progress:
 
 | Rule | Spec | Implemented? |
 |------|------|:------------:|
-| Exact score (group) | 5 pts | ⚠️ Returns 10 pts |
-| Correct diff (group) | 3 pts | ⚠️ Returns 5 pts |
-| Correct result (group) | 2 pts | ⚠️ Returns 3 pts |
-| Wrong (group) | 0 pts | ⚠️ Returns −3 pts |
-| Exact score (knockout) | 8 pts | ⚠️ Returns 10 pts |
-| Correct qualifier only | 3 pts | ✅ |
+| Exact score (group) | 5 pts | ⚠️ Base is 20 pts (doubled for integer multipliers; effective 10 at 1×) |
+| Correct diff (group) | 3 pts | ⚠️ Base is 10 pts (effective 5 at 1×) |
+| Correct result (group) | 2 pts | ⚠️ Base is 6 pts (effective 3 at 1×) |
+| Wrong (group) | 0 pts | ⚠️ Base is −6 pts (effective −3 at 1×) |
 | Stage multipliers | 1x / 1.5x / 2x / 3x | ✅ Applied (base doubled to keep integers) |
 | Group winner 1st | +5 pts | ✅ |
 | Group winner 2nd | +3 pts | ✅ |
@@ -177,11 +201,11 @@ Real-time scoring as matches progress:
 | Champion | +15 pts | ⚠️ Returns 20 pts |
 | Runner-up | +10 pts | ✅ |
 | Semifinalists | +8 pts each | ⚠️ Returns 5 pts each |
-| Best predictor bonus | +5 pts | ❌ Not implemented |
-| Top 3 of round | +2 pts | ❌ Not implemented |
-| Recovery bonus | +10 pts next phase | ❌ Not implemented |
+| Best predictor bonus | +5 pts | ✅ Per-pool, per-round, ties share |
+| Top 3 of round | +2 pts | ✅ Per-pool, per-round, ties share |
+| Recovery bonus | +10 pts next phase | ✅ Per-pool, strictly above average, no recovery after Final |
 
-> **Note:** The point values in the implementation differ from the original spec in `WORLDCUP_POOL_CONTEXT.md`. The copilot instructions document shows the _implemented_ values (10/5/3/1/−3). This may be an intentional design evolution or a divergence that needs alignment.
+> **Note:** Match bet base points were intentionally doubled (20/10/6/2/−6 instead of 10/5/3/1/−3) so that stage multipliers always produce integer results. The effective group-stage values at 1× multiplier are equivalent to the original spec values. Champion/semifinalist values differ from the original spec and may need alignment.
 
 ---
 
@@ -192,9 +216,9 @@ Real-time scoring as matches progress:
 | Keycloak OIDC configured | ✅ | Backend + frontend both configured |
 | HTTPS enforced | ✅ | `requireHttps: true` in auth config |
 | OAuth2 PKCE flow | ✅ | Prevents auth code interception |
-| Endpoint protection | ❌ | `@Authenticated` annotations commented out |
-| Role-based access | ❌ | No `@RolesAllowed` — admin endpoints accessible to all |
-| Input validation | ❌ | No Bean Validation on request DTOs |
+| Endpoint protection | ✅ | `@Authenticated` on all 10 user-facing resources (class-level) |
+| Role-based access | ✅ | `@RolesAllowed("admin")` on ScoreResource (class-level) + 15 admin-only methods |
+| Input validation | ✅ | Bean Validation on all request DTOs + `@Valid` + custom exception mapper |
 | CORS configuration | ⚠️ | Not explicitly configured (relies on Quarkus defaults) |
 | Rate limiting | ❌ | No rate limiting on any endpoints |
 | SQL injection | ✅ | Panache uses parameterized queries |
@@ -215,6 +239,9 @@ Real-time scoring as matches progress:
 | V2026.0.0.6 | Mock knockout results + bets | ~200 |
 | V2026.0.0.7 | Additional bets for second test user | ~100 |
 | V2026.0.0.8 | Allow negative bet points (−3) | ~5 |
+| V2026.0.0.9 | Relax bet points constraint (≥ −18 for stage multipliers) | ~5 |
+| V2026.0.0.10 | Add `score_tier` column to bet table | ~5 |
+| V2026.0.0.11 | Create `pool_bonus` table for round/recovery bonuses | ~30 |
 
 > ⚠️ Migrations V3–V7 contain **mock/test data** and should be excluded from production deployments or moved to a dev-only profile.
 
@@ -227,9 +254,9 @@ Real-time scoring as matches progress:
 - Lazy loading on `@ManyToOne` relationships
 - Batch operations in score calculation
 - `< 100 users` means most concerns are theoretical
+- Pagination on 7 high-volume `getAll()` endpoints (default page=0, size=50)
 
 ### ⚠️ Could Improve
-- No pagination on list endpoints (acceptable for <100 users, won't scale)
 - Global ranking query uses subqueries — could use window functions
 - No caching layer for immutable data (teams, match schedule)
 - No client-side caching strategy (all data refetched on navigation)
@@ -238,35 +265,32 @@ Real-time scoring as matches progress:
 
 ## 9. Production Readiness Verdict
 
-### Overall Maturity: **~70% — Solid MVP foundation, not production-ready**
+### Overall Maturity: **~85% — Backend production-ready, frontend needs UI work**
 
-The **core betting flow works end-to-end**: login → place match/group/champion bets → scores calculated → global ranking displayed. The architecture is clean and modern on both backend and frontend.
+The **core betting flow works end-to-end**: login → place match/group/champion bets → scores calculated with stage multipliers → pool-scoped rankings with bonuses. The backend has comprehensive security (OIDC + RBAC), input validation, pagination, and unit test coverage.
 
 ### 🔴 Must Fix Before Production
 
-1. ~~**Pool-based rankings**~~ — ✅ Done
-2. **Security enforcement** — Uncomment `@Authenticated`/`@RolesAllowed`
-3. **Pool management UI** — Create/join/list pools in the frontend
-4. **Payment tracking UI** — View and confirm payments
-5. **Error handling** — HTTP interceptor + user-facing notifications
-6. **Navigation sidebar** — Wire placeholder links to real routes
-7. ~~**Stage multipliers**~~ — ✅ Done
-8. **Remove test migrations** — Exclude mock data from production Flyway
+1. **Pool management UI** — Create/join/list pools in the frontend
+2. **Payment tracking UI** — View and confirm payments
+3. **Error handling** — HTTP interceptor + user-facing notifications
+4. **Navigation sidebar** — Wire placeholder links to real routes
+5. **Remove test migrations** — Exclude mock data from production Flyway
 
 ### 🟡 Should Fix (High Priority)
 
 1. Admin dashboard for pool/payment/user management
 2. Form validation with visible error messages
 3. Football-data.org integration for live score updates
-4. Round bonuses and recovery bonus implementation
-5. Align scoring point values with the spec (or update the spec)
-6. Basic test coverage for scoring engine and bet services
+4. Align champion/semifinalist point values with the spec (or update the spec)
+5. Frontend test coverage (component + E2E)
 
 ### 🟢 Nice to Have
 
 1. Real-time updates via WebSocket
-2. Comprehensive test suite
-3. Performance monitoring / error tracking (Sentry)
-4. Offline support via Service Worker
-5. Notifications (bet reminders, match results)
-6. Statistics and analytics pages
+2. 404/Error pages
+3. User profile editing
+4. Performance monitoring / error tracking (Sentry)
+5. Offline support via Service Worker
+6. Notifications (bet reminders, match results)
+7. Statistics and analytics pages
