@@ -4,6 +4,8 @@ import io.easyware.bolao.dto.GroupWinnerBetDTO;
 import io.easyware.bolao.dto.GroupWinnerBetRequestDTO;
 import io.easyware.bolao.enums.GroupName;
 import io.easyware.bolao.services.GroupWinnerBetService;
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -18,6 +20,7 @@ import java.util.UUID;
 @Path("/v1/group-winner-bets")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class GroupWinnerBetResource {
 
     @Inject
@@ -68,6 +71,7 @@ public class GroupWinnerBetResource {
 
     @DELETE
     @Path("/id/{id}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") UUID id) {
         groupWinnerBetService.delete(id);
         return Response.noContent().build();

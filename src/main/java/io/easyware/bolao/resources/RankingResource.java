@@ -1,6 +1,7 @@
 package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.RankingEntryDTO;
+import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Tuple;
@@ -15,6 +16,7 @@ import java.util.*;
 @Path("/v1/ranking")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class RankingResource {
 
     @Inject

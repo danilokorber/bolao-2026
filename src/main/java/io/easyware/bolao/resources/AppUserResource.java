@@ -2,6 +2,8 @@ package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.AppUserDTO;
 import io.easyware.bolao.services.AppUserService;
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @Path("/v1/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class AppUserResource {
 
     @Inject
@@ -128,6 +131,7 @@ public class AppUserResource {
      */
     @DELETE
     @Path("/id/{id}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") UUID id) {
         appUserService.delete(id);
         return Response.noContent().build();

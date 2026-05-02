@@ -4,33 +4,27 @@ import io.easyware.bolao.dto.BetDTO;
 import io.easyware.bolao.dto.BetRequestDTO;
 import io.easyware.bolao.services.BetService;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
-import lombok.extern.java.Log;
 
 import java.util.List;
 import java.util.UUID;
 
-@Log
 @Path("/v1/bets")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class BetResource {
 
     @Inject
     BetService betService;
 
-    @Inject
-    SecurityContext securityContext;
-
     @GET
-//    @Authenticated
     public List<BetDTO> getAll() {
-//        log.info(securityContext.getUserPrincipal().getName());
         return betService.findAll();
     }
 
@@ -80,6 +74,7 @@ public class BetResource {
 
     @DELETE
     @Path("/id/{id}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") UUID id) {
         betService.delete(id);
         return Response.noContent().build();

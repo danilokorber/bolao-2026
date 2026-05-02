@@ -3,6 +3,8 @@ package io.easyware.bolao.resources;
 import io.easyware.bolao.dto.ChampionBetDTO;
 import io.easyware.bolao.dto.ChampionBetRequestDTO;
 import io.easyware.bolao.services.ChampionBetService;
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -17,6 +19,7 @@ import java.util.UUID;
 @Path("/v1/champion-bets")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class ChampionBetResource {
 
     @Inject
@@ -67,6 +70,7 @@ public class ChampionBetResource {
 
     @DELETE
     @Path("/id/{id}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") UUID id) {
         championBetService.delete(id);
         return Response.noContent().build();

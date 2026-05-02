@@ -4,6 +4,8 @@ import io.easyware.bolao.dto.MatchDTO;
 import io.easyware.bolao.enums.MatchStage;
 import io.easyware.bolao.enums.MatchStatus;
 import io.easyware.bolao.services.MatchService;
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -17,6 +19,7 @@ import java.util.UUID;
 @Path("/v1/matches")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class MatchResource {
 
     @Inject
@@ -69,6 +72,7 @@ public class MatchResource {
     }
 
     @POST
+    @RolesAllowed("admin")
     public Response create(@Valid MatchDTO matchDTO) {
         MatchDTO created = matchService.create(matchDTO);
         return Response.status(Response.Status.CREATED).entity(created).build();
@@ -76,12 +80,14 @@ public class MatchResource {
 
     @PUT
     @Path("/id/{id}")
+    @RolesAllowed("admin")
     public MatchDTO update(@PathParam("id") UUID id, @Valid MatchDTO matchDTO) {
         return matchService.update(id, matchDTO);
     }
 
     @DELETE
     @Path("/id/{id}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") UUID id) {
         matchService.delete(id);
         return Response.noContent().build();

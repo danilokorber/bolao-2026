@@ -3,6 +3,8 @@ package io.easyware.bolao.resources;
 import io.easyware.bolao.dto.UserPoolDTO;
 import io.easyware.bolao.enums.UserPoolStatus;
 import io.easyware.bolao.services.UserPoolService;
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -15,6 +17,7 @@ import java.util.UUID;
 @Path("/v1/user-pools")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class UserPoolResource {
 
     @Inject
@@ -81,12 +84,14 @@ public class UserPoolResource {
 
     @PUT
     @Path("/id/{id}")
+    @RolesAllowed("admin")
     public UserPoolDTO update(@PathParam("id") UUID id, @Valid UserPoolDTO userPoolDTO) {
         return userPoolService.update(id, userPoolDTO);
     }
 
     @DELETE
     @Path("/id/{id}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") UUID id) {
         userPoolService.delete(id);
         return Response.noContent().build();

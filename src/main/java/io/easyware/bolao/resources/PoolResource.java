@@ -2,6 +2,8 @@ package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.PoolDTO;
 import io.easyware.bolao.services.PoolService;
+import io.quarkus.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -14,6 +16,7 @@ import java.util.UUID;
 @Path("/v1/pools")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Authenticated
 public class PoolResource {
 
     @Inject
@@ -49,6 +52,7 @@ public class PoolResource {
     }
 
     @POST
+    @RolesAllowed("admin")
     public Response create(@Valid PoolDTO poolDTO) {
         PoolDTO created = poolService.create(poolDTO);
         return Response.status(Response.Status.CREATED).entity(created).build();
@@ -56,12 +60,14 @@ public class PoolResource {
 
     @PUT
     @Path("/id/{id}")
+    @RolesAllowed("admin")
     public PoolDTO update(@PathParam("id") UUID id, @Valid PoolDTO poolDTO) {
         return poolService.update(id, poolDTO);
     }
 
     @DELETE
     @Path("/id/{id}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") UUID id) {
         poolService.delete(id);
         return Response.noContent().build();
