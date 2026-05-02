@@ -20,8 +20,18 @@ export class RankingPage {
   private readonly store = inject(SignalStore);
   readonly scoreService = inject(ScoreService);
 
-  ranking = httpResource<RankingEntry[]>(() => API.RANKING.GET_ALL());
-  history = httpResource<HistoryEntry[]>(() => API.RANKING.GET_HISTORY());
+  private poolId = computed(() => this.store.currentPoolId?.());
+
+  ranking = httpResource<RankingEntry[]>(() => {
+    const pid = this.poolId();
+    return pid ? API.RANKING.GET_BY_POOL(pid) : API.RANKING.GET_ALL();
+  });
+
+  history = httpResource<HistoryEntry[]>(() => {
+    const pid = this.poolId();
+    return pid ? API.RANKING.GET_HISTORY_BY_POOL(pid) : API.RANKING.GET_HISTORY();
+  });
+
   currentUserId = computed(() => this.store.appuser()?.id);
 
   chartUsers = computed(() => {

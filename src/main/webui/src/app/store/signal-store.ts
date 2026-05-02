@@ -14,6 +14,7 @@ export const SignalStore = signalStore(
   { providedIn: 'root' },
   withState({
     appuser: undefined as AppUser | undefined,
+    currentPoolId: undefined as string | undefined,
   }),
 
   withMethods((store) => {
@@ -23,14 +24,12 @@ export const SignalStore = signalStore(
       async loadAppUser() {
         const appUser = await signalStoreService.setOrGetProfile();
         patchState(store, { appuser: appUser });
-      },
 
-      // async updateStep(step: IStep) {
-      //   const updatedStep = await signalStoreService.putStep(step);
-      //   patchState(store, {
-      //     steps: store.steps().map((s) => (s.id === updatedStep.id ? updatedStep : s)),
-      //   });
-      // },
+        if (appUser?.id) {
+          const poolId = await signalStoreService.getFirstActivePoolId(appUser.id);
+          patchState(store, { currentPoolId: poolId });
+        }
+      },
 
       getAppUser() {
         return computed(() => store.appuser() ?? this.loadAppUser());
@@ -47,7 +46,8 @@ export const SignalStore = signalStore(
     },
   }),
 
-  withComputed(({ appuser }) => ({
+  withComputed(({ appuser, currentPoolId }) => ({
     appuser: computed(() => appuser()),
+    currentPoolId: computed(() => currentPoolId()),
   })),
 );

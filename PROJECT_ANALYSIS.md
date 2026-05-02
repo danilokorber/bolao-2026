@@ -133,7 +133,7 @@ Real-time scoring as matches progress:
 
 | # | Gap | Severity | Details |
 |---|-----|----------|---------|
-| 1 | **Pool-based rankings** | 🔴 Critical | Only a global ranking exists. Per-pool ranking (the core feature) is not implemented. Need `GET /v1/ranking/pool/{poolId}` filtered by ACTIVE user_pool status. |
+| 1 | **Pool-based rankings** | ✅ Done | Per-pool ranking via `GET /v1/ranking/pool/{poolId}` (+ history). Tier-based counting (`score_tier` column) replaces point-value counting. Frontend auto-detects user's first active pool; falls back to global. |
 | 2 | **Stage multipliers** | ✅ Done | Base points doubled (20/10/6/2/−6) and multiplied by stage: Group/R32=1×, R16=1.5×, QF=2×, SF/3rd/Final=3×. |
 | 3 | **Round bonuses** | 🟡 High | "Best predictor of the round: +5 pts" and "Top 3 of the round: +2 pts" — not implemented. |
 | 4 | **Recovery bonus** | 🟡 High | "Users scoring above pool average: +10 bonus pts for next phase" — not implemented. |
@@ -244,7 +244,7 @@ The **core betting flow works end-to-end**: login → place match/group/champion
 
 ### 🔴 Must Fix Before Production
 
-1. **Pool-based rankings** — The defining feature of the app
+1. ~~**Pool-based rankings**~~ — ✅ Done
 2. **Security enforcement** — Uncomment `@Authenticated`/`@RolesAllowed`
 3. **Pool management UI** — Create/join/list pools in the frontend
 4. **Payment tracking UI** — View and confirm payments

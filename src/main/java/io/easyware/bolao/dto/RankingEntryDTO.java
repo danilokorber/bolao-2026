@@ -13,11 +13,11 @@ public class RankingEntryDTO {
     private Integer position;
     private UUID userId;
     private String userName;
-    private Long count10;
-    private Long count5;
-    private Long count3;
-    private Long count1;
-    private Long countNeg;
+    private Long countExact;
+    private Long countDiff;
+    private Long countWinner;
+    private Long countInverted;
+    private Long countWrong;
     private Long specialPoints;
     private Long totalPoints;
 }

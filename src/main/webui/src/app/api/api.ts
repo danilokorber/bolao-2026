@@ -27,6 +27,8 @@ export const API = {
   RANKING: {
     GET_ALL: () => `/api/v1/ranking`,
     GET_HISTORY: () => `/api/v1/ranking/history`,
+    GET_BY_POOL: (poolId: string) => `/api/v1/ranking/pool/${poolId}`,
+    GET_HISTORY_BY_POOL: (poolId: string) => `/api/v1/ranking/pool/${poolId}/history`,
   },
 
   BETS: {

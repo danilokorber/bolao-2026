@@ -49,10 +49,11 @@ export class RankingCardItem {
     position: number;
     userId: string;
     userName: string;
-    count10: number;
-    count5: number;
-    count3: number;
-    count1: number;
+    countExact: number;
+    countDiff: number;
+    countWinner: number;
+    countInverted: number;
+    countWrong: number;
     specialPoints: number;
     totalPoints: number;
   }>();

@@ -153,7 +153,12 @@
     "total": "Total",
     "special": "Especial",
     "chartPoints": "Evolução de Pontos",
-    "chartPosition": "Posição no Ranking"
+    "chartPosition": "Posição no Ranking",
+    "tierExact": "Placar Exato",
+    "tierDiff": "Diferença de Gols",
+    "tierWinner": "Vencedor",
+    "tierInverted": "Placar Invertido",
+    "tierWrong": "Errado"
   },
   "userBets": {
     "title": "Palpites",

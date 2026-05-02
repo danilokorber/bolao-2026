@@ -20,9 +20,15 @@ import { SignalStore } from '../store/signal-store';
 export class Dashboard {
   private readonly store = inject(SignalStore);
   private userId = computed(() => this.store.appuser()?.id);
+  private poolId = computed(() => this.store.currentPoolId?.());
 
   matches = httpResource<Match[]>(() => API.MATCHES.GET_ALL(this.userId()));
-  ranking = httpResource<RankingEntry[]>(() => API.RANKING.GET_ALL());
+
+  ranking = httpResource<RankingEntry[]>(() => {
+    const pid = this.poolId();
+    return pid ? API.RANKING.GET_BY_POOL(pid) : API.RANKING.GET_ALL();
+  });
+
   bets = httpResource<Bet[]>(() => API.BETS.GET_ALL());
 
   groupBets = httpResource<GroupWinnerBet[]>(() => {

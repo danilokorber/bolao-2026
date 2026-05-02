@@ -1,5 +1,6 @@
 package io.easyware.bolao.entities;
 
+import io.easyware.bolao.enums.ScoreTier;
 import io.easyware.bolao.util.UUIDv7Generator.UUIDv7;
 import jakarta.persistence.*;
 import lombok.*;
@@ -49,9 +50,44 @@ public class Bet {
     @Builder.Default
     private Integer pointsEarned = 0;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "score_tier", length = 10)
+    private ScoreTier scoreTier;
+
     @Column(name = "bet_at", nullable = false)
     @Builder.Default
     private LocalDateTime betAt = LocalDateTime.now();
+
+    /**
+     * Calculates the score tier for this bet based on the actual 90-minute match result.
+     *
+     * @return the tier, or null if match result is not yet available
+     */
+    @Transient
+    public ScoreTier getCalculatedScoreTier() {
+        if (match == null || match.getHomeGoals() == null || match.getAwayGoals() == null) {
+            return null;
+        }
+
+        Integer actualHome = match.getHomeGoals();
+        Integer actualAway = match.getAwayGoals();
+        int actualDiff = actualHome - actualAway;
+        int betDiff = homeGoalsBet - awayGoalsBet;
+
+        if (homeGoalsBet.equals(actualHome) && awayGoalsBet.equals(actualAway)) {
+            return ScoreTier.EXACT;
+        }
+        if (betDiff == actualDiff) {
+            return ScoreTier.DIFF;
+        }
+        if (Integer.compare(homeGoalsBet, awayGoalsBet) == Integer.compare(actualHome, actualAway)) {
+            return ScoreTier.WINNER;
+        }
+        if (homeGoalsBet.equals(actualAway) && awayGoalsBet.equals(actualHome)) {
+            return ScoreTier.INVERTED;
+        }
+        return ScoreTier.WRONG;
+    }
 
     /**
      * Calculates points achieved for this bet based on the actual 90-minute match result,
@@ -73,37 +109,18 @@ public class Bet {
      */
     @Transient
     public Integer getCalculatedPoints() {
-        if (match == null || match.getHomeGoals() == null || match.getAwayGoals() == null) {
+        ScoreTier tier = getCalculatedScoreTier();
+        if (tier == null) {
             return 0;
         }
 
-        Integer actualHome = match.getHomeGoals();
-        Integer actualAway = match.getAwayGoals();
-        int actualDiff = actualHome - actualAway;
-        int betDiff = homeGoalsBet - awayGoalsBet;
-
-        int basePoints;
-
-        // 1. Exact score
-        if (homeGoalsBet.equals(actualHome) && awayGoalsBet.equals(actualAway)) {
-            basePoints = 20;
-        }
-        // 2. Correct goal difference (same team winning by same margin)
-        else if (betDiff == actualDiff) {
-            basePoints = 10;
-        }
-        // 3. Correct winner (or correct draw — already handled above since draw diff = 0)
-        else if (Integer.compare(homeGoalsBet, awayGoalsBet) == Integer.compare(actualHome, actualAway)) {
-            basePoints = 6;
-        }
-        // 4. Inverted exact score — fun factor (draws naturally excluded: inversion = exact)
-        else if (homeGoalsBet.equals(actualAway) && awayGoalsBet.equals(actualHome)) {
-            basePoints = 2;
-        }
-        // 5. Wrong prediction — penalty
-        else {
-            basePoints = -6;
-        }
+        int basePoints = switch (tier) {
+            case EXACT -> 20;
+            case DIFF -> 10;
+            case WINNER -> 6;
+            case INVERTED -> 2;
+            case WRONG -> -6;
+        };
 
         return (int) (basePoints * match.getStage().getMultiplier());
     }

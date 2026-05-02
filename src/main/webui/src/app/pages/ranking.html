@@ -38,19 +38,19 @@
               <th class="px-3 py-2 text-left">#</th>
               <th class="px-3 py-2 text-left">{{ 'ranking.player' | transloco }}</th>
               <th class="px-3 py-2 text-center">
-                <span class="score-badge score-10">10</span>
+                <span class="score-badge score-10" title="{{ 'ranking.tierExact' | transloco }}">✓</span>
               </th>
               <th class="px-3 py-2 text-center">
-                <span class="score-badge score-5">5</span>
+                <span class="score-badge score-5" title="{{ 'ranking.tierDiff' | transloco }}">±</span>
               </th>
               <th class="px-3 py-2 text-center">
-                <span class="score-badge score-3">3</span>
+                <span class="score-badge score-3" title="{{ 'ranking.tierWinner' | transloco }}">W</span>
               </th>
               <th class="px-3 py-2 text-center">
-                <span class="score-badge score-1">1</span>
+                <span class="score-badge score-1" title="{{ 'ranking.tierInverted' | transloco }}">↕</span>
               </th>
               <th class="px-3 py-2 text-center">
-                <span class="score-badge score-neg">-3</span>
+                <span class="score-badge score-neg" title="{{ 'ranking.tierWrong' | transloco }}">✗</span>
               </th>
               <th class="px-3 py-2 text-center">⭐</th>
               <th class="px-3 py-2 text-right font-bold">{{ 'ranking.total' | transloco }}</th>
@@ -78,19 +78,19 @@
                 </td>
                 <td class="px-3 py-2 truncate max-w-[200px]">{{ entry.userName }}</td>
                 <td class="px-3 py-2 text-center font-mono tabular-nums">
-                  {{ entry.count10 || '–' }}
+                  {{ entry.countExact || '–' }}
                 </td>
                 <td class="px-3 py-2 text-center font-mono tabular-nums">
-                  {{ entry.count5 || '–' }}
+                  {{ entry.countDiff || '–' }}
                 </td>
                 <td class="px-3 py-2 text-center font-mono tabular-nums">
-                  {{ entry.count3 || '–' }}
+                  {{ entry.countWinner || '–' }}
                 </td>
                 <td class="px-3 py-2 text-center font-mono tabular-nums">
-                  {{ entry.count1 || '–' }}
+                  {{ entry.countInverted || '–' }}
                 </td>
                 <td class="px-3 py-2 text-center font-mono tabular-nums text-red-600">
-                  {{ entry.countNeg || '–' }}
+                  {{ entry.countWrong || '–' }}
                 </td>
                 <td class="px-3 py-2 text-center font-mono tabular-nums">
                   {{ entry.specialPoints || '–' }}
@@ -134,38 +134,38 @@
                 {{ entry.userName }}
               </div>
               <div class="flex gap-2 text-xs text-gray-400 mt-0.5">
-                @if (entry.count10) {
+                @if (entry.countExact) {
                   <span
-                    ><span class="score-badge score-10 !text-[10px] !w-4 !h-4">10</span> ×{{
-                      entry.count10
+                    ><span class="score-badge score-10 !text-[10px] !w-4 !h-4">✓</span> ×{{
+                      entry.countExact
                     }}</span
                   >
                 }
-                @if (entry.count5) {
+                @if (entry.countDiff) {
                   <span
-                    ><span class="score-badge score-5 !text-[10px] !w-4 !h-4">5</span> ×{{
-                      entry.count5
+                    ><span class="score-badge score-5 !text-[10px] !w-4 !h-4">±</span> ×{{
+                      entry.countDiff
                     }}</span
                   >
                 }
-                @if (entry.count3) {
+                @if (entry.countWinner) {
                   <span
-                    ><span class="score-badge score-3 !text-[10px] !w-4 !h-4">3</span> ×{{
-                      entry.count3
+                    ><span class="score-badge score-3 !text-[10px] !w-4 !h-4">W</span> ×{{
+                      entry.countWinner
                     }}</span
                   >
                 }
-                @if (entry.count1) {
+                @if (entry.countInverted) {
                   <span
-                    ><span class="score-badge score-1 !text-[10px] !w-4 !h-4">1</span> ×{{
-                      entry.count1
+                    ><span class="score-badge score-1 !text-[10px] !w-4 !h-4">↕</span> ×{{
+                      entry.countInverted
                     }}</span
                   >
                 }
-                @if (entry.countNeg) {
+                @if (entry.countWrong) {
                   <span
-                    ><span class="score-badge score-neg !text-[10px] !w-4 !h-4">-3</span> ×{{
-                      entry.countNeg
+                    ><span class="score-badge score-neg !text-[10px] !w-4 !h-4">✗</span> ×{{
+                      entry.countWrong
                     }}</span
                   >
                 }

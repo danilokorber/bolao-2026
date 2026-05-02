@@ -127,8 +127,10 @@ public class ScoreCalculationService {
         int updated = 0;
         for (Bet bet : bets) {
             int points = bet.getCalculatedPoints();
-            if (!Objects.equals(bet.getPointsEarned(), points)) {
+            var tier = bet.getCalculatedScoreTier();
+            if (!Objects.equals(bet.getPointsEarned(), points) || !Objects.equals(bet.getScoreTier(), tier)) {
                 bet.setPointsEarned(points);
+                bet.setScoreTier(tier);
                 updated++;
             }
         }
@@ -156,8 +158,10 @@ public class ScoreCalculationService {
             List<Bet> bets = betRepository.findByMatch(match.getId());
             for (Bet bet : bets) {
                 int points = bet.getCalculatedPoints();
-                if (!Objects.equals(bet.getPointsEarned(), points)) {
+                var tier = bet.getCalculatedScoreTier();
+                if (!Objects.equals(bet.getPointsEarned(), points) || !Objects.equals(bet.getScoreTier(), tier)) {
                     bet.setPointsEarned(points);
+                    bet.setScoreTier(tier);
                     totalBetsUpdated++;
                 }
             }
@@ -199,8 +203,10 @@ public class ScoreCalculationService {
                 continue;
             }
             int points = bet.getCalculatedPoints();
-            if (!Objects.equals(bet.getPointsEarned(), points)) {
+            var tier = bet.getCalculatedScoreTier();
+            if (!Objects.equals(bet.getPointsEarned(), points) || !Objects.equals(bet.getScoreTier(), tier)) {
                 bet.setPointsEarned(points);
+                bet.setScoreTier(tier);
                 updated++;
             }
         }

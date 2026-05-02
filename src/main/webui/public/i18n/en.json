@@ -153,7 +153,12 @@
     "total": "Total",
     "special": "Special",
     "chartPoints": "Points Progression",
-    "chartPosition": "Ranking Position"
+    "chartPosition": "Ranking Position",
+    "tierExact": "Exact Score",
+    "tierDiff": "Goal Difference",
+    "tierWinner": "Winner",
+    "tierInverted": "Inverted Score",
+    "tierWrong": "Wrong"
   },
   "userBets": {
     "title": "Bets",
