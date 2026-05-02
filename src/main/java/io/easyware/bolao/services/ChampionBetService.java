@@ -2,12 +2,14 @@ package io.easyware.bolao.services;
 
 import io.easyware.bolao.dto.ChampionBetDTO;
 import io.easyware.bolao.dto.ChampionBetRequestDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.entities.ChampionBet;
 import io.easyware.bolao.mappers.ChampionBetMapper;
 import io.easyware.bolao.repositories.AppUserRepository;
 import io.easyware.bolao.repositories.ChampionBetRepository;
 import io.easyware.bolao.repositories.MatchRepository;
 import io.easyware.bolao.repositories.TeamRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -39,6 +41,14 @@ public class ChampionBetService {
 
     public List<ChampionBetDTO> findAll() {
         return championBetMapper.toDTOList(championBetRepository.listAll());
+    }
+
+    public PagedResponse<ChampionBetDTO> findAll(int page, int size) {
+        PanacheQuery<ChampionBet> query = championBetRepository.findAll();
+        query.page(page, size);
+        long totalElements = query.count();
+        List<ChampionBetDTO> content = championBetMapper.toDTOList(query.list());
+        return new PagedResponse<>(content, page, size, totalElements);
     }
 
     public ChampionBetDTO findById(UUID id) {

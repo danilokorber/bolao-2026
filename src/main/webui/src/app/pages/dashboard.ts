@@ -6,7 +6,7 @@ import { API } from '@api/api';
 import { RankingCard } from '@components/ranking-card';
 import { RecentResultsCard } from '@components/recent-results-card';
 import { UpcomingMatchesCard } from '@components/upcoming-matches-card';
-import { Bet, ChampionBet, GroupWinnerBet, Match } from '@interfaces/index';
+import { Bet, ChampionBet, GroupWinnerBet, Match, PagedResponse } from '@interfaces/index';
 import { RankingEntry } from '@interfaces/ranking-entry.interface';
 import { resourceValueOr404 } from '@utils/resource-utils';
 import { SignalStore } from '../store/signal-store';
@@ -22,14 +22,17 @@ export class Dashboard {
   private userId = computed(() => this.store.appuser()?.id);
   private poolId = computed(() => this.store.currentPoolId?.());
 
-  matches = httpResource<Match[]>(() => API.MATCHES.GET_ALL(this.userId()));
+  matchesPage = httpResource<PagedResponse<Match>>(() => API.MATCHES.GET_ALL(this.userId(), 0, 200));
 
   ranking = httpResource<RankingEntry[]>(() => {
     const pid = this.poolId();
     return pid ? API.RANKING.GET_BY_POOL(pid) : API.RANKING.GET_ALL();
   });
 
-  bets = httpResource<Bet[]>(() => API.BETS.GET_ALL());
+  betsPage = httpResource<PagedResponse<Bet>>(() => API.BETS.GET_ALL(0, 10000));
+
+  matches = computed(() => this.matchesPage.value()?.content ?? []);
+  bets = computed(() => this.betsPage.value()?.content ?? []);
 
   groupBets = httpResource<GroupWinnerBet[]>(() => {
     const id = this.userId();

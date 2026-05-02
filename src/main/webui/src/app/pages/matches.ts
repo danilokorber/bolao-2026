@@ -4,7 +4,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { MatchCard } from '@components/match-card';
 import { MatchStageFilter } from '@components/match-stage-filter';
-import { Bet } from '@interfaces/index';
+import { Bet, PagedResponse } from '@interfaces/index';
 import { Match } from '@interfaces/match.interface';
 import { MatchStage } from '@interfaces/match-stage.enum';
 import { BolaoModule } from '@modules/bolao/bolao.module';
@@ -19,13 +19,16 @@ export class Matches {
   private readonly store = inject(SignalStore);
   private userId = computed(() => this.store.appuser()?.id);
 
-  matches = httpResource<Match[]>(() => API.MATCHES.GET_ALL(this.userId()));
-  bets = httpResource<Bet[]>(() => API.BETS.GET_ALL());
+  matchesPage = httpResource<PagedResponse<Match>>(() => API.MATCHES.GET_ALL(this.userId(), 0, 200));
+  betsPage = httpResource<PagedResponse<Bet>>(() => API.BETS.GET_ALL(0, 10000));
+
+  matches = computed(() => this.matchesPage.value()?.content ?? []);
+  bets = computed(() => this.betsPage.value()?.content ?? []);
 
   activeStage = signal<MatchStage | null>(null);
 
   filteredMatches = computed(() => {
-    const all = this.matches.value() ?? [];
+    const all = this.matches();
     const stage = this.activeStage();
     return stage ? all.filter(m => m.stage === stage) : all;
   });
@@ -35,7 +38,7 @@ export class Matches {
   }
 
   _ = afterRenderEffect(() => {
-    if (this.matches.hasValue() && this.bets.hasValue() && !this.activeStage()) {
+    if (this.matchesPage.hasValue() && this.betsPage.hasValue() && !this.activeStage()) {
       const dateAnchor = new Date().toISOString().split('T')[0];
       const element = document.getElementById(dateAnchor);
       if (element) {

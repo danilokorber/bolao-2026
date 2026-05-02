@@ -140,7 +140,7 @@ Real-time scoring as matches progress:
 | 5 | **Football-data.org API** | 🟡 High | `MatchUpdateScheduler` runs every minute but REST client is stubbed — no live score ingestion. |
 | 6 | **Security enforcement** | ✅ Done | `@Authenticated` on all 10 user-facing resources (class-level). `@RolesAllowed("admin")` on ScoreResource (class-level) + admin-only methods (match/team/pool CRUD, user/bet delete, payment management). |
 | 7 | **Input validation** | ✅ Done | Bean Validation annotations on all request DTOs + `@Valid` on all POST/PUT endpoints + custom `ConstraintViolationExceptionMapper` returning structured JSON 400 errors. |
-| 8 | **Pagination** | 🟡 Medium | List endpoints (`GET /v1/users`, `GET /v1/bets`) return all records with no pagination. |
+| 8 | **Pagination** | ✅ Done | `PagedResponse<T>` wrapper DTO with `content`, `page`, `size`, `totalElements`, `totalPages`. Applied to 7 `getAll()` endpoints (users, bets, matches, champion-bets, group-winner-bets, payments, user-pools) via Panache `.page()`. Default: page=0, size=50. Frontend adapted with `PagedResponse<T>` interface. |
 | 9 | **Tests** | 🔴 Critical | Zero unit or integration tests. `src/test/` directory does not exist. |
 
 ### 4.2 Frontend — Critical Gaps

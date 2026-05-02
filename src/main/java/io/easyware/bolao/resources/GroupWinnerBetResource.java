@@ -2,6 +2,7 @@ package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.GroupWinnerBetDTO;
 import io.easyware.bolao.dto.GroupWinnerBetRequestDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.enums.GroupName;
 import io.easyware.bolao.services.GroupWinnerBetService;
 import io.quarkus.security.Authenticated;
@@ -27,8 +28,10 @@ public class GroupWinnerBetResource {
     GroupWinnerBetService groupWinnerBetService;
 
     @GET
-    public List<GroupWinnerBetDTO> getAll() {
-        return groupWinnerBetService.findAll();
+    public PagedResponse<GroupWinnerBetDTO> getAll(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("50") int size) {
+        return groupWinnerBetService.findAll(page, size);
     }
 
     @GET

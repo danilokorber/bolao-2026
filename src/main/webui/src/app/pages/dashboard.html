@@ -44,21 +44,21 @@
 
   <!-- Recent results -->
   <div>
-    @if (bets.isLoading()) {
+    @if (betsPage.isLoading()) {
       <p>{{ 'dashboard.recentResults.loading' | transloco }}</p>
-    } @else if (bets.hasValue()) {
-      <recent-results-card [bets]="bets.value()!"></recent-results-card>
+    } @else if (betsPage.hasValue()) {
+      <recent-results-card [bets]="bets()"></recent-results-card>
     }
   </div>
 
   <!-- Upcoming matches -->
   <div class="col-span-full">
-    @if (matches.isLoading()) {
+    @if (matchesPage.isLoading()) {
       <p>{{ 'dashboard.upcomingMatches.loading' | transloco }}</p>
-    } @else if (matches.hasValue() && bets.hasValue()) {
+    } @else if (matchesPage.hasValue() && betsPage.hasValue()) {
       <upcoming-matches-card
-        [matches]="matches.value()!"
-        [bets]="bets.value()!"
+        [matches]="matches()"
+        [bets]="bets()"
       ></upcoming-matches-card>
     }
   </div>

@@ -1,6 +1,7 @@
 package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.AppUserDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.services.AppUserService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
@@ -33,8 +34,10 @@ public class AppUserResource {
      * @return 200 with the list of users (may be empty)
      */
     @GET
-    public List<AppUserDTO> getAll() {
-        return appUserService.findAll();
+    public PagedResponse<AppUserDTO> getAll(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("50") int size) {
+        return appUserService.findAll(page, size);
     }
 
     /**

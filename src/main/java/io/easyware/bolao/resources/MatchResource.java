@@ -1,6 +1,7 @@
 package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.MatchDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.enums.MatchStage;
 import io.easyware.bolao.enums.MatchStatus;
 import io.easyware.bolao.services.MatchService;
@@ -26,8 +27,11 @@ public class MatchResource {
     MatchService matchService;
 
     @GET
-    public List<MatchDTO> getAll(@QueryParam("userId") UUID userId) {
-        return matchService.findAll(userId);
+    public PagedResponse<MatchDTO> getAll(
+            @QueryParam("userId") UUID userId,
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("50") int size) {
+        return matchService.findAll(page, size, userId);
     }
 
     @GET

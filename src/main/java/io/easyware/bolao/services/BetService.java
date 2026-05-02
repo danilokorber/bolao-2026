@@ -2,12 +2,14 @@ package io.easyware.bolao.services;
 
 import io.easyware.bolao.dto.BetDTO;
 import io.easyware.bolao.dto.BetRequestDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.entities.Bet;
 import io.easyware.bolao.mappers.BetMapper;
 import io.easyware.bolao.repositories.AppUserRepository;
 import io.easyware.bolao.repositories.BetRepository;
 import io.easyware.bolao.repositories.MatchRepository;
 import io.easyware.bolao.repositories.TeamRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -39,6 +41,14 @@ public class BetService {
 
     public List<BetDTO> findAll() {
         return betMapper.toDTOList(betRepository.listAll());
+    }
+
+    public PagedResponse<BetDTO> findAll(int page, int size) {
+        PanacheQuery<Bet> query = betRepository.findAll();
+        query.page(page, size);
+        long totalElements = query.count();
+        List<BetDTO> content = betMapper.toDTOList(query.list());
+        return new PagedResponse<>(content, page, size, totalElements);
     }
 
     public BetDTO findById(UUID id) {

@@ -1,9 +1,11 @@
 package io.easyware.bolao.services;
 
 import io.easyware.bolao.dto.AppUserDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.entities.AppUser;
 import io.easyware.bolao.mappers.AppUserMapper;
 import io.easyware.bolao.repositories.AppUserRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -32,6 +34,14 @@ public class AppUserService {
      */
     public List<AppUserDTO> findAll() {
         return appUserMapper.toDTOList(appUserRepository.listAll());
+    }
+
+    public PagedResponse<AppUserDTO> findAll(int page, int size) {
+        PanacheQuery<AppUser> query = appUserRepository.findAll();
+        query.page(page, size);
+        long totalElements = query.count();
+        List<AppUserDTO> content = appUserMapper.toDTOList(query.list());
+        return new PagedResponse<>(content, page, size, totalElements);
     }
 
     /**

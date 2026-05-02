@@ -1,12 +1,14 @@
 package io.easyware.bolao.services;
 
 import io.easyware.bolao.dto.UserPoolDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.entities.UserPool;
 import io.easyware.bolao.enums.UserPoolStatus;
 import io.easyware.bolao.mappers.UserPoolMapper;
 import io.easyware.bolao.repositories.AppUserRepository;
 import io.easyware.bolao.repositories.PoolRepository;
 import io.easyware.bolao.repositories.UserPoolRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -32,6 +34,14 @@ public class UserPoolService {
 
     public List<UserPoolDTO> findAll() {
         return userPoolMapper.toDTOList(userPoolRepository.listAll());
+    }
+
+    public PagedResponse<UserPoolDTO> findAll(int page, int size) {
+        PanacheQuery<UserPool> query = userPoolRepository.findAll();
+        query.page(page, size);
+        long totalElements = query.count();
+        List<UserPoolDTO> content = userPoolMapper.toDTOList(query.list());
+        return new PagedResponse<>(content, page, size, totalElements);
     }
 
     public UserPoolDTO findById(UUID id) {

@@ -1,6 +1,7 @@
 package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.PaymentDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.enums.PaymentStatus;
 import io.easyware.bolao.services.PaymentService;
 import io.quarkus.security.Authenticated;
@@ -24,8 +25,10 @@ public class PaymentResource {
     PaymentService paymentService;
 
     @GET
-    public List<PaymentDTO> getAll() {
-        return paymentService.findAll();
+    public PagedResponse<PaymentDTO> getAll(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("50") int size) {
+        return paymentService.findAll(page, size);
     }
 
     @GET

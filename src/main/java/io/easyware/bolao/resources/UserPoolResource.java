@@ -1,6 +1,7 @@
 package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.UserPoolDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.enums.UserPoolStatus;
 import io.easyware.bolao.services.UserPoolService;
 import io.quarkus.security.Authenticated;
@@ -24,8 +25,10 @@ public class UserPoolResource {
     UserPoolService userPoolService;
 
     @GET
-    public List<UserPoolDTO> getAll() {
-        return userPoolService.findAll();
+    public PagedResponse<UserPoolDTO> getAll(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("50") int size) {
+        return userPoolService.findAll(page, size);
     }
 
     @GET

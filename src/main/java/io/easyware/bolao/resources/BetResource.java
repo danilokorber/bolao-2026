@@ -2,6 +2,7 @@ package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.BetDTO;
 import io.easyware.bolao.dto.BetRequestDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.services.BetService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
@@ -24,8 +25,10 @@ public class BetResource {
     BetService betService;
 
     @GET
-    public List<BetDTO> getAll() {
-        return betService.findAll();
+    public PagedResponse<BetDTO> getAll(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("50") int size) {
+        return betService.findAll(page, size);
     }
 
     @GET

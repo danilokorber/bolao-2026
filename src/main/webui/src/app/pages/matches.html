@@ -1,7 +1,7 @@
-@if (matches.isLoading()) {
+@if (matchesPage.isLoading()) {
   <p>{{ 'matches.loading' | transloco }}</p>
-} @else if (matches.error()) {
-  <p class="text-red-500">{{ 'matches.error' | transloco }} {{ matches.error() }}</p>
+} @else if (matchesPage.error()) {
+  <p class="text-red-500">{{ 'matches.error' | transloco }} {{ matchesPage.error() }}</p>
 } @else {
   <div class="flex flex-col gap-4">
     <match-stage-filter [activeStage]="activeStage()" (stageChange)="onStageChange($event)"></match-stage-filter>

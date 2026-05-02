@@ -2,6 +2,7 @@ package io.easyware.bolao.services;
 
 import io.easyware.bolao.dto.GroupWinnerBetDTO;
 import io.easyware.bolao.dto.GroupWinnerBetRequestDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.entities.GroupWinnerBet;
 import io.easyware.bolao.enums.GroupName;
 import io.easyware.bolao.enums.MatchStage;
@@ -10,6 +11,7 @@ import io.easyware.bolao.repositories.AppUserRepository;
 import io.easyware.bolao.repositories.GroupWinnerBetRepository;
 import io.easyware.bolao.repositories.MatchRepository;
 import io.easyware.bolao.repositories.TeamRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -42,6 +44,14 @@ public class GroupWinnerBetService {
 
     public List<GroupWinnerBetDTO> findAll() {
         return groupWinnerBetMapper.toDTOList(groupWinnerBetRepository.listAll());
+    }
+
+    public PagedResponse<GroupWinnerBetDTO> findAll(int page, int size) {
+        PanacheQuery<GroupWinnerBet> query = groupWinnerBetRepository.findAll();
+        query.page(page, size);
+        long totalElements = query.count();
+        List<GroupWinnerBetDTO> content = groupWinnerBetMapper.toDTOList(query.list());
+        return new PagedResponse<>(content, page, size, totalElements);
     }
 
     public GroupWinnerBetDTO findById(UUID id) {

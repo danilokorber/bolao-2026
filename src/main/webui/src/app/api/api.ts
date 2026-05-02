@@ -1,6 +1,13 @@
+function buildPageParams(page?: number, size?: number, prefix = '?'): string {
+  const params: string[] = [];
+  if (page !== undefined) params.push(`page=${page}`);
+  if (size !== undefined) params.push(`size=${size}`);
+  return params.length ? `${prefix}${params.join('&')}` : '';
+}
+
 export const API = {
   USERS: {
-    GET_ALL: () => `/api/v1/users`,
+    GET_ALL: (page?: number, size?: number) => `/api/v1/users${buildPageParams(page, size)}`,
     GET_BY_ID: (id: string) => `/api/v1/users/id/${id}`,
     GET_BY_KEYCLOAK_ID: (keycloakId: string) => `/api/v1/users/keycloak/${keycloakId}`,
     GET_BY_EMAIL: (email: string) => `/api/v1/users/email/${email}`,
@@ -11,7 +18,13 @@ export const API = {
   },
 
   MATCHES: {
-    GET_ALL: (userId?: string) => `/api/v1/matches${userId ? '?userId=' + userId : ''}`,
+    GET_ALL: (userId?: string, page?: number, size?: number) => {
+      const params: string[] = [];
+      if (userId) params.push(`userId=${userId}`);
+      if (page !== undefined) params.push(`page=${page}`);
+      if (size !== undefined) params.push(`size=${size}`);
+      return `/api/v1/matches${params.length ? '?' + params.join('&') : ''}`;
+    },
     GET_BY_ID: (id: string, userId?: string) => `/api/v1/matches/id/${id}${userId ? '?userId=' + userId : ''}`,
     GET_BY_STAGE: (stage: string) => `/api/v1/matches/stage/${stage}`,
     GET_BY_STATUS: (status: string) => `/api/v1/matches/status/${status}`,
@@ -32,7 +45,7 @@ export const API = {
   },
 
   BETS: {
-    GET_ALL: () => `/api/v1/bets`,
+    GET_ALL: (page?: number, size?: number) => `/api/v1/bets${buildPageParams(page, size)}`,
     GET_BY_ID: (id: string) => `/api/v1/bets/id/${id}`,
     GET_BY_USER: (userId: string) => `/api/v1/bets/user/id/${userId}`,
     GET_BY_MATCH: (matchId: string) => `/api/v1/bets/match/id/${matchId}`,
@@ -45,7 +58,7 @@ export const API = {
   },
 
   CHAMPION_BETS: {
-    GET_ALL: () => `/api/v1/champion-bets`,
+    GET_ALL: (page?: number, size?: number) => `/api/v1/champion-bets${buildPageParams(page, size)}`,
     GET_BY_ID: (id: string) => `/api/v1/champion-bets/id/${id}`,
     GET_BY_USER: (userId: string) => `/api/v1/champion-bets/user/id/${userId}`,
     GET_DEADLINE: () => `/api/v1/champion-bets/deadline`,
@@ -56,7 +69,7 @@ export const API = {
   },
 
   GROUP_WINNER_BETS: {
-    GET_ALL: () => `/api/v1/group-winner-bets`,
+    GET_ALL: (page?: number, size?: number) => `/api/v1/group-winner-bets${buildPageParams(page, size)}`,
     GET_BY_ID: (id: string) => `/api/v1/group-winner-bets/id/${id}`,
     GET_BY_USER: (userId: string) => `/api/v1/group-winner-bets/user/id/${userId}`,
     GET_BY_GROUP: (groupName: string) => `/api/v1/group-winner-bets/group/${groupName}`,
@@ -68,7 +81,7 @@ export const API = {
   },
 
   PAYMENTS: {
-    GET_ALL: () => `/api/v1/payments`,
+    GET_ALL: (page?: number, size?: number) => `/api/v1/payments${buildPageParams(page, size)}`,
     GET_BY_ID: (id: string) => `/api/v1/payments/id/${id}`,
     GET_BY_USER: (userId: string) => `/api/v1/payments/user/id/${userId}`,
     GET_BY_POOL: (poolId: string) => `/api/v1/payments/pool/id/${poolId}`,
@@ -105,7 +118,7 @@ export const API = {
   },
 
   USER_POOLS: {
-    GET_ALL: () => `/api/v1/user-pools`,
+    GET_ALL: (page?: number, size?: number) => `/api/v1/user-pools${buildPageParams(page, size)}`,
     GET_BY_ID: (id: string) => `/api/v1/user-pools/id/${id}`,
     GET_BY_USER: (userId: string) => `/api/v1/user-pools/user/id/${userId}`,
     GET_BY_POOL: (poolId: string) => `/api/v1/user-pools/pool/id/${poolId}`,

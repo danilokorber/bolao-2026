@@ -2,6 +2,7 @@ package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.ChampionBetDTO;
 import io.easyware.bolao.dto.ChampionBetRequestDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.services.ChampionBetService;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.security.RolesAllowed;
@@ -26,8 +27,10 @@ public class ChampionBetResource {
     ChampionBetService championBetService;
 
     @GET
-    public List<ChampionBetDTO> getAll() {
-        return championBetService.findAll();
+    public PagedResponse<ChampionBetDTO> getAll(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("50") int size) {
+        return championBetService.findAll(page, size);
     }
 
     @GET

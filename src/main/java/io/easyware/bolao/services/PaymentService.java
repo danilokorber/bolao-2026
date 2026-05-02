@@ -1,12 +1,14 @@
 package io.easyware.bolao.services;
 
 import io.easyware.bolao.dto.PaymentDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.entities.Payment;
 import io.easyware.bolao.enums.PaymentStatus;
 import io.easyware.bolao.mappers.PaymentMapper;
 import io.easyware.bolao.repositories.AppUserRepository;
 import io.easyware.bolao.repositories.PaymentRepository;
 import io.easyware.bolao.repositories.PoolRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -32,6 +34,14 @@ public class PaymentService {
 
     public List<PaymentDTO> findAll() {
         return paymentMapper.toDTOList(paymentRepository.listAll());
+    }
+
+    public PagedResponse<PaymentDTO> findAll(int page, int size) {
+        PanacheQuery<Payment> query = paymentRepository.findAll();
+        query.page(page, size);
+        long totalElements = query.count();
+        List<PaymentDTO> content = paymentMapper.toDTOList(query.list());
+        return new PagedResponse<>(content, page, size, totalElements);
     }
 
     public PaymentDTO findById(UUID id) {

@@ -2,6 +2,7 @@ package io.easyware.bolao.services;
 
 import io.easyware.bolao.dto.BetDTO;
 import io.easyware.bolao.dto.MatchDTO;
+import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.entities.Bet;
 import io.easyware.bolao.entities.Match;
 import io.easyware.bolao.enums.MatchStage;
@@ -11,6 +12,8 @@ import io.easyware.bolao.mappers.MatchMapper;
 import io.easyware.bolao.repositories.BetRepository;
 import io.easyware.bolao.repositories.MatchRepository;
 import io.easyware.bolao.repositories.TeamRepository;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -48,6 +51,14 @@ public class MatchService {
                 .toList()
         );
         return enrichWithUserBets(dtos, userId);
+    }
+
+    public PagedResponse<MatchDTO> findAll(int page, int size, UUID userId) {
+        PanacheQuery<Match> query = matchRepository.findAll(Sort.by("matchDatetime"));
+        query.page(page, size);
+        long totalElements = query.count();
+        List<MatchDTO> content = enrichWithUserBets(matchMapper.toDTOList(query.list()), userId);
+        return new PagedResponse<>(content, page, size, totalElements);
     }
 
     public MatchDTO findById(UUID id, UUID userId) {
