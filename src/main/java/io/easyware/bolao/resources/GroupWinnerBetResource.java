@@ -5,6 +5,7 @@ import io.easyware.bolao.dto.GroupWinnerBetRequestDTO;
 import io.easyware.bolao.enums.GroupName;
 import io.easyware.bolao.services.GroupWinnerBetService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -60,7 +61,7 @@ public class GroupWinnerBetResource {
     }
 
     @POST
-    public Response save(GroupWinnerBetRequestDTO request) {
+    public Response save(@Valid GroupWinnerBetRequestDTO request) {
         GroupWinnerBetDTO saved = groupWinnerBetService.save(request);
         return Response.ok(saved).build();
     }

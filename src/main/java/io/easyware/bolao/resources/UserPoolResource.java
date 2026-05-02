@@ -4,6 +4,7 @@ import io.easyware.bolao.dto.UserPoolDTO;
 import io.easyware.bolao.enums.UserPoolStatus;
 import io.easyware.bolao.services.UserPoolService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -73,14 +74,14 @@ public class UserPoolResource {
     }
 
     @POST
-    public Response create(UserPoolDTO userPoolDTO) {
+    public Response create(@Valid UserPoolDTO userPoolDTO) {
         UserPoolDTO created = userPoolService.create(userPoolDTO);
         return Response.status(Response.Status.CREATED).entity(created).build();
     }
 
     @PUT
     @Path("/id/{id}")
-    public UserPoolDTO update(@PathParam("id") UUID id, UserPoolDTO userPoolDTO) {
+    public UserPoolDTO update(@PathParam("id") UUID id, @Valid UserPoolDTO userPoolDTO) {
         return userPoolService.update(id, userPoolDTO);
     }
 

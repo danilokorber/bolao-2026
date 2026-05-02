@@ -3,6 +3,7 @@ package io.easyware.bolao.resources;
 import io.easyware.bolao.dto.AppUserDTO;
 import io.easyware.bolao.services.AppUserService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -96,7 +97,7 @@ public class AppUserResource {
      * @throws BadRequestException 400 if keycloakId, name, or email is missing/blank
      */
     @POST
-    public Response create(AppUserDTO userDTO) {
+    public Response create(@Valid AppUserDTO userDTO) {
         AppUserService.CreateResult result = appUserService.findOrCreate(userDTO);
         Response.Status status = result.created()
                 ? Response.Status.CREATED
@@ -114,7 +115,7 @@ public class AppUserResource {
      */
     @PUT
     @Path("/id/{id}")
-    public AppUserDTO update(@PathParam("id") UUID id, AppUserDTO userDTO) {
+    public AppUserDTO update(@PathParam("id") UUID id, @Valid AppUserDTO userDTO) {
         return appUserService.update(id, userDTO);
     }
 

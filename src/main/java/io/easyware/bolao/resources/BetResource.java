@@ -5,6 +5,7 @@ import io.easyware.bolao.dto.BetRequestDTO;
 import io.easyware.bolao.services.BetService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -72,7 +73,7 @@ public class BetResource {
     }
 
     @POST
-    public Response save(BetRequestDTO request) {
+    public Response save(@Valid BetRequestDTO request) {
         BetDTO saved = betService.save(request);
         return Response.ok(saved).build();
     }

@@ -4,6 +4,7 @@ import io.easyware.bolao.dto.ChampionBetDTO;
 import io.easyware.bolao.dto.ChampionBetRequestDTO;
 import io.easyware.bolao.services.ChampionBetService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -59,7 +60,7 @@ public class ChampionBetResource {
     }
 
     @POST
-    public Response save(ChampionBetRequestDTO request) {
+    public Response save(@Valid ChampionBetRequestDTO request) {
         ChampionBetDTO saved = championBetService.save(request);
         return Response.ok(saved).build();
     }

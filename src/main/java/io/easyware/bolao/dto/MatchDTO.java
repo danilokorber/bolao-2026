@@ -2,6 +2,8 @@ package io.easyware.bolao.dto;
 
 import io.easyware.bolao.enums.MatchStage;
 import io.easyware.bolao.enums.MatchStatus;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,14 +18,28 @@ public class MatchDTO {
     private UUID id;
     private Integer matchId;
     private Integer footballDataMatchId;
+
+    @NotNull
     private UUID homeTeamId;
+
+    @NotNull
     private UUID awayTeamId;
+
     private TeamDTO homeTeam;
     private TeamDTO awayTeam;
+
+    @NotNull
     private LocalDateTime matchDatetime;
+
+    @NotNull
     private MatchStage stage;
+
+    @Min(0)
     private Integer homeGoals;
+
+    @Min(0)
     private Integer awayGoals;
+
     private Boolean wentToExtraTime;
     private Boolean wentToPenalties;
     private UUID winnerId;

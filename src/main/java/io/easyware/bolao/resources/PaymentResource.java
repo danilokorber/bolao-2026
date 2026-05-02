@@ -4,6 +4,7 @@ import io.easyware.bolao.dto.PaymentDTO;
 import io.easyware.bolao.enums.PaymentStatus;
 import io.easyware.bolao.services.PaymentService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -69,14 +70,14 @@ public class PaymentResource {
     }
 
     @POST
-    public Response create(PaymentDTO paymentDTO) {
+    public Response create(@Valid PaymentDTO paymentDTO) {
         PaymentDTO created = paymentService.create(paymentDTO);
         return Response.status(Response.Status.CREATED).entity(created).build();
     }
 
     @PUT
     @Path("/id/{id}")
-    public PaymentDTO update(@PathParam("id") UUID id, PaymentDTO paymentDTO) {
+    public PaymentDTO update(@PathParam("id") UUID id, @Valid PaymentDTO paymentDTO) {
         return paymentService.update(id, paymentDTO);
     }
 

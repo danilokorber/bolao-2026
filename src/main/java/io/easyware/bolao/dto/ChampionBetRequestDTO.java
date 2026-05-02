@@ -1,5 +1,6 @@
 package io.easyware.bolao.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.UUID;
@@ -10,7 +11,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChampionBetRequestDTO {
+    @NotNull
     private UUID userId;
+
     private UUID championTeamId;
     private UUID runnerUpTeamId;
     private UUID semifinalist1TeamId;

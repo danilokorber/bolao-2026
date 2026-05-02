@@ -5,6 +5,7 @@ import io.easyware.bolao.enums.MatchStage;
 import io.easyware.bolao.enums.MatchStatus;
 import io.easyware.bolao.services.MatchService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -68,14 +69,14 @@ public class MatchResource {
     }
 
     @POST
-    public Response create(MatchDTO matchDTO) {
+    public Response create(@Valid MatchDTO matchDTO) {
         MatchDTO created = matchService.create(matchDTO);
         return Response.status(Response.Status.CREATED).entity(created).build();
     }
 
     @PUT
     @Path("/id/{id}")
-    public MatchDTO update(@PathParam("id") UUID id, MatchDTO matchDTO) {
+    public MatchDTO update(@PathParam("id") UUID id, @Valid MatchDTO matchDTO) {
         return matchService.update(id, matchDTO);
     }
 

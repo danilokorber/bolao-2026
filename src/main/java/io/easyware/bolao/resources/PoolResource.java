@@ -3,6 +3,7 @@ package io.easyware.bolao.resources;
 import io.easyware.bolao.dto.PoolDTO;
 import io.easyware.bolao.services.PoolService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -48,14 +49,14 @@ public class PoolResource {
     }
 
     @POST
-    public Response create(PoolDTO poolDTO) {
+    public Response create(@Valid PoolDTO poolDTO) {
         PoolDTO created = poolService.create(poolDTO);
         return Response.status(Response.Status.CREATED).entity(created).build();
     }
 
     @PUT
     @Path("/id/{id}")
-    public PoolDTO update(@PathParam("id") UUID id, PoolDTO poolDTO) {
+    public PoolDTO update(@PathParam("id") UUID id, @Valid PoolDTO poolDTO) {
         return poolService.update(id, poolDTO);
     }
 
