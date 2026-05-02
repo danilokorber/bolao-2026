@@ -8,5 +8,6 @@ export interface RankingEntry {
   countInverted: number;
   countWrong: number;
   specialPoints: number;
+  bonusPoints: number;
   totalPoints: number;
 }

@@ -53,6 +53,7 @@
                 <span class="score-badge score-neg" title="{{ 'ranking.tierWrong' | transloco }}">✗</span>
               </th>
               <th class="px-3 py-2 text-center">⭐</th>
+              <th class="px-3 py-2 text-center">🎯</th>
               <th class="px-3 py-2 text-right font-bold">{{ 'ranking.total' | transloco }}</th>
             </tr>
           </thead>
@@ -94,6 +95,9 @@
                 </td>
                 <td class="px-3 py-2 text-center font-mono tabular-nums">
                   {{ entry.specialPoints || '–' }}
+                </td>
+                <td class="px-3 py-2 text-center font-mono tabular-nums">
+                  {{ entry.bonusPoints || '–' }}
                 </td>
                 <td class="px-3 py-2 text-right font-mono tabular-nums font-bold text-primary-700">
                   {{ entry.totalPoints }}
@@ -171,6 +175,9 @@
                 }
                 @if (entry.specialPoints) {
                   <span>⭐{{ entry.specialPoints }}</span>
+                }
+                @if (entry.bonusPoints) {
+                  <span>🎯{{ entry.bonusPoints }}</span>
                 }
               </div>
             </div>

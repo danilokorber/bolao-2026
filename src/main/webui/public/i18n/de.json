@@ -158,7 +158,8 @@
     "tierDiff": "Tordifferenz",
     "tierWinner": "Gewinner",
     "tierInverted": "Invertiertes Ergebnis",
-    "tierWrong": "Falsch"
+    "tierWrong": "Falsch",
+    "bonus": "Bonus"
   },
   "userBets": {
     "title": "Tipps",

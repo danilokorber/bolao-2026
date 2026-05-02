@@ -135,8 +135,8 @@ Real-time scoring as matches progress:
 |---|-----|----------|---------|
 | 1 | **Pool-based rankings** | ✅ Done | Per-pool ranking via `GET /v1/ranking/pool/{poolId}` (+ history). Tier-based counting (`score_tier` column) replaces point-value counting. Frontend auto-detects user's first active pool; falls back to global. |
 | 2 | **Stage multipliers** | ✅ Done | Base points doubled (20/10/6/2/−6) and multiplied by stage: Group/R32=1×, R16=1.5×, QF=2×, SF/3rd/Final=3×. |
-| 3 | **Round bonuses** | 🟡 High | "Best predictor of the round: +5 pts" and "Top 3 of the round: +2 pts" — not implemented. |
-| 4 | **Recovery bonus** | 🟡 High | "Users scoring above pool average: +10 bonus pts for next phase" — not implemented. |
+| 3 | **Round bonuses** | ✅ Done | Best predictor of the round: +5 pts; Top 3: +2 pts each. Per-pool, 6 tournament rounds. Ties share the same bonus. `BonusCalculationService` + `pool_bonus` table. |
+| 4 | **Recovery bonus** | ✅ Done | Users scoring strictly above pool average in a round get +10 flat bonus (tagged with next round). Per-pool. No recovery after Final. |
 | 5 | **Football-data.org API** | 🟡 High | `MatchUpdateScheduler` runs every minute but REST client is stubbed — no live score ingestion. |
 | 6 | **Security enforcement** | 🔴 Critical | `@Authenticated` and `@RolesAllowed` annotations are commented out. All endpoints are publicly accessible. |
 | 7 | **Input validation** | ✅ Done | Bean Validation annotations on all request DTOs + `@Valid` on all POST/PUT endpoints + custom `ConstraintViolationExceptionMapper` returning structured JSON 400 errors. |

@@ -158,7 +158,8 @@
     "tierDiff": "Diferença de Gols",
     "tierWinner": "Vencedor",
     "tierInverted": "Placar Invertido",
-    "tierWrong": "Errado"
+    "tierWrong": "Errado",
+    "bonus": "Bônus"
   },
   "userBets": {
     "title": "Palpites",

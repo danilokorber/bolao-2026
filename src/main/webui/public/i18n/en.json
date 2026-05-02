@@ -158,7 +158,8 @@
     "tierDiff": "Goal Difference",
     "tierWinner": "Winner",
     "tierInverted": "Inverted Score",
-    "tierWrong": "Wrong"
+    "tierWrong": "Wrong",
+    "bonus": "Bonus"
   },
   "userBets": {
     "title": "Bets",
