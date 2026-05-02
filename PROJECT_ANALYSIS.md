@@ -141,7 +141,7 @@ Real-time scoring as matches progress:
 | 6 | **Security enforcement** | ✅ Done | `@Authenticated` on all 10 user-facing resources (class-level). `@RolesAllowed("admin")` on ScoreResource (class-level) + admin-only methods (match/team/pool CRUD, user/bet delete, payment management). |
 | 7 | **Input validation** | ✅ Done | Bean Validation annotations on all request DTOs + `@Valid` on all POST/PUT endpoints + custom `ConstraintViolationExceptionMapper` returning structured JSON 400 errors. |
 | 8 | **Pagination** | ✅ Done | `PagedResponse<T>` wrapper DTO with `content`, `page`, `size`, `totalElements`, `totalPages`. Applied to 7 `getAll()` endpoints (users, bets, matches, champion-bets, group-winner-bets, payments, user-pools) via Panache `.page()`. Default: page=0, size=50. Frontend adapted with `PagedResponse<T>` interface. |
-| 9 | **Tests** | 🔴 Critical | Zero unit or integration tests. `src/test/` directory does not exist. |
+| 9 | **Tests** | ✅ Done | 69 unit tests across 6 files: BetScoringTest (17), ChampionBetScoringTest (12), GroupWinnerBetScoringTest (7), MatchStageTest (8), TournamentRoundTest (13), BonusCalculationServiceTest (12). Covers all scoring tiers, stage multipliers, bonus distribution, and recovery logic. Uses JUnit 5 + Mockito + AssertJ. |
 
 ### 4.2 Frontend — Critical Gaps
 
