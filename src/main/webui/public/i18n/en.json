@@ -172,5 +172,65 @@
     "betTime": "Bet placed",
     "live": "LIVE",
     "betsCount": "bets"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "matches": "Matches",
+    "ranking": "Ranking",
+    "account": "Account",
+    "pools": "Pools"
+  },
+  "pools": {
+    "title": "My Pools",
+    "joinPool": "Join a Pool",
+    "inviteCode": "Invite Code",
+    "enterInviteCode": "Enter invite code",
+    "lookup": "Look up",
+    "join": "Join",
+    "cancel": "Cancel",
+    "switchPool": "Use this pool",
+    "activePool": "Active",
+    "noPoolsYet": "You haven't joined any pools yet.",
+    "joinPrompt": "Enter an invite code to join a pool and start competing!",
+    "members": "members",
+    "entryFee": "Entry fee",
+    "free": "Free",
+    "status": {
+      "PENDING": "Pending",
+      "ACTIVE": "Active",
+      "REMOVED": "Removed"
+    },
+    "poolPreview": "Pool Preview",
+    "confirmJoin": "Confirm & Join",
+    "alreadyMember": "You are already a member of this pool.",
+    "invalidCode": "Invalid invite code. Please check and try again.",
+    "joinSuccess": "Successfully joined the pool!"
+  },
+  "payments": {
+    "title": "Payment",
+    "pay": "Pay",
+    "payEntryFee": "Pay Entry Fee",
+    "paymentMethod": "Payment Method",
+    "transactionId": "Transaction / Reference ID",
+    "transactionIdPlaceholder": "Optional — e.g., PIX confirmation code",
+    "amount": "Amount",
+    "submit": "Submit Payment",
+    "noPendingPayment": "No payment required",
+    "paidAwaitingConfirmation": "Payment submitted — awaiting confirmation",
+    "status": {
+      "PENDING": "Awaiting confirmation",
+      "PAID": "Paid",
+      "CONFIRMED": "Confirmed",
+      "REJECTED": "Rejected",
+      "REFUNDED": "Refunded"
+    },
+    "method": {
+      "PIX": "PIX",
+      "CREDIT_CARD": "Credit Card",
+      "BANK_TRANSFER": "Bank Transfer",
+      "CASH": "Cash",
+      "OTHER": "Other"
+    },
+    "retryPayment": "Retry Payment"
   }
 }

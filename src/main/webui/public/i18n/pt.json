@@ -172,5 +172,65 @@
     "betTime": "Palpite feito",
     "live": "AO VIVO",
     "betsCount": "palpites"
+  },
+  "nav": {
+    "dashboard": "Painel",
+    "matches": "Jogos",
+    "ranking": "Ranking",
+    "account": "Conta",
+    "pools": "Bolões"
+  },
+  "pools": {
+    "title": "Meus Bolões",
+    "joinPool": "Entrar em um Bolão",
+    "inviteCode": "Código de Convite",
+    "enterInviteCode": "Digite o código de convite",
+    "lookup": "Buscar",
+    "join": "Entrar",
+    "cancel": "Cancelar",
+    "switchPool": "Usar este bolão",
+    "activePool": "Ativo",
+    "noPoolsYet": "Você ainda não participa de nenhum bolão.",
+    "joinPrompt": "Digite um código de convite para entrar em um bolão e começar a competir!",
+    "members": "membros",
+    "entryFee": "Taxa de entrada",
+    "free": "Grátis",
+    "status": {
+      "PENDING": "Pendente",
+      "ACTIVE": "Ativo",
+      "REMOVED": "Removido"
+    },
+    "poolPreview": "Prévia do Bolão",
+    "confirmJoin": "Confirmar e Entrar",
+    "alreadyMember": "Você já é membro deste bolão.",
+    "invalidCode": "Código de convite inválido. Verifique e tente novamente.",
+    "joinSuccess": "Entrou no bolão com sucesso!"
+  },
+  "payments": {
+    "title": "Pagamento",
+    "pay": "Pagar",
+    "payEntryFee": "Pagar Taxa de Entrada",
+    "paymentMethod": "Método de Pagamento",
+    "transactionId": "ID da Transação / Referência",
+    "transactionIdPlaceholder": "Opcional — ex: código de confirmação PIX",
+    "amount": "Valor",
+    "submit": "Enviar Pagamento",
+    "noPendingPayment": "Nenhum pagamento necessário",
+    "paidAwaitingConfirmation": "Pagamento enviado — aguardando confirmação",
+    "status": {
+      "PENDING": "Aguardando confirmação",
+      "PAID": "Pago",
+      "CONFIRMED": "Confirmado",
+      "REJECTED": "Rejeitado",
+      "REFUNDED": "Reembolsado"
+    },
+    "method": {
+      "PIX": "PIX",
+      "CREDIT_CARD": "Cartão de Crédito",
+      "BANK_TRANSFER": "Transferência Bancária",
+      "CASH": "Dinheiro",
+      "OTHER": "Outro"
+    },
+    "retryPayment": "Tentar Novamente"
   }
 }

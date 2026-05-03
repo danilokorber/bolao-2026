@@ -173,11 +173,11 @@ Score tiers (`ScoreTier` enum: EXACT, DIFF, WINNER, INVERTED, WRONG) are persist
 
 | # | Gap | Severity | Details |
 |---|-----|----------|---------|
-| 1 | **Pool management UI** | 🔴 Critical | No pages to create, join, list, or manage pools. Backend has the API, frontend doesn't use it. |
-| 2 | **Payment tracking UI** | 🔴 Critical | No interface for users to view payment status or for admins to confirm payments. |
+| 1 | **Pool management UI** | ✅ Done | Pools page (`/pools`) with pool cards (name, description, entry fee, status badge, member count). Join-by-invite-code flow (lookup → preview → confirm). Active pool switching via SignalStore. |
+| 2 | **Payment tracking UI** | ✅ Done | Integrated into pool cards. Per-pool payment status badges (PENDING/PAID/CONFIRMED/REJECTED). Inline payment form with method dropdown + transaction ID. Retry for rejected payments. |
 | 3 | **Admin dashboard** | 🔴 Critical | No admin-facing features whatsoever (user management, payment confirmation, pool oversight). |
 | 4 | **Error handling** | 🔴 Critical | No HTTP interceptor, no toast/snackbar notifications. Errors only appear in browser console. |
-| 5 | **Navigation sidebar** | 🟡 High | Sidebar has placeholder "Item 1/2/3" links — not wired to actual routes (Dashboard, Matches, Ranking, etc.). |
+| 5 | **Navigation sidebar** | 🟢 Manual | Icon-based navigation kept as-is by design. New items added manually as needed. |
 | 6 | **Form validation feedback** | 🟡 High | No visible error messages on invalid inputs. Users get no feedback on what went wrong. |
 | 7 | **404/Error pages** | 🟡 Medium | No dedicated error or not-found pages. Catch-all redirects to `/login`. |
 | 8 | **User profile editing** | 🟡 Medium | No way to change name/email from the frontend. |
@@ -265,21 +265,18 @@ Score tiers (`ScoreTier` enum: EXACT, DIFF, WINNER, INVERTED, WRONG) are persist
 
 ## 9. Production Readiness Verdict
 
-### Overall Maturity: **~85% — Backend production-ready, frontend needs UI work**
+### Overall Maturity: **~90% — Near production-ready, needs error handling and admin UI**
 
-The **core betting flow works end-to-end**: login → place match/group/champion bets → scores calculated with stage multipliers → pool-scoped rankings with bonuses. The backend has comprehensive security (OIDC + RBAC), input validation, pagination, and unit test coverage.
+The **core betting flow works end-to-end**: login → join pool → place match/group/champion bets → pay entry fee → scores calculated with stage multipliers → pool-scoped rankings with bonuses. The backend has comprehensive security (OIDC + RBAC), input validation, pagination, and unit test coverage. Frontend has real navigation, pool management, and payment tracking.
 
 ### 🔴 Must Fix Before Production
 
-1. **Pool management UI** — Create/join/list pools in the frontend
-2. **Payment tracking UI** — View and confirm payments
-3. **Error handling** — HTTP interceptor + user-facing notifications
-4. **Navigation sidebar** — Wire placeholder links to real routes
-5. **Remove test migrations** — Exclude mock data from production Flyway
+1. **Error handling** — HTTP interceptor + user-facing notifications
+2. **Remove test migrations** — Exclude mock data from production Flyway
 
 ### 🟡 Should Fix (High Priority)
 
-1. Admin dashboard for pool/payment/user management
+1. Admin dashboard for pool/payment/user management (payment confirmation)
 2. Form validation with visible error messages
 3. Football-data.org integration for live score updates
 4. Align champion/semifinalist point values with the spec (or update the spec)

@@ -34,6 +34,10 @@ export const SignalStore = signalStore(
       getAppUser() {
         return computed(() => store.appuser() ?? this.loadAppUser());
       },
+
+      setCurrentPoolId(id: string) {
+        patchState(store, { currentPoolId: id });
+      },
     };
   }),
 

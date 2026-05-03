@@ -172,5 +172,65 @@
     "betTime": "Tipp abgegeben",
     "live": "LIVE",
     "betsCount": "Tipps"
+  },
+  "nav": {
+    "dashboard": "Übersicht",
+    "matches": "Spiele",
+    "ranking": "Rangliste",
+    "account": "Konto",
+    "pools": "Tippgruppen"
+  },
+  "pools": {
+    "title": "Meine Tippgruppen",
+    "joinPool": "Tippgruppe beitreten",
+    "inviteCode": "Einladungscode",
+    "enterInviteCode": "Einladungscode eingeben",
+    "lookup": "Suchen",
+    "join": "Beitreten",
+    "cancel": "Abbrechen",
+    "switchPool": "Diese Gruppe verwenden",
+    "activePool": "Aktiv",
+    "noPoolsYet": "Du bist noch keiner Tippgruppe beigetreten.",
+    "joinPrompt": "Gib einen Einladungscode ein, um einer Tippgruppe beizutreten!",
+    "members": "Mitglieder",
+    "entryFee": "Startgebühr",
+    "free": "Kostenlos",
+    "status": {
+      "PENDING": "Ausstehend",
+      "ACTIVE": "Aktiv",
+      "REMOVED": "Entfernt"
+    },
+    "poolPreview": "Gruppenvorschau",
+    "confirmJoin": "Bestätigen und Beitreten",
+    "alreadyMember": "Du bist bereits Mitglied dieser Tippgruppe.",
+    "invalidCode": "Ungültiger Einladungscode. Bitte überprüfe die Eingabe.",
+    "joinSuccess": "Erfolgreich der Tippgruppe beigetreten!"
+  },
+  "payments": {
+    "title": "Zahlung",
+    "pay": "Bezahlen",
+    "payEntryFee": "Startgebühr bezahlen",
+    "paymentMethod": "Zahlungsmethode",
+    "transactionId": "Transaktions-ID / Referenz",
+    "transactionIdPlaceholder": "Optional — z.B. Überweisungsreferenz",
+    "amount": "Betrag",
+    "submit": "Zahlung senden",
+    "noPendingPayment": "Keine Zahlung erforderlich",
+    "paidAwaitingConfirmation": "Zahlung gesendet — warte auf Bestätigung",
+    "status": {
+      "PENDING": "Warte auf Bestätigung",
+      "PAID": "Bezahlt",
+      "CONFIRMED": "Bestätigt",
+      "REJECTED": "Abgelehnt",
+      "REFUNDED": "Erstattet"
+    },
+    "method": {
+      "PIX": "PIX",
+      "CREDIT_CARD": "Kreditkarte",
+      "BANK_TRANSFER": "Banküberweisung",
+      "CASH": "Bargeld",
+      "OTHER": "Sonstiges"
+    },
+    "retryPayment": "Erneut versuchen"
   }
 }
