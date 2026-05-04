@@ -80,7 +80,15 @@
         "semifinalist": "Each correct semifinalist (except if already scored as champion/runner-up)"
       },
       "open": "RULES",
-      "close": "CLOSE"
+      "close": "CLOSE",
+      "bonuses": {
+        "title": "Pool Bonuses",
+        "subtitle": "Awarded per pool at the end of each tournament round.",
+        "bestPredictor": "Best predictor of the round",
+        "topThree": "2nd and 3rd best of the round",
+        "recovery": "Recovery bonus — score above pool average to earn bonus next round",
+        "note": "Ties share the same bonus. No recovery bonus after the Final."
+      }
     }
   },
   "dashboard": {
