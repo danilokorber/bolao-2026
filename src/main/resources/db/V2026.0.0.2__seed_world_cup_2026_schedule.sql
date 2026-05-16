@@ -153,7 +153,7 @@ INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team
 SELECT uuid_generate_v4(),  1, 537327,
        (SELECT id FROM team WHERE fifa_code='MEX'),
        (SELECT id FROM team WHERE fifa_code='RSA'),
-       ((TIMESTAMP '2026-01-11 15:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
+       ((TIMESTAMP '2026-06-11 15:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_A','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  2, 537328,

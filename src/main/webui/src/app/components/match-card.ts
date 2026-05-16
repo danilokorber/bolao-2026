@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Bet, Match, MatchStatus } from '@interfaces/index';
 import { ScoreService } from '@services/score.service';
+import { utcDate } from '@utils/date-utils';
 import { MatchInProgress } from './match-in-progress';
 import { MatchCardFlag } from './match-card-flag';
 import { MatchCardTeamName } from './match-card-team-name';
@@ -59,7 +60,7 @@ export class MatchCard {
 
   startIsInThePast = linkedSignal(() => {
     const NOW = new Date().getTime();
-    const SCHEDULE = new Date(this.match().matchDatetime).getTime();
+    const SCHEDULE = utcDate(this.match().matchDatetime).getTime();
     return NOW > SCHEDULE;
   });
 

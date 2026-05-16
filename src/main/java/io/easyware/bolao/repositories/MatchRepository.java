@@ -60,6 +60,22 @@ public class MatchRepository implements PanacheRepositoryBase<Match, UUID> {
     }
 
     /**
+     * Checks whether all matches in a given group stage are finished AND in the past.
+     * This prevents scoring group winner bets for groups whose matches have future kickoff times
+     * (e.g. during testing with seeded data).
+     *
+     * @param stage the group stage to check
+     * @param now   the current UTC timestamp
+     * @return true if every match in the group has status FINISHED and matchDatetime &lt; now
+     */
+    public boolean isGroupCompleteAndPast(MatchStage stage, LocalDateTime now) {
+        long total = count("stage", stage);
+        long finishedAndPast = count("stage = ?1 and status = ?2 and matchDatetime < ?3",
+                                     stage, MatchStatus.FINISHED, now);
+        return total > 0 && total == finishedAndPast;
+    }
+
+    /**
      * Finds the start datetime of the second matchday for a given group stage.
      * In a group of 4 teams with 6 matches across 3 matchdays (2 matches each),
      * the second matchday starts with the 3rd match when sorted chronologically.

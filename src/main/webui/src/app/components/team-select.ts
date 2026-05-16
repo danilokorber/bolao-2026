@@ -68,16 +68,18 @@ import { TeamService } from '@services/team.service';
           class="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
         >
           <!-- Filter input -->
-          <div class="px-2 py-1.5 border-b border-gray-100">
-            <input
-              #filterInput
-              type="text"
-              class="w-full px-2 py-1 text-sm border border-gray-200 rounded outline-0 focus:border-primary-400"
-              placeholder="🔍"
-              [value]="filter()"
-              (input)="filter.set(filterInput.value)"
-            />
-          </div>
+          @if (filterable()) {
+            <div class="px-2 py-1.5 border-b border-gray-100">
+              <input
+                #filterInput
+                type="text"
+                class="w-full px-2 py-1 text-sm border border-gray-200 rounded outline-0 focus:border-primary-400"
+                placeholder="🔍"
+                [value]="filter()"
+                (input)="filter.set(filterInput.value)"
+              />
+            </div>
+          }
           <!-- Scrollable team list -->
           <div class="overflow-y-auto max-h-52">
             @for (team of filteredTeams(); track team.id) {
@@ -120,6 +122,7 @@ export class TeamSelect {
 
   teams = input.required<Team[]>();
   value = input<string | null>(null);
+  filterable = input<boolean>(false);
   placeholder = input<string>('');
   disabled = input<boolean>(false);
   selected = output<string>();

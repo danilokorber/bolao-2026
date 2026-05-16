@@ -5,6 +5,7 @@ import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
 import { Bet, MatchStatus } from '@interfaces/index';
 import { ScoreService } from '@services/score.service';
 import { StageService } from '@services/stage.service';
+import { utcDate } from '@utils/date-utils';
 import { SignalStore } from '../store/signal-store';
 import { Card } from './card';
 import { RecentResultsCardItem } from './recent-results-card-item';
@@ -48,7 +49,7 @@ export class RecentResultsCard {
       (b) =>
         b.match &&
         b.match.status === MatchStatus.FINISHED &&
-        new Date(b.match.matchDatetime).getTime() < now,
+        utcDate(b.match.matchDatetime).getTime() < now,
     );
 
     // Group bets by match, prefer current user's bet
@@ -62,8 +63,8 @@ export class RecentResultsCard {
 
     return [...byMatch.values()]
       .sort((a, b) => {
-        const distA = Math.abs(new Date(a.match!.matchDatetime).getTime() - now);
-        const distB = Math.abs(new Date(b.match!.matchDatetime).getTime() - now);
+        const distA = Math.abs(utcDate(a.match!.matchDatetime).getTime() - now);
+        const distB = Math.abs(utcDate(b.match!.matchDatetime).getTime() - now);
         return distA - distB;
       })
       .slice(0, 5);

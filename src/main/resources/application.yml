@@ -83,7 +83,7 @@ quarkus:
 "%dev":
   quarkus:
     flyway:
-      clean-at-start: true
+      clean-at-start: false
     http:
       port: 8050
       ssl-port: 8183

@@ -30,7 +30,7 @@ import java.util.UUID;
 @Path("/v1/admin/scores")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@RolesAllowed("admin")
+//@RolesAllowed("admin")
 public class ScoreResource {
 
     @Inject

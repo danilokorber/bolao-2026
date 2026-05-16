@@ -3,6 +3,7 @@ import { Component, inject, input, linkedSignal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Bet, Match, MatchStage } from '@interfaces/index';
 import { ScoreService } from '@services/score.service';
+import { utcDate } from '@utils/date-utils';
 
 @Component({
   selector: 'match-card-schedule',
@@ -62,12 +63,12 @@ export class MatchCardSchedule {
 
   formatMatchDate = linkedSignal(() => {
     const datePipe = new DatePipe('en-US');
-    return datePipe.transform(this.match().matchDatetime, 'dd-MMM-yyyy HH:mm')?.toUpperCase() || '';
+    return datePipe.transform(utcDate(this.match().matchDatetime), 'dd-MMM-yyyy HH:mm')?.toUpperCase() || '';
   });
 
   startIsInThePast = linkedSignal(() => {
     const NOW = new Date().getTime();
-    const SCHEDULE = new Date(this.match().matchDatetime).getTime();
+    const SCHEDULE = utcDate(this.match().matchDatetime).getTime();
     return NOW > SCHEDULE;
   });
 

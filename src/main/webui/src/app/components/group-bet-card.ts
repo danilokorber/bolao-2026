@@ -13,10 +13,10 @@ import { SignalStore } from '../store/signal-store';
   template: `
     <div class="border border-gray-200 rounded-xl bg-white shadow-sm">
       <!-- Group header -->
-      <div class="flex items-center justify-between px-4 py-2 bg-primary-700 text-white rounded-t-xl">
-        <h2 class="text-lg font-bold">
-          {{ 'groupWinnerBets.group' | transloco }} {{ label() }}
-        </h2>
+      <div
+        class="flex items-center justify-between px-4 py-2 bg-primary-700 text-white rounded-t-xl"
+      >
+        <h2 class="text-lg font-bold">{{ 'groupWinnerBets.group' | transloco }} {{ label() }}</h2>
         @if (locked()) {
           <span class="text-xs opacity-70">🔒 {{ 'groupWinnerBets.locked' | transloco }}</span>
         } @else {
@@ -27,7 +27,7 @@ import { SignalStore } from '../store/signal-store';
       <!-- Bet selectors -->
       <div class="px-4 py-3 flex flex-col gap-3">
         <div>
-          <label class="text-xs font-semibold text-primary-700 uppercase tracking-wide">
+          <label class="text-lg font-semibold text-primary-700 uppercase tracking-wide">
             🥇 {{ 'groupWinnerBets.firstPlace' | transloco }}
           </label>
           <div class="mt-1">
@@ -41,7 +41,7 @@ import { SignalStore } from '../store/signal-store';
           </div>
         </div>
         <div>
-          <label class="text-xs font-semibold text-primary-700 uppercase tracking-wide">
+          <label class="text-lg font-semibold text-primary-700 uppercase tracking-wide">
             🥈 {{ 'groupWinnerBets.secondPlace' | transloco }}
           </label>
           <div class="mt-1">
@@ -113,8 +113,10 @@ export class GroupBetCard {
       secondPlaceTeamId: this.secondPlaceTeamId,
     };
 
-    this.betSaveService.save<GroupWinnerBet>(API.GROUP_WINNER_BETS.SAVE(), body, this.saveState).subscribe({
-      error: (err) => console.error('Failed to save group winner bet', err),
-    });
+    this.betSaveService
+      .save<GroupWinnerBet>(API.GROUP_WINNER_BETS.SAVE(), body, this.saveState)
+      .subscribe({
+        error: (err) => console.error('Failed to save group winner bet', err),
+      });
   }
 }

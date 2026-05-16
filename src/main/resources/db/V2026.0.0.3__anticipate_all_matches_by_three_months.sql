@@ -6,4 +6,4 @@
 -- =====================================================
 
 UPDATE match
-SET match_datetime = match_datetime - INTERVAL '3 months';
+SET match_datetime = match_datetime - INTERVAL '27 days';

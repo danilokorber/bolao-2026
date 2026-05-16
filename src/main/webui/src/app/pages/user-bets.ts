@@ -8,6 +8,7 @@ import { Bet, Team } from '@interfaces/index';
 import { MatchStatus } from '@interfaces/match-status.enum';
 import { ScoreService } from '@services/score.service';
 import { TeamService } from '@services/team.service';
+import { utcDate } from '@utils/date-utils';
 import { SignalStore } from '../store/signal-store';
 
 @Component({
@@ -31,14 +32,17 @@ export class UserBetsPage {
 
   sortedBets = computed(() => {
     const bets = this.userBets.value() ?? [];
+    const now = Date.now();
     return bets
       .filter(b => {
         const status = b.match?.status;
-        return status === MatchStatus.LIVE || status === MatchStatus.FINISHED;
+        if (status !== MatchStatus.LIVE && status !== MatchStatus.FINISHED) return false;
+        const kickoff = b.match?.matchDatetime ? utcDate(b.match.matchDatetime).getTime() : Infinity;
+        return kickoff < now;
       })
       .sort((a, b) => {
-        const dateA = new Date(a.match?.matchDatetime ?? 0).getTime();
-        const dateB = new Date(b.match?.matchDatetime ?? 0).getTime();
+        const dateA = utcDate(a.match?.matchDatetime ?? '').getTime();
+        const dateB = utcDate(b.match?.matchDatetime ?? '').getTime();
         return dateB - dateA;
       });
   });
@@ -58,7 +62,7 @@ export class UserBetsPage {
 
   formatDate(iso?: string): string {
     if (!iso) return '–';
-    const d = new Date(iso);
+    const d = utcDate(iso);
     return d.toLocaleDateString(this.transloco.getActiveLang(), {
       day: '2-digit',
       month: 'short',

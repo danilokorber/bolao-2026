@@ -8,6 +8,7 @@ import { Bet, Match, Team } from '@interfaces/index';
 import { ScoreService } from '@services/score.service';
 import { StageService } from '@services/stage.service';
 import { TeamService } from '@services/team.service';
+import { utcDate } from '@utils/date-utils';
 import { SignalStore } from '../store/signal-store';
 
 @Component({
@@ -47,7 +48,7 @@ export class MatchDetail {
   formattedDate = linkedSignal(() => {
     const dt = this.match.value()?.matchDatetime;
     if (!dt) return '';
-    const d = new Date(dt);
+    const d = utcDate(dt);
     return d.toLocaleDateString(this.transloco.getActiveLang(), {
       weekday: 'short',
       day: '2-digit',

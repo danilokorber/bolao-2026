@@ -361,8 +361,14 @@ input[type='number'] {
 }
 
 @keyframes flash {
-  0%, 100% { opacity: 0; }
-  10%, 70% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0;
+  }
+  10%,
+  70% {
+    opacity: 1;
+  }
 }
 
 /* Hide scrollbar but keep scroll functionality */

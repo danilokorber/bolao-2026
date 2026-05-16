@@ -1038,4 +1038,121 @@ INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (
 INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 103), 0, 2);
 INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 104), 0, 4);
 
+-- ============================================================
+-- GROUP WINNER BETS
+-- Actual standings: A(MEX/KOR), B(CAN/SUI), C(BRA/MAR), D(USA/AUS),
+--   E(GER/CIV), F(NED/SWE), G(BEL/EGY), H(ESP/CPV),
+--   I(FRA/SEN), J(ARG/AUT), K(POR/COD), L(ENG/PAN)
+-- ============================================================
+
+-- Mock User (good predictions, misses some 2nd places)
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', 'GROUP_A', (SELECT id FROM team WHERE fifa_code = 'MEX'), (SELECT id FROM team WHERE fifa_code = 'KOR'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', 'GROUP_B', (SELECT id FROM team WHERE fifa_code = 'CAN'), (SELECT id FROM team WHERE fifa_code = 'BIH'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', 'GROUP_C', (SELECT id FROM team WHERE fifa_code = 'BRA'), (SELECT id FROM team WHERE fifa_code = 'MAR'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', 'GROUP_D', (SELECT id FROM team WHERE fifa_code = 'USA'), (SELECT id FROM team WHERE fifa_code = 'TUR'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', 'GROUP_E', (SELECT id FROM team WHERE fifa_code = 'GER'), (SELECT id FROM team WHERE fifa_code = 'ECU'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', 'GROUP_F', (SELECT id FROM team WHERE fifa_code = 'NED'), (SELECT id FROM team WHERE fifa_code = 'JPN'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', 'GROUP_G', (SELECT id FROM team WHERE fifa_code = 'BEL'), (SELECT id FROM team WHERE fifa_code = 'IRN'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', 'GROUP_H', (SELECT id FROM team WHERE fifa_code = 'ESP'), (SELECT id FROM team WHERE fifa_code = 'URU'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', 'GROUP_I', (SELECT id FROM team WHERE fifa_code = 'FRA'), (SELECT id FROM team WHERE fifa_code = 'SEN'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', 'GROUP_J', (SELECT id FROM team WHERE fifa_code = 'ARG'), (SELECT id FROM team WHERE fifa_code = 'AUT'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', 'GROUP_K', (SELECT id FROM team WHERE fifa_code = 'POR'), (SELECT id FROM team WHERE fifa_code = 'COL'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', 'GROUP_L', (SELECT id FROM team WHERE fifa_code = 'ENG'), (SELECT id FROM team WHERE fifa_code = 'GHA'));
+
+-- Ana Silva (underdog lover, many wrong picks)
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0001-000000000001', 'GROUP_A', (SELECT id FROM team WHERE fifa_code = 'RSA'), (SELECT id FROM team WHERE fifa_code = 'CZE'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0001-000000000001', 'GROUP_B', (SELECT id FROM team WHERE fifa_code = 'BIH'), (SELECT id FROM team WHERE fifa_code = 'QAT'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0001-000000000001', 'GROUP_C', (SELECT id FROM team WHERE fifa_code = 'MAR'), (SELECT id FROM team WHERE fifa_code = 'BRA'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0001-000000000001', 'GROUP_D', (SELECT id FROM team WHERE fifa_code = 'AUS'), (SELECT id FROM team WHERE fifa_code = 'PAR'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0001-000000000001', 'GROUP_E', (SELECT id FROM team WHERE fifa_code = 'CIV'), (SELECT id FROM team WHERE fifa_code = 'ECU'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0001-000000000001', 'GROUP_F', (SELECT id FROM team WHERE fifa_code = 'JPN'), (SELECT id FROM team WHERE fifa_code = 'TUN'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0001-000000000001', 'GROUP_G', (SELECT id FROM team WHERE fifa_code = 'EGY'), (SELECT id FROM team WHERE fifa_code = 'NZL'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0001-000000000001', 'GROUP_H', (SELECT id FROM team WHERE fifa_code = 'KSA'), (SELECT id FROM team WHERE fifa_code = 'CPV'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0001-000000000001', 'GROUP_I', (SELECT id FROM team WHERE fifa_code = 'SEN'), (SELECT id FROM team WHERE fifa_code = 'IRQ'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0001-000000000001', 'GROUP_J', (SELECT id FROM team WHERE fifa_code = 'ALG'), (SELECT id FROM team WHERE fifa_code = 'JOR'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0001-000000000001', 'GROUP_K', (SELECT id FROM team WHERE fifa_code = 'COL'), (SELECT id FROM team WHERE fifa_code = 'UZB'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0001-000000000001', 'GROUP_L', (SELECT id FROM team WHERE fifa_code = 'GHA'), (SELECT id FROM team WHERE fifa_code = 'CRO'));
+
+-- Max Müller (European bias, decent picks)
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0002-000000000002', 'GROUP_A', (SELECT id FROM team WHERE fifa_code = 'MEX'), (SELECT id FROM team WHERE fifa_code = 'CZE'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0002-000000000002', 'GROUP_B', (SELECT id FROM team WHERE fifa_code = 'SUI'), (SELECT id FROM team WHERE fifa_code = 'CAN'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0002-000000000002', 'GROUP_C', (SELECT id FROM team WHERE fifa_code = 'BRA'), (SELECT id FROM team WHERE fifa_code = 'SCO'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0002-000000000002', 'GROUP_D', (SELECT id FROM team WHERE fifa_code = 'USA'), (SELECT id FROM team WHERE fifa_code = 'TUR'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0002-000000000002', 'GROUP_E', (SELECT id FROM team WHERE fifa_code = 'GER'), (SELECT id FROM team WHERE fifa_code = 'CIV'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0002-000000000002', 'GROUP_F', (SELECT id FROM team WHERE fifa_code = 'NED'), (SELECT id FROM team WHERE fifa_code = 'SWE'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0002-000000000002', 'GROUP_G', (SELECT id FROM team WHERE fifa_code = 'BEL'), (SELECT id FROM team WHERE fifa_code = 'EGY'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0002-000000000002', 'GROUP_H', (SELECT id FROM team WHERE fifa_code = 'ESP'), (SELECT id FROM team WHERE fifa_code = 'URU'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0002-000000000002', 'GROUP_I', (SELECT id FROM team WHERE fifa_code = 'FRA'), (SELECT id FROM team WHERE fifa_code = 'NOR'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0002-000000000002', 'GROUP_J', (SELECT id FROM team WHERE fifa_code = 'AUT'), (SELECT id FROM team WHERE fifa_code = 'ARG'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0002-000000000002', 'GROUP_K', (SELECT id FROM team WHERE fifa_code = 'POR'), (SELECT id FROM team WHERE fifa_code = 'COD'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0002-000000000002', 'GROUP_L', (SELECT id FROM team WHERE fifa_code = 'ENG'), (SELECT id FROM team WHERE fifa_code = 'CRO'));
+
+-- John Smith (English fan, casual picks)
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', 'GROUP_A', (SELECT id FROM team WHERE fifa_code = 'KOR'), (SELECT id FROM team WHERE fifa_code = 'MEX'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', 'GROUP_B', (SELECT id FROM team WHERE fifa_code = 'CAN'), (SELECT id FROM team WHERE fifa_code = 'SUI'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', 'GROUP_C', (SELECT id FROM team WHERE fifa_code = 'BRA'), (SELECT id FROM team WHERE fifa_code = 'HAI'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', 'GROUP_D', (SELECT id FROM team WHERE fifa_code = 'USA'), (SELECT id FROM team WHERE fifa_code = 'AUS'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', 'GROUP_E', (SELECT id FROM team WHERE fifa_code = 'GER'), (SELECT id FROM team WHERE fifa_code = 'ECU'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', 'GROUP_F', (SELECT id FROM team WHERE fifa_code = 'NED'), (SELECT id FROM team WHERE fifa_code = 'JPN'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', 'GROUP_G', (SELECT id FROM team WHERE fifa_code = 'BEL'), (SELECT id FROM team WHERE fifa_code = 'NZL'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', 'GROUP_H', (SELECT id FROM team WHERE fifa_code = 'ESP'), (SELECT id FROM team WHERE fifa_code = 'KSA'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', 'GROUP_I', (SELECT id FROM team WHERE fifa_code = 'FRA'), (SELECT id FROM team WHERE fifa_code = 'IRQ'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', 'GROUP_J', (SELECT id FROM team WHERE fifa_code = 'ARG'), (SELECT id FROM team WHERE fifa_code = 'ALG'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', 'GROUP_K', (SELECT id FROM team WHERE fifa_code = 'POR'), (SELECT id FROM team WHERE fifa_code = 'UZB'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', 'GROUP_L', (SELECT id FROM team WHERE fifa_code = 'ENG'), (SELECT id FROM team WHERE fifa_code = 'PAN'));
+
+-- Carlos Mendes (South American bias)
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', 'GROUP_A', (SELECT id FROM team WHERE fifa_code = 'MEX'), (SELECT id FROM team WHERE fifa_code = 'RSA'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', 'GROUP_B', (SELECT id FROM team WHERE fifa_code = 'CAN'), (SELECT id FROM team WHERE fifa_code = 'QAT'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', 'GROUP_C', (SELECT id FROM team WHERE fifa_code = 'BRA'), (SELECT id FROM team WHERE fifa_code = 'MAR'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', 'GROUP_D', (SELECT id FROM team WHERE fifa_code = 'USA'), (SELECT id FROM team WHERE fifa_code = 'PAR'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', 'GROUP_E', (SELECT id FROM team WHERE fifa_code = 'GER'), (SELECT id FROM team WHERE fifa_code = 'CUW'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', 'GROUP_F', (SELECT id FROM team WHERE fifa_code = 'NED'), (SELECT id FROM team WHERE fifa_code = 'TUN'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', 'GROUP_G', (SELECT id FROM team WHERE fifa_code = 'IRN'), (SELECT id FROM team WHERE fifa_code = 'BEL'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', 'GROUP_H', (SELECT id FROM team WHERE fifa_code = 'ESP'), (SELECT id FROM team WHERE fifa_code = 'URU'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', 'GROUP_I', (SELECT id FROM team WHERE fifa_code = 'FRA'), (SELECT id FROM team WHERE fifa_code = 'SEN'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', 'GROUP_J', (SELECT id FROM team WHERE fifa_code = 'ARG'), (SELECT id FROM team WHERE fifa_code = 'JOR'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', 'GROUP_K', (SELECT id FROM team WHERE fifa_code = 'POR'), (SELECT id FROM team WHERE fifa_code = 'COL'));
+INSERT INTO group_winner_bet (id, user_id, group_name, first_place_team_id, second_place_team_id) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', 'GROUP_L', (SELECT id FROM team WHERE fifa_code = 'ENG'), (SELECT id FROM team WHERE fifa_code = 'CRO'));
+
+-- ============================================================
+-- CHAMPION BETS
+-- Actual: Champion=ARG, Runner-up=ESP, Semifinalists=GER,FRA
+-- ============================================================
+
+-- Mock User: BRA champion, ARG runner-up, GER/FRA/ESP/NED semis
+INSERT INTO champion_bet (id, user_id, champion_team_id, runner_up_team_id, semifinalist1_team_id, semifinalist2_team_id, semifinalist3_team_id, semifinalist4_team_id)
+VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9',
+  (SELECT id FROM team WHERE fifa_code = 'BRA'), (SELECT id FROM team WHERE fifa_code = 'ARG'),
+  (SELECT id FROM team WHERE fifa_code = 'GER'), (SELECT id FROM team WHERE fifa_code = 'FRA'),
+  (SELECT id FROM team WHERE fifa_code = 'ESP'), (SELECT id FROM team WHERE fifa_code = 'NED'));
+
+-- Ana Silva: NED champion, MAR runner-up, SEN/GHA/ALG/EGY semis (all underdogs)
+INSERT INTO champion_bet (id, user_id, champion_team_id, runner_up_team_id, semifinalist1_team_id, semifinalist2_team_id, semifinalist3_team_id, semifinalist4_team_id)
+VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0001-000000000001',
+  (SELECT id FROM team WHERE fifa_code = 'NED'), (SELECT id FROM team WHERE fifa_code = 'MAR'),
+  (SELECT id FROM team WHERE fifa_code = 'SEN'), (SELECT id FROM team WHERE fifa_code = 'GHA'),
+  (SELECT id FROM team WHERE fifa_code = 'ALG'), (SELECT id FROM team WHERE fifa_code = 'EGY'));
+
+-- Max Müller: GER champion, ESP runner-up, FRA/ARG/POR/BEL semis (nails most)
+INSERT INTO champion_bet (id, user_id, champion_team_id, runner_up_team_id, semifinalist1_team_id, semifinalist2_team_id, semifinalist3_team_id, semifinalist4_team_id)
+VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0002-000000000002',
+  (SELECT id FROM team WHERE fifa_code = 'GER'), (SELECT id FROM team WHERE fifa_code = 'ESP'),
+  (SELECT id FROM team WHERE fifa_code = 'FRA'), (SELECT id FROM team WHERE fifa_code = 'ARG'),
+  (SELECT id FROM team WHERE fifa_code = 'POR'), (SELECT id FROM team WHERE fifa_code = 'BEL'));
+
+-- John Smith: ENG champion, BRA runner-up, ARG/FRA/USA/ESP semis
+INSERT INTO champion_bet (id, user_id, champion_team_id, runner_up_team_id, semifinalist1_team_id, semifinalist2_team_id, semifinalist3_team_id, semifinalist4_team_id)
+VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003',
+  (SELECT id FROM team WHERE fifa_code = 'ENG'), (SELECT id FROM team WHERE fifa_code = 'BRA'),
+  (SELECT id FROM team WHERE fifa_code = 'ARG'), (SELECT id FROM team WHERE fifa_code = 'FRA'),
+  (SELECT id FROM team WHERE fifa_code = 'USA'), (SELECT id FROM team WHERE fifa_code = 'ESP'));
+
+-- Carlos Mendes: ARG champion, BRA runner-up, FRA/ESP/POR/GER semis (best prediction!)
+INSERT INTO champion_bet (id, user_id, champion_team_id, runner_up_team_id, semifinalist1_team_id, semifinalist2_team_id, semifinalist3_team_id, semifinalist4_team_id)
+VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf',
+  (SELECT id FROM team WHERE fifa_code = 'ARG'), (SELECT id FROM team WHERE fifa_code = 'BRA'),
+  (SELECT id FROM team WHERE fifa_code = 'FRA'), (SELECT id FROM team WHERE fifa_code = 'ESP'),
+  (SELECT id FROM team WHERE fifa_code = 'POR'), (SELECT id FROM team WHERE fifa_code = 'GER'));
+
 

@@ -17,6 +17,8 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -72,6 +74,11 @@ public class ScoreCalculationService {
     @Inject
     ChampionBetRepository championBetRepository;
 
+    /** Returns the current instant as a UTC LocalDateTime. */
+    private static LocalDateTime nowUtc() {
+        return LocalDateTime.now(ZoneOffset.UTC);
+    }
+
     /**
      * Calculates and persists points for all bets on the given matches.
      * Only processes matches that are in FINISHED status and have valid scores.
@@ -122,6 +129,10 @@ public class ScoreCalculationService {
             log.warn("Cannot recalculate: match {} is not LIVE or FINISHED (status: {})", matchId, match.getStatus());
             return 0;
         }
+        if (match.getMatchDatetime().isAfter(nowUtc())) {
+            log.warn("Cannot recalculate: match {} has not started yet (kickoff: {})", matchId, match.getMatchDatetime());
+            return 0;
+        }
 
         List<Bet> bets = betRepository.findByMatch(matchId);
         int updated = 0;
@@ -149,9 +160,10 @@ public class ScoreCalculationService {
      */
     @Transactional
     public RecalculateAllResult recalculateAll() {
+        LocalDateTime now = nowUtc();
         List<Match> matchesWithResults = matchRepository
-                .list("(status = ?1 or status = ?2) and homeGoals is not null and awayGoals is not null",
-                      MatchStatus.LIVE, MatchStatus.FINISHED);
+                .list("(status = ?1 or status = ?2) and homeGoals is not null and awayGoals is not null and matchDatetime < ?3",
+                      MatchStatus.LIVE, MatchStatus.FINISHED, now);
 
         int totalBetsUpdated = 0;
         for (Match match : matchesWithResults) {
@@ -192,6 +204,7 @@ public class ScoreCalculationService {
             return 0;
         }
 
+        LocalDateTime now = nowUtc();
         int updated = 0;
         for (Bet bet : bets) {
             Match match = bet.getMatch();
@@ -200,6 +213,10 @@ public class ScoreCalculationService {
             }
             // Score bets for LIVE and FINISHED matches (real-time updates)
             if (match.getStatus() != MatchStatus.LIVE && match.getStatus() != MatchStatus.FINISHED) {
+                continue;
+            }
+            // Never score future matches
+            if (match.getMatchDatetime().isAfter(now)) {
                 continue;
             }
             int points = bet.getCalculatedPoints();
@@ -219,6 +236,7 @@ public class ScoreCalculationService {
 
     private int checkAndScoreGroupWinnerBets(List<UUID> matchIds) {
         // Determine which groups are affected by the newly finished matches
+        LocalDateTime now = nowUtc();
         Set<MatchStage> affectedGroups = matchIds.stream()
                 .map(matchRepository::findById)
                 .filter(Objects::nonNull)
@@ -228,7 +246,7 @@ public class ScoreCalculationService {
 
         int totalUpdated = 0;
         for (MatchStage groupStage : affectedGroups) {
-            if (matchRepository.isGroupComplete(groupStage)) {
+            if (matchRepository.isGroupCompleteAndPast(groupStage, now)) {
                 totalUpdated += scoreGroupWinnerBets(groupStage);
             }
         }
@@ -270,10 +288,11 @@ public class ScoreCalculationService {
      * Used by recalculateAll to avoid the indirect match-ID-based lookup.
      */
     private int scoreAllCompleteGroupWinnerBets() {
+        LocalDateTime now = nowUtc();
         int totalUpdated = 0;
         for (GroupName groupName : GroupName.values()) {
             MatchStage groupStage = MatchStage.valueOf(groupName.name());
-            if (matchRepository.isGroupComplete(groupStage)) {
+            if (matchRepository.isGroupCompleteAndPast(groupStage, now)) {
                 totalUpdated += scoreGroupWinnerBets(groupStage);
             }
         }
@@ -285,19 +304,25 @@ public class ScoreCalculationService {
      * Used by recalculateAll to avoid the indirect match-ID-based lookup.
      */
     private int scoreChampionBetsIfFinalFinished() {
+        LocalDateTime now = nowUtc();
         List<Match> finals = matchRepository.findByStage(MatchStage.FINAL);
         boolean finalFinished = finals.stream()
-                .anyMatch(m -> m.getStatus() == MatchStatus.FINISHED && m.getWinner() != null);
+                .anyMatch(m -> m.getStatus() == MatchStatus.FINISHED
+                        && m.getWinner() != null
+                        && m.getMatchDatetime().isBefore(now));
         return finalFinished ? scoreChampionBets() : 0;
     }
 
     // ── Champion bets ───────────────────────────────────────────────────────────
 
     private int checkAndScoreChampionBets(List<UUID> matchIds) {
+        LocalDateTime now = nowUtc();
         boolean finalJustFinished = matchIds.stream()
                 .map(matchRepository::findById)
                 .filter(Objects::nonNull)
-                .anyMatch(m -> m.getStage() == MatchStage.FINAL && m.getStatus() == MatchStatus.FINISHED);
+                .anyMatch(m -> m.getStage() == MatchStage.FINAL
+                        && m.getStatus() == MatchStatus.FINISHED
+                        && m.getMatchDatetime().isBefore(now));
 
         if (!finalJustFinished) {
             return 0;
@@ -308,9 +333,11 @@ public class ScoreCalculationService {
 
     private int scoreChampionBets() {
         // Find the final match
+        LocalDateTime now = nowUtc();
         List<Match> finals = matchRepository.findByStage(MatchStage.FINAL);
         Match finalMatch = finals.stream()
                 .filter(m -> m.getStatus() == MatchStatus.FINISHED)
+                .filter(m -> m.getMatchDatetime().isBefore(now))
                 .findFirst()
                 .orElse(null);
 

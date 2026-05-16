@@ -21,7 +21,7 @@ import { SignalStore } from '../store/signal-store';
           >
             <h2 class="text-lg font-bold">⚽ {{ 'championBet.semifinalists' | transloco }}</h2>
             @if (locked()) {
-              <span class="text-xs opacity-70">🔒 {{ 'championBet.locked' | transloco }}</span>
+              <span class="text-xl opacity-70">🔒 {{ 'championBet.locked' | transloco }}</span>
             }
           </div>
           <div class="px-4 py-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -34,6 +34,7 @@ import { SignalStore } from '../store/signal-store';
                     [placeholder]="'championBet.selectTeam' | transloco"
                     [disabled]="locked()"
                     (selected)="onSemiChange(i, $event)"
+                    [filterable]="true"
                   ></team-select>
                 </div>
               </div>
@@ -55,7 +56,7 @@ import { SignalStore } from '../store/signal-store';
           </div>
           <div class="px-4 py-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="text-xs font-semibold text-secondary-700 uppercase tracking-wide">
+              <label class="text-xl font-semibold text-secondary-700 uppercase tracking-wide">
                 🥇 {{ 'championBet.champion' | transloco }}
               </label>
               <div class="mt-1">
@@ -65,11 +66,12 @@ import { SignalStore } from '../store/signal-store';
                   [placeholder]="'championBet.selectTeam' | transloco"
                   [disabled]="locked()"
                   (selected)="onChampionChange($event)"
+                  [filterable]="true"
                 ></team-select>
               </div>
             </div>
             <div>
-              <label class="text-xs font-semibold text-secondary-700 uppercase tracking-wide">
+              <label class="text-xl font-semibold text-secondary-700 uppercase tracking-wide">
                 🥈 {{ 'championBet.runnerUp' | transloco }}
               </label>
               <div class="mt-1">
@@ -79,6 +81,7 @@ import { SignalStore } from '../store/signal-store';
                   [placeholder]="'championBet.selectTeam' | transloco"
                   [disabled]="locked()"
                   (selected)="onRunnerUpChange($event)"
+                  [filterable]="true"
                 ></team-select>
               </div>
             </div>
@@ -88,7 +91,7 @@ import { SignalStore } from '../store/signal-store';
     } @else {
       <!-- Compact layout (account page) -->
       <div class="flex flex-col gap-2">
-        <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+        <h2 class="text-lg font-semibold text-gray-500 uppercase tracking-wide">
           ⚽ {{ 'championBet.semifinalists' | transloco }}
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -101,6 +104,7 @@ import { SignalStore } from '../store/signal-store';
                 [placeholder]="'championBet.selectTeam' | transloco"
                 [disabled]="locked()"
                 (selected)="onSemiChange(i, $event)"
+                [filterable]="true"
               ></team-select>
             </div>
           }
@@ -108,12 +112,12 @@ import { SignalStore } from '../store/signal-store';
       </div>
 
       <div class="flex flex-col gap-2">
-        <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+        <h2 class="text-lg font-semibold text-gray-500 uppercase tracking-wide">
           🏆 {{ 'championBet.final' | transloco }}
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div class="flex items-center gap-2">
-            <span class="shrink-0 text-xs">🥇</span>
+            <span class="shrink-0 text-xl">🥇</span>
             <team-select
               class="flex-1"
               [teams]="availableForChampion()"
@@ -121,10 +125,11 @@ import { SignalStore } from '../store/signal-store';
               [placeholder]="'championBet.selectTeam' | transloco"
               [disabled]="locked()"
               (selected)="onChampionChange($event)"
+              [filterable]="true"
             ></team-select>
           </div>
           <div class="flex items-center gap-2">
-            <span class="shrink-0 text-xs">🥈</span>
+            <span class="shrink-0 text-xl">🥈</span>
             <team-select
               class="flex-1"
               [teams]="availableForRunnerUp()"
@@ -132,6 +137,7 @@ import { SignalStore } from '../store/signal-store';
               [placeholder]="'championBet.selectTeam' | transloco"
               [disabled]="locked()"
               (selected)="onRunnerUpChange($event)"
+              [filterable]="true"
             ></team-select>
           </div>
         </div>

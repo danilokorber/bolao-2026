@@ -13,7 +13,9 @@ import { SignalStore } from '../store/signal-store';
   template: `
     <div class="flex items-center gap-2 sm:gap-4 py-1 border-b border-gray-100 last:border-b-0">
       <!-- Group badge -->
-      <div class="shrink-0 w-7 h-7 rounded-full bg-primary-700 text-white flex items-center justify-center text-xs font-bold">
+      <div
+        class="shrink-0 w-7 h-7 rounded-full bg-primary-700 text-white flex items-center justify-center text-xs font-bold"
+      >
         {{ label() }}
       </div>
 
@@ -21,7 +23,7 @@ import { SignalStore } from '../store/signal-store';
       <div class="flex-1 flex flex-col sm:flex-row gap-2">
         <div class="flex-1">
           <div class="flex items-center gap-1">
-            <span class="text-xs shrink-0">🥇</span>
+            <span class="text-xl shrink-0">🥇</span>
             <team-select
               class="flex-1"
               [teams]="availableForFirst()"
@@ -29,12 +31,13 @@ import { SignalStore } from '../store/signal-store';
               [placeholder]="'groupWinnerBets.selectTeam' | transloco"
               [disabled]="locked()"
               (selected)="onFirstChange($event)"
+              [filterable]="false"
             ></team-select>
           </div>
         </div>
         <div class="flex-1">
           <div class="flex items-center gap-1">
-            <span class="text-xs shrink-0">🥈</span>
+            <span class="text-xl shrink-0">🥈</span>
             <team-select
               class="flex-1"
               [teams]="availableForSecond()"
@@ -42,6 +45,7 @@ import { SignalStore } from '../store/signal-store';
               [placeholder]="'groupWinnerBets.selectTeam' | transloco"
               [disabled]="locked()"
               (selected)="onSecondChange($event)"
+              [filterable]="false"
             ></team-select>
           </div>
         </div>
@@ -50,7 +54,7 @@ import { SignalStore } from '../store/signal-store';
       <!-- Status -->
       <div class="shrink-0 w-6 text-center">
         @if (locked()) {
-          <span class="text-xs opacity-50">🔒</span>
+          <span class="text-xl opacity-50">🔒</span>
         } @else {
           <save-indicator [state]="saveState"></save-indicator>
         }
@@ -113,8 +117,10 @@ export class GroupBetRow {
       secondPlaceTeamId: this.secondPlaceTeamId,
     };
 
-    this.betSaveService.save<GroupWinnerBet>(API.GROUP_WINNER_BETS.SAVE(), body, this.saveState).subscribe({
-      error: (err) => console.error('Failed to save group winner bet', err),
-    });
+    this.betSaveService
+      .save<GroupWinnerBet>(API.GROUP_WINNER_BETS.SAVE(), body, this.saveState)
+      .subscribe({
+        error: (err) => console.error('Failed to save group winner bet', err),
+      });
   }
 }
