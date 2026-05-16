@@ -24,14 +24,17 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
  */
 @RegisterRestClient(configKey = "football-data")
 @Produces(MediaType.APPLICATION_JSON)
+@ClientHeaderParam(name = "X-Auth-Token", value = "${football-data.api-key}")
 public interface FootballDataClient {
 
     /**
-     * Fetches all matches for the FIFA World Cup (competition code WC / id 2000).
+     * Fetches all matches for the FIFA World Cup 2026 (competition ID 2000).
+     * Returns statuses, scores, and metadata for every match in one call.
      * Free tier: 10 requests / minute.
+     *
+     * @return the full competition matches response
      */
     @GET
-    @Path("/competitions/WC/matches")
-    @ClientHeaderParam(name = "X-Auth-Token", value = "${football-data.api-key}")
+    @Path("/competitions/2000/matches")
     FootballDataResponse getWorldCupMatches();
 }

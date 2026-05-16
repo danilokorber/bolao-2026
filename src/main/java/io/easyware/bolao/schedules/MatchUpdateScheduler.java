@@ -1,11 +1,14 @@
 package io.easyware.bolao.schedules;
 
+import io.easyware.bolao.clients.FootballDataClient;
+import io.easyware.bolao.dto.footballdata.FootballDataResponse;
 import io.easyware.bolao.services.FootballDataService;
 import io.easyware.bolao.services.ScoreCalculationService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import io.quarkus.scheduler.Scheduled;
 
@@ -13,25 +16,18 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Scheduled job that polls the football-data.org API for match updates
- * and triggers point calculation for matches with score changes.
+ * Scheduled job that polls football-data.org for all World Cup 2026 matches
+ * via the bulk endpoint ({@code /v4/competitions/2000/matches}) and triggers
+ * point calculation when scores or statuses change.
  *
- * <p>Points are evaluated in <strong>real time</strong>: every minute the scheduler checks
- * for score updates. When a LIVE match has a new goal or a match just kicks off or finishes,
- * only the bets for those specific matches are recalculated.
+ * <p>Each tick fetches the full match list in a single API call, updates
+ * every match in the database, and recalculates scores for any that changed.
  *
  * <p>The schedule is configured via:
  * <pre>
  *   bolao.schedules.matches.schedule  (cron expression, default: every minute)
  *   bolao.schedules.matches.enabled   (boolean, default: true)
  * </pre>
- *
- * <h3>Flow</h3>
- * <ol>
- *   <li>Poll football-data.org for current match data</li>
- *   <li>{@link FootballDataService} updates match records and returns IDs of matches with score changes</li>
- *   <li>{@link ScoreCalculationService} calculates points only for bets on those matches</li>
- * </ol>
  */
 @ApplicationScoped
 @Slf4j
@@ -43,45 +39,42 @@ public class MatchUpdateScheduler {
     @Inject
     ScoreCalculationService scoreCalculationService;
 
+    @Inject
+    @RestClient
+    FootballDataClient footballDataClient;
+
     @ConfigProperty(name = "bolao.schedules.matches.enabled", defaultValue = "true")
     boolean enabled;
 
     /**
-     * Scheduled method that runs according to the configured cron expression.
-     * Fetches match updates from football-data.org and calculates points
-     * for any matches that just finished.
-     *
-     * <p>The method is a no-op when {@code bolao.schedules.matches.enabled} is false.
+     * Polls all World Cup matches from football-data.org and recalculates
+     * scores for any matches whose status or score changed.
      */
     @Scheduled(cron = "${bolao.schedules.matches.schedule:0 0/1 * * * ?}",
                identity = "match-update-scheduler")
     void updateMatchesAndCalculateScores() {
         if (!enabled) {
-            log.debug("Match update scheduler is disabled");
+            log.info("Match update scheduler is disabled");
             return;
         }
 
-        log.debug("Match update scheduler tick — checking for updates");
-
         try {
-            // TODO: Inject a REST client for football-data.org and fetch the response.
-            // For now the scheduler is wired up but the HTTP call is not yet implemented.
-            // When the REST client is available, replace this with:
-            //   FootballDataResponse response = footballDataClient.getMatches();
-            //   List<UUID> newlyFinished = footballDataService.updateAllMatches(response);
-            //   if (!newlyFinished.isEmpty()) {
-            //       scoreCalculationService.calculatePointsForMatches(newlyFinished);
-            //   }
+            FootballDataResponse response = footballDataClient.getWorldCupMatches();
+            log.info("Fetched {} matches from football-data.org", response.getMatches().size());
 
-            log.trace("Match update scheduler tick completed (REST client not yet configured)");
+            List<UUID> changedMatchIds = footballDataService.updateAllMatches(response);
+
+            if (!changedMatchIds.isEmpty()) {
+                log.info("{} match(es) changed — recalculating scores", changedMatchIds.size());
+                scoreCalculationService.calculatePointsForMatches(changedMatchIds);
+            }
         } catch (Exception e) {
-            log.error("Error during scheduled match update", e);
+            log.error("Error polling football-data.org", e);
         }
     }
 
     /**
      * Manually triggers score calculation for specific matches.
-     * Can be called from a REST endpoint for admin/manual triggers.
      *
      * @param matchIds the UUIDs of matches to recalculate
      * @return number of bets updated

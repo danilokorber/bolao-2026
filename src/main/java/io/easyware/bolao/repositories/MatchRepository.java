@@ -108,4 +108,22 @@ public class MatchRepository implements PanacheRepositoryBase<Match, UUID> {
         }
         return Optional.of(matches.get(0).getMatchDatetime());
     }
+
+    /**
+     * Finds matches that should be polled for updates from the external API.
+     * A match is pollable if it is:
+     * <ul>
+     *   <li>Currently LIVE (in progress)</li>
+     *   <li>SCHEDULED and starting within the next 15 minutes</li>
+     * </ul>
+     *
+     * @return list of matches that need polling
+     */
+    public List<Match> findPollableMatches() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime soon = now.plusMinutes(15);
+        return find("status = ?1 or (status = ?2 and matchDatetime between ?3 and ?4)",
+                MatchStatus.LIVE, MatchStatus.SCHEDULED, now, soon)
+                .list();
+    }
 }

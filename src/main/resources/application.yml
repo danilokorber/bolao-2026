@@ -1,3 +1,6 @@
+football-data:
+  api-key: ${FOOTBALL_DATA_API_KEY:1a8ebe538b1d4c71a2ea2e30e518236e}
+
 bolao:
   auth:
     header:
@@ -76,6 +79,10 @@ quarkus:
       url: https://auth.easyware.io
       connect-timeout: 3000
       read-timeout: 600000
+    football-data:
+      url: https://api.football-data.org/v4
+      connect-timeout: 5000
+      read-timeout: 10000
 
   rest:
     path: ${QUARKUS_RESTEASY_PATH:/api}
@@ -92,3 +99,5 @@ quarkus:
           files: localhost.crt
           key-files: localhost.key
       insecure-requests: redirect
+    log:
+      level: INFO
