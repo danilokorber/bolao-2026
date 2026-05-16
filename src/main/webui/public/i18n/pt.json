@@ -96,6 +96,12 @@
       "loading": "Carregando resultados...",
       "noData": "Ainda não há resultados."
     },
+    "liveMatches": {
+      "title": "AO VIVO",
+      "latestTitle": "Partidas em andamento",
+      "loading": "Carregando partidas ao vivo...",
+      "noData": "Nenhuma partida ao vivo."
+    },
     "upcomingMatches": {
       "title": "Próximas Partidas",
       "latestTitle": "Últimas Partidas",

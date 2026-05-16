@@ -1,3 +1,4 @@
+import { LiveMatchesCard } from './../components/live-matches-card';
 import { httpResource } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -13,7 +14,14 @@ import { SignalStore } from '../store/signal-store';
 
 @Component({
   selector: 'dashboard',
-  imports: [RankingCard, RecentResultsCard, UpcomingMatchesCard, TranslocoPipe, RouterLink],
+  imports: [
+    RankingCard,
+    RecentResultsCard,
+    LiveMatchesCard,
+    UpcomingMatchesCard,
+    TranslocoPipe,
+    RouterLink,
+  ],
   templateUrl: './dashboard.html',
   styles: ``,
 })
@@ -22,7 +30,9 @@ export class Dashboard {
   private userId = computed(() => this.store.appuser()?.id);
   private poolId = computed(() => this.store.currentPoolId?.());
 
-  matchesPage = httpResource<PagedResponse<Match>>(() => API.MATCHES.GET_ALL(this.userId(), 0, 200));
+  matchesPage = httpResource<PagedResponse<Match>>(() =>
+    API.MATCHES.GET_ALL(this.userId(), 0, 200),
+  );
 
   ranking = httpResource<RankingEntry[]>(() => {
     const pid = this.poolId();
@@ -49,8 +59,13 @@ export class Dashboard {
   championBetComplete = computed(() => {
     const bet = resourceValueOr404(this.championBetResource);
     if (!bet) return false;
-    return !!(bet.championTeamId && bet.runnerUpTeamId &&
-      bet.semifinalist1TeamId && bet.semifinalist2TeamId &&
-      bet.semifinalist3TeamId && bet.semifinalist4TeamId);
+    return !!(
+      bet.championTeamId &&
+      bet.runnerUpTeamId &&
+      bet.semifinalist1TeamId &&
+      bet.semifinalist2TeamId &&
+      bet.semifinalist3TeamId &&
+      bet.semifinalist4TeamId
+    );
   });
 }

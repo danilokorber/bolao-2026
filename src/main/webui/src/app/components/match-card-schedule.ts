@@ -1,7 +1,7 @@
 import { DatePipe, JsonPipe } from '@angular/common';
 import { Component, inject, input, linkedSignal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Bet, Match, MatchStage } from '@interfaces/index';
+import { Bet, Match, MatchStage, MatchStatus } from '@interfaces/index';
 import { ScoreService } from '@services/score.service';
 import { utcDate } from '@utils/date-utils';
 
@@ -18,8 +18,9 @@ import { utcDate } from '@utils/date-utils';
       [class.dark:text-gray-900]="!startIsInThePast()"
     >
       {{ phase() }}&nbsp;&nbsp;•&nbsp;&nbsp;
-      @if (startIsInThePast()) {
-        {{ match().stage }}&nbsp;&nbsp;•&nbsp;&nbsp;
+      @if (isLive()) {
+        ⏱️ 17"
+      } @else if (startIsInThePast()) {
         {{ bet()?.pointsEarned ?? 0 }}
         {{
           bet()?.pointsEarned != 1
@@ -63,8 +64,13 @@ export class MatchCardSchedule {
 
   formatMatchDate = linkedSignal(() => {
     const datePipe = new DatePipe('en-US');
-    return datePipe.transform(utcDate(this.match().matchDatetime), 'dd-MMM-yyyy HH:mm')?.toUpperCase() || '';
+    return (
+      datePipe.transform(utcDate(this.match().matchDatetime), 'dd-MMM-yyyy HH:mm')?.toUpperCase() ||
+      ''
+    );
   });
+
+  isLive = linkedSignal(() => this.match().status == MatchStatus.LIVE);
 
   startIsInThePast = linkedSignal(() => {
     const NOW = new Date().getTime();

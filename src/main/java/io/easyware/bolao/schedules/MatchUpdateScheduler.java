@@ -60,7 +60,12 @@ public class MatchUpdateScheduler {
 
         try {
             FootballDataResponse response = footballDataClient.getWorldCupMatches();
-            log.info("Fetched {} matches from football-data.org", response.getMatches().size());
+
+            long liveCount = response.getMatches().stream()
+                    .filter(m -> "IN_PLAY".equals(m.getStatus()) || "PAUSED".equals(m.getStatus()))
+                    .count();
+            log.info("Fetched {} matches from football-data.org ({} currently live)",
+                    response.getMatches().size(), liveCount);
 
             List<UUID> changedMatchIds = footballDataService.updateAllMatches(response);
 

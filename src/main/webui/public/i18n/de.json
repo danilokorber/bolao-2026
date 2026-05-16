@@ -96,6 +96,12 @@
       "loading": "Ergebnisse werden geladen...",
       "noData": "Noch keine Ergebnisse."
     },
+    "liveMatches": {
+      "title": "LIVE",
+      "latestTitle": "Spiele im Verlauf",
+      "loading": "Live Spiele werden geladen...",
+      "noData": "Keine Spiele im Verlauf."
+    },
     "upcomingMatches": {
       "title": "Kommende Spiele",
       "latestTitle": "Letzte Spiele",

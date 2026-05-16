@@ -101,7 +101,12 @@ public class FootballDataService {
             return Optional.of(match.getId());
         }
 
-        log.debug("Updated match {} from football-data.org (status: {}, no score change)", footballDataId, newStatus);
+        if (newStatus == MatchStatus.LIVE) {
+            log.info("LIVE match {} (football-data: {}) — current score: {}–{} (no change)",
+                    match.getMatchId(), footballDataId, match.getHomeGoals(), match.getAwayGoals());
+        } else {
+            log.debug("Updated match {} from football-data.org (status: {}, no score change)", footballDataId, newStatus);
+        }
         return Optional.empty();
     }
 

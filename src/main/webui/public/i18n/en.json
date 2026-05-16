@@ -96,6 +96,12 @@
       "loading": "Loading results...",
       "noData": "No results yet."
     },
+    "liveMatches": {
+      "title": "LIVE",
+      "latestTitle": "Ongoing matches",
+      "loading": "Loading ongoing matches...",
+      "noData": "No ongoing match."
+    },
     "upcomingMatches": {
       "title": "Upcoming Matches",
       "latestTitle": "Latest Matches",

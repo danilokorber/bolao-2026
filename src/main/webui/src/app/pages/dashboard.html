@@ -51,15 +51,23 @@
     }
   </div>
 
+  <!-- Live matches -->
+  @if (matchesPage.isLoading()) {
+    <div class="col-span-full">
+      <p>{{ 'dashboard.upcomingMatches.loading' | transloco }}</p>
+    </div>
+  } @else if (matchesPage.hasValue() && betsPage.hasValue()) {
+    <div class="col-span-full">
+      <live-matches-card [matches]="matches()" [bets]="bets()"></live-matches-card>
+    </div>
+  }
+
   <!-- Upcoming matches -->
   <div class="col-span-full">
     @if (matchesPage.isLoading()) {
       <p>{{ 'dashboard.upcomingMatches.loading' | transloco }}</p>
     } @else if (matchesPage.hasValue() && betsPage.hasValue()) {
-      <upcoming-matches-card
-        [matches]="matches()"
-        [bets]="bets()"
-      ></upcoming-matches-card>
+      <upcoming-matches-card [matches]="matches()" [bets]="bets()"></upcoming-matches-card>
     }
   </div>
 </div>
