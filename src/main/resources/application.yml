@@ -22,7 +22,7 @@ quarkus:
   #    enabled: false
 
   flyway:
-    clean-at-start: true
+    clean-at-start: false
     migrate-at-start: true
     locations: db
 
@@ -83,7 +83,7 @@ quarkus:
 "%dev":
   quarkus:
     flyway:
-      clean-at-start: false
+      clean-at-start: true
     http:
       port: 8050
       ssl-port: 8183

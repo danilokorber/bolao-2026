@@ -924,8 +924,12 @@ INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (
 
 
 -- =============================================
--- PART 4: Bets for user (019d5db1)
+-- PART 4: Bets for user (019d5e7f)
 -- =============================================
+
+INSERT INTO app_user (id, keycloak_id, name, email, created_at, active)
+VALUES ('019d5e7f-c13b-7a17-822d-7a1a57e614bf', 'mock-keycloak-carlos', 'Carlos Mendes', 'carlos@bolao.test', CURRENT_TIMESTAMP, TRUE)
+ON CONFLICT (id) DO NOTHING;
 
 DELETE FROM bet WHERE user_id = '019d5e7f-c13b-7a17-822d-7a1a57e614bf';
 
