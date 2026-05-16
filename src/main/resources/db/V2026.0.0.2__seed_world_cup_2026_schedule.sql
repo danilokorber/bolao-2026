@@ -1,9 +1,9 @@
 
--- Flyway Migration: V2__seed_world_cup_2026_schedule.sql
+-- Flyway Migration: V2026.0.0.2__seed_world_cup_2026_schedule.sql
 -- =====================================================
 -- Purpose: Seed the 2026 FIFA World Cup full schedule (all 104 matches)
---          with UTC/GMT kickoff times, add THIRD_PLACE to stage check,
---          and create all 48 participants (42 confirmed + 6 playoff placeholders),
+--          with UTC/GMT kickoff times
+--          and create all 48 participants,
 --          plus knockout slot placeholders.
 -- Engine : PostgreSQL (uuid-ossp required)
 -- Author : M365 Copilot
@@ -24,16 +24,6 @@
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Extend match.stage to include THIRD_PLACE
-ALTER TABLE match
-  DROP CONSTRAINT IF EXISTS chk_match_stage;
-
-ALTER TABLE match
-  ADD CONSTRAINT chk_match_stage CHECK (stage IN (
-    'GROUP_A','GROUP_B','GROUP_C','GROUP_D','GROUP_E','GROUP_F',
-    'GROUP_G','GROUP_H','GROUP_I','GROUP_J','GROUP_K','GROUP_L',
-    'ROUND_OF_32','ROUND_OF_16','QUARTER_FINALS','SEMI_FINALS','FINAL','THIRD_PLACE'
-));
 -- -----------------------------------------------------
 -- Participants (42 confirmed + 6 playoff placeholders = 48)
 -- -----------------------------------------------------
@@ -41,11 +31,11 @@ ALTER TABLE match
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Mexico', 'Mexiko', 'México', 'MEX', 'https://flagcdn.com/w320/mx.png', 'GROUP_A') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'South Africa', 'Südafrika', 'África do Sul', 'RSA', 'https://flagcdn.com/w320/za.png', 'GROUP_A') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Korea Republic', 'Südkorea', 'Coreia do Sul', 'KOR', 'https://flagcdn.com/w320/kr.png', 'GROUP_A') ON CONFLICT (fifa_code) DO NOTHING;
-INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'UEFA Play-off D', 'UEFA Play-off D', 'Play-off D da UEFA', 'UED', NULL, 'GROUP_A') ON CONFLICT (fifa_code) DO NOTHING;
+INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Czechia', 'Tschechien', 'Tchéquia', 'CZE', 'https://flagcdn.com/w320/cz.png', 'GROUP_A') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Canada', 'Kanada', 'Canadá', 'CAN', 'https://flagcdn.com/w320/ca.png', 'GROUP_B') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Switzerland', 'Schweiz', 'Suíça', 'SUI', 'https://flagcdn.com/w320/ch.png', 'GROUP_B') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Qatar', 'Katar', 'Catar', 'QAT', 'https://flagcdn.com/w320/qa.png', 'GROUP_B') ON CONFLICT (fifa_code) DO NOTHING;
-INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'UEFA Play-off A', 'UEFA Play-off A', 'Play-off A da UEFA', 'UEA', NULL, 'GROUP_B') ON CONFLICT (fifa_code) DO NOTHING;
+INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Bosnia and Herzegovina', 'Bosnien und Herzegowina', 'Bósnia e Herzegovina', 'BIH', 'https://flagcdn.com/w320/ba.png', 'GROUP_B') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Brazil', 'Brasilien', 'Brasil', 'BRA', 'https://flagcdn.com/w320/br.png', 'GROUP_C') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Morocco', 'Marokko', 'Marrocos', 'MAR', 'https://flagcdn.com/w320/ma.png', 'GROUP_C') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Scotland', 'Schottland', 'Escócia', 'SCO', 'https://flagcdn.com/w320/gb-sct.png', 'GROUP_C') ON CONFLICT (fifa_code) DO NOTHING;
@@ -53,7 +43,7 @@ INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'USA', 'USA', 'EUA', 'USA', 'https://flagcdn.com/w320/us.png', 'GROUP_D') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Australia', 'Australien', 'Austrália', 'AUS', 'https://flagcdn.com/w320/au.png', 'GROUP_D') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Paraguay', 'Paraguay', 'Paraguai', 'PAR', 'https://flagcdn.com/w320/py.png', 'GROUP_D') ON CONFLICT (fifa_code) DO NOTHING;
-INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'UEFA Play-off C', 'UEFA Play-off C', 'Play-off C da UEFA', 'UEC', NULL, 'GROUP_D') ON CONFLICT (fifa_code) DO NOTHING;
+INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Türkiye', 'Türkei', 'Turquia', 'TUR', 'https://flagcdn.com/w320/tr.png', 'GROUP_D') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Germany', 'Deutschland', 'Alemanha', 'GER', 'https://flagcdn.com/w320/de.png', 'GROUP_E') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Ecuador', 'Ecuador', 'Equador', 'ECU', 'https://flagcdn.com/w320/ec.png', 'GROUP_E') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Cote d''Ivoire', 'Elfenbeinküste', 'Costa do Marfim', 'CIV', 'https://flagcdn.com/w320/ci.png', 'GROUP_E') ON CONFLICT (fifa_code) DO NOTHING;
@@ -61,7 +51,7 @@ INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Netherlands', 'Niederlande', 'Países Baixos', 'NED', 'https://flagcdn.com/w320/nl.png', 'GROUP_F') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Japan', 'Japan', 'Japão', 'JPN', 'https://flagcdn.com/w320/jp.png', 'GROUP_F') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Tunisia', 'Tunesien', 'Tunísia', 'TUN', 'https://flagcdn.com/w320/tn.png', 'GROUP_F') ON CONFLICT (fifa_code) DO NOTHING;
-INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'UEFA Play-off B', 'UEFA Play-off B', 'Play-off B da UEFA', 'UEB', NULL, 'GROUP_F') ON CONFLICT (fifa_code) DO NOTHING;
+INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Sweden', 'Schweden', 'Suécia', 'SWE', 'https://flagcdn.com/w320/se.png', 'GROUP_F') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Belgium', 'Belgien', 'Bélgica', 'BEL', 'https://flagcdn.com/w320/be.png', 'GROUP_G') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'IR Iran', 'Iran', 'Irã', 'IRN', 'https://flagcdn.com/w320/ir.png', 'GROUP_G') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Egypt', 'Ägypten', 'Egito', 'EGY', 'https://flagcdn.com/w320/eg.png', 'GROUP_G') ON CONFLICT (fifa_code) DO NOTHING;
@@ -73,7 +63,7 @@ INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'France', 'Frankreich', 'França', 'FRA', 'https://flagcdn.com/w320/fr.png', 'GROUP_I') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Senegal', 'Senegal', 'Senegal', 'SEN', 'https://flagcdn.com/w320/sn.png', 'GROUP_I') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Norway', 'Norwegen', 'Noruega', 'NOR', 'https://flagcdn.com/w320/no.png', 'GROUP_I') ON CONFLICT (fifa_code) DO NOTHING;
-INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Inter-confed Play-off 2', 'Interkonföderation Play-off 2', 'Play-off Interconfederação 2', 'IC2', NULL, 'GROUP_I') ON CONFLICT (fifa_code) DO NOTHING;
+INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Iraq', 'Irak', 'Iraque', 'IRQ', 'https://flagcdn.com/w320/iq.png', 'GROUP_I') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Argentina', 'Argentinien', 'Argentina', 'ARG', 'https://flagcdn.com/w320/ar.png', 'GROUP_J') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Austria', 'Österreich', 'Áustria', 'AUT', 'https://flagcdn.com/w320/at.png', 'GROUP_J') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Algeria', 'Algerien', 'Argélia', 'ALG', 'https://flagcdn.com/w320/dz.png', 'GROUP_J') ON CONFLICT (fifa_code) DO NOTHING;
@@ -81,7 +71,7 @@ INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Portugal', 'Portugal', 'Portugal', 'POR', 'https://flagcdn.com/w320/pt.png', 'GROUP_K') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Colombia', 'Kolumbien', 'Colômbia', 'COL', 'https://flagcdn.com/w320/co.png', 'GROUP_K') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Uzbekistan', 'Usbekistan', 'Uzbequistão', 'UZB', 'https://flagcdn.com/w320/uz.png', 'GROUP_K') ON CONFLICT (fifa_code) DO NOTHING;
-INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Inter-confed Play-off 1', 'Interkonföderation Play-off 1', 'Play-off Interconfederação 1', 'IC1', NULL, 'GROUP_K') ON CONFLICT (fifa_code) DO NOTHING;
+INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'DR Congo', 'DR Kongo', 'RD Congo', 'COD', 'https://flagcdn.com/w320/cd.png', 'GROUP_K') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'England', 'England', 'Inglaterra', 'ENG', 'https://flagcdn.com/w320/gb-eng.png', 'GROUP_L') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Croatia', 'Kroatien', 'Croácia', 'CRO', 'https://flagcdn.com/w320/hr.png', 'GROUP_L') ON CONFLICT (fifa_code) DO NOTHING;
 INSERT INTO team (id, name_en, name_de, name_pt, fifa_code, flag_url, group_name) VALUES (uuid_generate_v4(), 'Panama', 'Panama', 'Panamá', 'PAN', 'https://flagcdn.com/w320/pa.png', 'GROUP_L') ON CONFLICT (fifa_code) DO NOTHING;
@@ -168,12 +158,12 @@ SELECT uuid_generate_v4(),  1, 537327,
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  2, 537328,
        (SELECT id FROM team WHERE fifa_code='KOR'),
-       (SELECT id FROM team WHERE fifa_code='UED'),
+       (SELECT id FROM team WHERE fifa_code='CZE'),
        ((TIMESTAMP '2026-06-11 22:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_A','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  3, 537333,
-       (SELECT id FROM team WHERE fifa_code='UED'),
+       (SELECT id FROM team WHERE fifa_code='CZE'),
        (SELECT id FROM team WHERE fifa_code='RSA'),
        ((TIMESTAMP '2026-06-18 12:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_A','SCHEDULED';
@@ -185,7 +175,7 @@ SELECT uuid_generate_v4(),  4, 537345,
        'GROUP_A','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  5, 537346,
-       (SELECT id FROM team WHERE fifa_code='UED'),
+       (SELECT id FROM team WHERE fifa_code='CZE'),
        (SELECT id FROM team WHERE fifa_code='MEX'),
        ((TIMESTAMP '2026-06-24 21:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_A','SCHEDULED';
@@ -198,7 +188,7 @@ SELECT uuid_generate_v4(),  6, 537334,
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  7, 537339,
        (SELECT id FROM team WHERE fifa_code='CAN'),
-       (SELECT id FROM team WHERE fifa_code='UEA'),
+       (SELECT id FROM team WHERE fifa_code='BIH'),
        ((TIMESTAMP '2026-06-12 15:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_B','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
@@ -210,7 +200,7 @@ SELECT uuid_generate_v4(),  8, 537340,
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  9, 537351,
        (SELECT id FROM team WHERE fifa_code='SUI'),
-       (SELECT id FROM team WHERE fifa_code='UEA'),
+       (SELECT id FROM team WHERE fifa_code='BIH'),
        ((TIMESTAMP '2026-06-18 15:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_B','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
@@ -227,7 +217,7 @@ SELECT uuid_generate_v4(),  11, 537352,
        'GROUP_B','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  12, 537358,
-       (SELECT id FROM team WHERE fifa_code='UEA'),
+       (SELECT id FROM team WHERE fifa_code='BIH'),
        (SELECT id FROM team WHERE fifa_code='QAT'),
        ((TIMESTAMP '2026-06-24 15:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_B','SCHEDULED';
@@ -276,7 +266,7 @@ SELECT uuid_generate_v4(),  19, 537397,
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  20, 537398,
        (SELECT id FROM team WHERE fifa_code='AUS'),
-       (SELECT id FROM team WHERE fifa_code='UEC'),
+       (SELECT id FROM team WHERE fifa_code='TUR'),
        ((TIMESTAMP '2026-06-13 00:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_D','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
@@ -287,13 +277,13 @@ SELECT uuid_generate_v4(),  21, 537403,
        'GROUP_D','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  22, 537409,
-       (SELECT id FROM team WHERE fifa_code='UEC'),
+       (SELECT id FROM team WHERE fifa_code='TUR'),
        (SELECT id FROM team WHERE fifa_code='PAR'),
        ((TIMESTAMP '2026-06-19 00:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_D','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  23, 537410,
-       (SELECT id FROM team WHERE fifa_code='UEC'),
+       (SELECT id FROM team WHERE fifa_code='TUR'),
        (SELECT id FROM team WHERE fifa_code='USA'),
        ((TIMESTAMP '2026-06-25 22:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_D','SCHEDULED';
@@ -347,14 +337,14 @@ SELECT uuid_generate_v4(),  31, 537342,
        'GROUP_F','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  32, 537341,
-       (SELECT id FROM team WHERE fifa_code='UEB'),
+       (SELECT id FROM team WHERE fifa_code='SWE'),
        (SELECT id FROM team WHERE fifa_code='TUN'),
        ((TIMESTAMP '2026-06-14 22:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_F','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  33, 537360,
        (SELECT id FROM team WHERE fifa_code='NED'),
-       (SELECT id FROM team WHERE fifa_code='UEB'),
+       (SELECT id FROM team WHERE fifa_code='SWE'),
        ((TIMESTAMP '2026-06-20 13:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_F','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
@@ -366,7 +356,7 @@ SELECT uuid_generate_v4(),  34, 537359,
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  35, 537353,
        (SELECT id FROM team WHERE fifa_code='JPN'),
-       (SELECT id FROM team WHERE fifa_code='UEB'),
+       (SELECT id FROM team WHERE fifa_code='SWE'),
        ((TIMESTAMP '2026-06-25 19:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_F','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
@@ -455,14 +445,14 @@ SELECT uuid_generate_v4(),  49, 537337,
        'GROUP_I','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  50, 537338,
-       (SELECT id FROM team WHERE fifa_code='IC2'),
+       (SELECT id FROM team WHERE fifa_code='IRQ'),
        (SELECT id FROM team WHERE fifa_code='NOR'),
        ((TIMESTAMP '2026-06-16 18:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_I','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  51, 537344,
        (SELECT id FROM team WHERE fifa_code='FRA'),
-       (SELECT id FROM team WHERE fifa_code='IC2'),
+       (SELECT id FROM team WHERE fifa_code='IRQ'),
        ((TIMESTAMP '2026-06-22 17:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_I','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
@@ -480,7 +470,7 @@ SELECT uuid_generate_v4(),  53, 537331,
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  54, 537332,
        (SELECT id FROM team WHERE fifa_code='SEN'),
-       (SELECT id FROM team WHERE fifa_code='IC2'),
+       (SELECT id FROM team WHERE fifa_code='IRQ'),
        ((TIMESTAMP '2026-06-26 15:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_I','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
@@ -522,7 +512,7 @@ SELECT uuid_generate_v4(),  60, 537350,
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  61, 537395,
        (SELECT id FROM team WHERE fifa_code='POR'),
-       (SELECT id FROM team WHERE fifa_code='IC1'),
+       (SELECT id FROM team WHERE fifa_code='COD'),
        ((TIMESTAMP '2026-06-17 13:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_K','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
@@ -540,7 +530,7 @@ SELECT uuid_generate_v4(),  63, 537373,
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  64, 537374,
        (SELECT id FROM team WHERE fifa_code='COL'),
-       (SELECT id FROM team WHERE fifa_code='IC1'),
+       (SELECT id FROM team WHERE fifa_code='COD'),
        ((TIMESTAMP '2026-06-23 22:00:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_K','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
@@ -551,7 +541,7 @@ SELECT uuid_generate_v4(),  65, 537367,
        'GROUP_K','SCHEDULED';
 INSERT INTO match (id, match_id, football_data_match_id, home_team_id, away_team_id, match_datetime, stage, status)
 SELECT uuid_generate_v4(),  66, 537368,
-       (SELECT id FROM team WHERE fifa_code='IC1'),
+       (SELECT id FROM team WHERE fifa_code='COD'),
        (SELECT id FROM team WHERE fifa_code='UZB'),
        ((TIMESTAMP '2026-06-27 19:30:00' AT TIME ZONE 'America/New_York') AT TIME ZONE 'UTC'),
        'GROUP_K','SCHEDULED';

@@ -1,18 +1,190 @@
--- Flyway Migration: V2026.0.0.6__mock_knockout_results_and_bets.sql
--- =====================================================
--- Purpose: Complete the World Cup 2026 mock data:
---   1. Assign real teams and results to knockout matches 73-104
---   2. Add 3 additional mock users
---   3. Insert bets for existing mock user (knockout matches 73-104)
---   4. Insert bets for 3 new users (all 104 matches)
--- Engine : PostgreSQL (uuid-ossp required)
--- =====================================================
+-- Flyway Migration: V2026.0.0.4__mock_data.sql
+-- =============================================
+-- Purpose: Mock data for development/testing.
+--          Includes group stage results, knockout results,
+--          and bets for test users.
+-- =============================================
 
--- =====================================================
--- SECTION 1: Update knockout matches with real teams and results
--- =====================================================
+-- =============================================
+-- PART 1: Mock group stage results
+-- =============================================
 
--- Round of 32
+UPDATE match SET home_goals = 2, away_goals = 0, status = 'FINISHED' WHERE match_id = 1;  -- MEX 2-0 RSA
+UPDATE match SET home_goals = 1, away_goals = 0, status = 'FINISHED' WHERE match_id = 2;  -- KOR 1-0 CZE
+UPDATE match SET home_goals = 2, away_goals = 2, status = 'FINISHED' WHERE match_id = 3;  -- CZE 2-2 RSA
+UPDATE match SET home_goals = 3, away_goals = 0, status = 'FINISHED' WHERE match_id = 4;  -- MEX 3-0 KOR
+UPDATE match SET home_goals = 1, away_goals = 0, status = 'FINISHED' WHERE match_id = 5;  -- CZE 1-0 MEX
+UPDATE match SET home_goals = 0, away_goals = 2, status = 'FINISHED' WHERE match_id = 6;  -- RSA 0-2 KOR
+
+UPDATE match SET home_goals = 0, away_goals = 0, status = 'FINISHED' WHERE match_id = 7;  -- CAN 0-0 BIH
+UPDATE match SET home_goals = 1, away_goals = 2, status = 'FINISHED' WHERE match_id = 8;  -- QAT 1-2 SUI
+UPDATE match SET home_goals = 1, away_goals = 1, status = 'FINISHED' WHERE match_id = 9;  -- SUI 1-1 BIH
+UPDATE match SET home_goals = 3, away_goals = 0, status = 'FINISHED' WHERE match_id = 10; -- CAN 3-0 QAT
+UPDATE match SET home_goals = 2, away_goals = 2, status = 'FINISHED' WHERE match_id = 11; -- SUI 2-2 CAN
+UPDATE match SET home_goals = 1, away_goals = 0, status = 'FINISHED' WHERE match_id = 12; -- BIH 1-0 QAT
+
+UPDATE match SET home_goals = 3, away_goals = 0, status = 'FINISHED' WHERE match_id = 13; -- BRA 3-0 MAR
+UPDATE match SET home_goals = 0, away_goals = 0, status = 'FINISHED' WHERE match_id = 14; -- HAI 0-0 SCO
+UPDATE match SET home_goals = 2, away_goals = 2, status = 'FINISHED' WHERE match_id = 15; -- SCO 2-2 MAR
+UPDATE match SET home_goals = 4, away_goals = 1, status = 'FINISHED' WHERE match_id = 16; -- BRA 4-1 HAI
+UPDATE match SET home_goals = 1, away_goals = 4, status = 'FINISHED' WHERE match_id = 17; -- SCO 1-4 BRA
+UPDATE match SET home_goals = 1, away_goals = 1, status = 'FINISHED' WHERE match_id = 18; -- MAR 1-1 HAI
+
+UPDATE match SET home_goals = 3, away_goals = 1, status = 'FINISHED' WHERE match_id = 19; -- USA 3-1 PAR
+UPDATE match SET home_goals = 2, away_goals = 2, status = 'FINISHED' WHERE match_id = 20; -- AUS 2-2 TUR
+UPDATE match SET home_goals = 2, away_goals = 0, status = 'FINISHED' WHERE match_id = 21; -- USA 2-0 AUS
+UPDATE match SET home_goals = 1, away_goals = 0, status = 'FINISHED' WHERE match_id = 22; -- TUR 1-0 PAR
+UPDATE match SET home_goals = 0, away_goals = 1, status = 'FINISHED' WHERE match_id = 23; -- TUR 0-1 USA
+UPDATE match SET home_goals = 0, away_goals = 1, status = 'FINISHED' WHERE match_id = 24; -- PAR 0-1 AUS
+
+UPDATE match SET home_goals = 3, away_goals = 0, status = 'FINISHED' WHERE match_id = 25; -- GER 3-0 CUW
+UPDATE match SET home_goals = 1, away_goals = 1, status = 'FINISHED' WHERE match_id = 26; -- CIV 1-1 ECU
+UPDATE match SET home_goals = 2, away_goals = 2, status = 'FINISHED' WHERE match_id = 27; -- GER 2-2 CIV
+UPDATE match SET home_goals = 2, away_goals = 1, status = 'FINISHED' WHERE match_id = 28; -- ECU 2-1 CUW
+UPDATE match SET home_goals = 0, away_goals = 3, status = 'FINISHED' WHERE match_id = 29; -- ECU 0-3 GER
+UPDATE match SET home_goals = 0, away_goals = 1, status = 'FINISHED' WHERE match_id = 30; -- CUW 0-1 CIV
+
+UPDATE match SET home_goals = 3, away_goals = 1, status = 'FINISHED' WHERE match_id = 31; -- NED 3-1 JPN
+UPDATE match SET home_goals = 2, away_goals = 1, status = 'FINISHED' WHERE match_id = 32; -- SWE 2-1 TUN
+UPDATE match SET home_goals = 3, away_goals = 1, status = 'FINISHED' WHERE match_id = 33; -- NED 3-1 SWE
+UPDATE match SET home_goals = 0, away_goals = 0, status = 'FINISHED' WHERE match_id = 34; -- TUN 0-0 JPN
+UPDATE match SET home_goals = 1, away_goals = 1, status = 'FINISHED' WHERE match_id = 35; -- JPN 1-1 SWE
+UPDATE match SET home_goals = 0, away_goals = 4, status = 'FINISHED' WHERE match_id = 36; -- TUN 0-4 NED
+
+UPDATE match SET home_goals = 3, away_goals = 1, status = 'FINISHED' WHERE match_id = 37; -- IRN 3-1 NZL
+UPDATE match SET home_goals = 2, away_goals = 1, status = 'FINISHED' WHERE match_id = 38; -- BEL 2-1 EGY
+UPDATE match SET home_goals = 4, away_goals = 0, status = 'FINISHED' WHERE match_id = 39; -- BEL 4-0 IRN
+UPDATE match SET home_goals = 0, away_goals = 1, status = 'FINISHED' WHERE match_id = 40; -- NZL 0-1 EGY
+UPDATE match SET home_goals = 2, away_goals = 0, status = 'FINISHED' WHERE match_id = 41; -- EGY 2-0 IRN
+UPDATE match SET home_goals = 1, away_goals = 4, status = 'FINISHED' WHERE match_id = 42; -- NZL 1-4 BEL
+
+UPDATE match SET home_goals = 2, away_goals = 0, status = 'FINISHED' WHERE match_id = 43; -- ESP 2-0 CPV
+UPDATE match SET home_goals = 2, away_goals = 2, status = 'FINISHED' WHERE match_id = 44; -- KSA 2-2 URU
+UPDATE match SET home_goals = 1, away_goals = 0, status = 'FINISHED' WHERE match_id = 45; -- ESP 1-0 KSA
+UPDATE match SET home_goals = 1, away_goals = 1, status = 'FINISHED' WHERE match_id = 46; -- URU 1-1 CPV
+UPDATE match SET home_goals = 2, away_goals = 1, status = 'FINISHED' WHERE match_id = 47; -- CPV 2-1 KSA
+UPDATE match SET home_goals = 0, away_goals = 2, status = 'FINISHED' WHERE match_id = 48; -- URU 0-2 ESP
+
+UPDATE match SET home_goals = 3, away_goals = 1, status = 'FINISHED' WHERE match_id = 49; -- FRA 3-1 SEN
+UPDATE match SET home_goals = 3, away_goals = 3, status = 'FINISHED' WHERE match_id = 50; -- IRQ 3-3 NOR
+UPDATE match SET home_goals = 1, away_goals = 1, status = 'FINISHED' WHERE match_id = 51; -- FRA 1-1 IRQ
+UPDATE match SET home_goals = 1, away_goals = 2, status = 'FINISHED' WHERE match_id = 52; -- NOR 1-2 SEN
+UPDATE match SET home_goals = 0, away_goals = 3, status = 'FINISHED' WHERE match_id = 53; -- NOR 0-3 FRA
+UPDATE match SET home_goals = 1, away_goals = 1, status = 'FINISHED' WHERE match_id = 54; -- SEN 1-1 IRQ
+
+UPDATE match SET home_goals = 3, away_goals = 2, status = 'FINISHED' WHERE match_id = 55; -- ARG 3-2 ALG
+UPDATE match SET home_goals = 3, away_goals = 0, status = 'FINISHED' WHERE match_id = 56; -- AUT 3-0 JOR
+UPDATE match SET home_goals = 2, away_goals = 0, status = 'FINISHED' WHERE match_id = 57; -- ARG 2-0 AUT
+UPDATE match SET home_goals = 3, away_goals = 3, status = 'FINISHED' WHERE match_id = 58; -- JOR 3-3 ALG
+UPDATE match SET home_goals = 0, away_goals = 2, status = 'FINISHED' WHERE match_id = 59; -- ALG 0-2 AUT
+UPDATE match SET home_goals = 1, away_goals = 2, status = 'FINISHED' WHERE match_id = 60; -- JOR 1-2 ARG
+
+UPDATE match SET home_goals = 3, away_goals = 1, status = 'FINISHED' WHERE match_id = 61; -- POR 3-1 COD
+UPDATE match SET home_goals = 2, away_goals = 2, status = 'FINISHED' WHERE match_id = 62; -- UZB 2-2 COL
+UPDATE match SET home_goals = 1, away_goals = 0, status = 'FINISHED' WHERE match_id = 63; -- POR 1-0 UZB
+UPDATE match SET home_goals = 0, away_goals = 2, status = 'FINISHED' WHERE match_id = 64; -- COL 0-2 COD
+UPDATE match SET home_goals = 2, away_goals = 3, status = 'FINISHED' WHERE match_id = 65; -- COL 2-3 POR
+UPDATE match SET home_goals = 1, away_goals = 0, status = 'FINISHED' WHERE match_id = 66; -- COD 1-0 UZB
+
+UPDATE match SET home_goals = 3, away_goals = 2, status = 'FINISHED' WHERE match_id = 67; -- ENG 3-2 CRO
+UPDATE match SET home_goals = 0, away_goals = 1, status = 'FINISHED' WHERE match_id = 68; -- GHA 0-1 PAN
+UPDATE match SET home_goals = 1, away_goals = 1, status = 'FINISHED' WHERE match_id = 69; -- ENG 1-1 GHA
+UPDATE match SET home_goals = 2, away_goals = 1, status = 'FINISHED' WHERE match_id = 70; -- PAN 2-1 CRO
+UPDATE match SET home_goals = 0, away_goals = 3, status = 'FINISHED' WHERE match_id = 71; -- PAN 0-3 ENG
+UPDATE match SET home_goals = 1, away_goals = 2, status = 'FINISHED' WHERE match_id = 72; -- CRO 1-2 GHA
+
+
+-- =============================================
+-- PART 2: Mock bets for user (019d4a2a)
+-- =============================================
+
+INSERT INTO app_user (id, keycloak_id, name, email, created_at, active)
+VALUES ('019d59db-4f87-7fe7-86bd-601c70867ea9',
+        'mock-keycloak-019d59db',
+        'Mock User',
+        'mock@bolao.test',
+        CURRENT_TIMESTAMP,
+        TRUE)
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 1),  1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 2),  0, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 3),  3, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 4),  3, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 5),  1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 6),  0, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 7),  0, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 8),  2, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 9),  0, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 10), 1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 11), 2, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 12), 0, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 13), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 14), 0, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 15), 1, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 16), 0, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 17), 0, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 18), 0, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 19), 4, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 20), 0, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 21), 0, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 22), 1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 23), 0, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 24), 0, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 25), 0, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 26), 1, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 27), 1, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 28), 3, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 29), 1, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 30), 1, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 31), 0, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 32), 0, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 33), 3, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 34), 2, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 35), 3, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 36), 0, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 37), 3, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 38), 1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 39), 4, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 40), 0, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 41), 0, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 42), 1, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 43), 0, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 44), 0, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 45), 1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 46), 3, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 47), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 48), 0, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 49), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 50), 1, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 51), 1, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 52), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 53), 3, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 54), 1, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 55), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 56), 1, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 57), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 58), 2, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 59), 3, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 60), 2, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 61), 0, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 62), 3, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 63), 1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 64), 1, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 65), 1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 66), 1, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 67), 0, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 68), 1, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 69), 1, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 70), 1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 71), 2, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe7-86bd-601c70867ea9', (SELECT id FROM match WHERE match_id = 72), 3, 1);
+
+
+-- =============================================
+-- PART 3: Mock knockout results and bets
+-- =============================================
+
 UPDATE match SET
     home_team_id = (SELECT id FROM team WHERE fifa_code = 'KOR'),
     away_team_id = (SELECT id FROM team WHERE fifa_code = 'SUI'),
@@ -749,3 +921,117 @@ INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (
 INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', (SELECT id FROM match WHERE match_id = 102),  1, 0);
 INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', (SELECT id FROM match WHERE match_id = 103),  3, 2);
 INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d59db-4f87-7fe8-0003-000000000003', (SELECT id FROM match WHERE match_id = 104),  2, 0);
+
+
+-- =============================================
+-- PART 4: Bets for user (019d5db1)
+-- =============================================
+
+DELETE FROM bet WHERE user_id = '019d5e7f-c13b-7a17-822d-7a1a57e614bf';
+
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 1), 0, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 2), 2, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 3), 1, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 4), 0, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 5), 0, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 6), 3, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 7), 0, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 8), 1, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 9), 4, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 10), 0, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 11), 1, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 12), 3, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 13), 3, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 14), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 15), 1, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 16), 2, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 17), 1, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 18), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 19), 0, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 20), 0, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 21), 2, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 22), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 23), 3, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 24), 0, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 25), 0, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 26), 2, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 27), 2, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 28), 1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 29), 0, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 30), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 31), 1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 32), 3, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 33), 3, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 34), 1, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 35), 2, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 36), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 37), 4, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 38), 4, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 39), 1, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 40), 3, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 41), 4, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 42), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 43), 1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 44), 2, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 45), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 46), 1, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 47), 2, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 48), 3, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 49), 3, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 50), 2, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 51), 1, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 52), 4, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 53), 4, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 54), 4, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 55), 2, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 56), 1, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 57), 3, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 58), 0, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 59), 1, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 60), 3, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 61), 0, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 62), 3, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 63), 3, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 64), 2, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 65), 0, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 66), 4, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 67), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 68), 2, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 69), 1, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 70), 0, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 71), 4, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 72), 4, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 73), 2, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 74), 4, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 75), 1, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 76), 1, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 77), 4, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 78), 4, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 79), 3, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 80), 0, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 81), 2, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 82), 0, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 83), 4, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 84), 0, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 85), 0, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 86), 1, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 87), 3, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 88), 1, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 89), 4, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 90), 3, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 91), 4, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 92), 2, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 93), 2, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 94), 4, 3);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 95), 0, 1);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 96), 1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 97), 2, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 98), 4, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 99), 1, 4);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 100), 1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 101), 0, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 102), 1, 0);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 103), 0, 2);
+INSERT INTO bet (id, user_id, match_id, home_goals_bet, away_goals_bet) VALUES (uuid_generate_v4(), '019d5e7f-c13b-7a17-822d-7a1a57e614bf', (SELECT id FROM match WHERE match_id = 104), 0, 4);
+
+

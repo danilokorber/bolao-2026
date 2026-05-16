@@ -1,4 +1,4 @@
--- Flyway Migration: V1__initial_schema.sql
+-- Flyway Migration: V2026.0.0.1__schema.sql
 
 -- =====================================================
 -- TEAMS
@@ -42,7 +42,7 @@ CREATE TABLE match (
                        CONSTRAINT chk_match_stage CHECK (stage IN (
                                                                    'GROUP_A', 'GROUP_B', 'GROUP_C', 'GROUP_D', 'GROUP_E', 'GROUP_F',
                                                                    'GROUP_G', 'GROUP_H', 'GROUP_I', 'GROUP_J', 'GROUP_K', 'GROUP_L',
-                                                                   'ROUND_OF_32', 'ROUND_OF_16', 'QUARTER_FINALS', 'SEMI_FINALS', 'FINAL'
+                                                                   'ROUND_OF_32', 'ROUND_OF_16', 'QUARTER_FINALS', 'SEMI_FINALS', 'FINAL', 'THIRD_PLACE'
                            )),
                        CONSTRAINT chk_match_status CHECK (status IN ('SCHEDULED', 'LIVE', 'FINISHED', 'CANCELLED'))
 );
@@ -146,11 +146,12 @@ CREATE TABLE bet (
                      winner_bet_id UUID,
                      points_earned INTEGER NOT NULL DEFAULT 0,
                      bet_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                     score_tier VARCHAR(10),
                      CONSTRAINT fk_bet_user FOREIGN KEY (user_id) REFERENCES app_user(id) ON DELETE CASCADE,
                      CONSTRAINT fk_bet_match FOREIGN KEY (match_id) REFERENCES match(id) ON DELETE CASCADE,
                      CONSTRAINT fk_bet_winner FOREIGN KEY (winner_bet_id) REFERENCES team(id),
                      CONSTRAINT chk_bet_goals CHECK (home_goals_bet >= 0 AND away_goals_bet >= 0),
-                     CONSTRAINT chk_bet_points CHECK (points_earned >= 0)
+                     CONSTRAINT chk_bet_points CHECK (points_earned >= -18)
 );
 
 CREATE INDEX idx_bet_user ON bet(user_id);
