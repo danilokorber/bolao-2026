@@ -1,9 +1,8 @@
 package io.easyware.bolao.dto.footballdata;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Getter
@@ -16,13 +15,13 @@ public class FootballDataMatch {
     private Competition competition;
     private Season season;
     private Long id;
-    private LocalDateTime utcDate;
+    private OffsetDateTime utcDate;
     private String status;
     private String venue;
     private Integer matchday;
     private String stage;
     private String group;
-    private LocalDateTime lastUpdated;
+    private OffsetDateTime lastUpdated;
     private Team homeTeam;
     private Team awayTeam;
     private Score score;
