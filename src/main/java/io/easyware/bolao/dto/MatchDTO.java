@@ -1,6 +1,6 @@
 package io.easyware.bolao.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import io.easyware.bolao.enums.MatchStage;
 import io.easyware.bolao.enums.MatchStatus;
 import jakarta.validation.constraints.Min;
@@ -30,7 +30,7 @@ public class MatchDTO {
     private TeamDTO awayTeam;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    @JsonbDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime matchDatetime;
 
     @NotNull

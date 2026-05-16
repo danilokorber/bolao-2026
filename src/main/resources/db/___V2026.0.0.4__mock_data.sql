@@ -1,4 +1,4 @@
--- Flyway Migration: V2026.0.0.4__mock_data.sql
+-- Flyway Migration: ___V2026.0.0.4__mock_data.sql
 -- =============================================
 -- Purpose: Mock data for development/testing.
 --          Includes group stage results, knockout results,

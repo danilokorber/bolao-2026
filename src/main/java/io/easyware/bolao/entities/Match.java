@@ -36,11 +36,11 @@ public class Match {
     @Column(name = "football_data_match_id", unique = true)
     private Integer footballDataMatchId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "home_team_id", nullable = false)
     private Team homeTeam;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "away_team_id", nullable = false)
     private Team awayTeam;
 
@@ -65,7 +65,7 @@ public class Match {
     @Builder.Default
     private Boolean wentToPenalties = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "winner_id")
     private Team winner;
 
