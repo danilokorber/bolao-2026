@@ -72,9 +72,6 @@ public class ScoreCalculationService {
     @Inject
     ChampionBetRepository championBetRepository;
 
-    @Inject
-    BonusCalculationService bonusCalculationService;
-
     /**
      * Calculates and persists points for all bets on the given matches.
      * Only processes matches that are in FINISHED status and have valid scores.
@@ -102,9 +99,6 @@ public class ScoreCalculationService {
 
         // 3. Check if the final just finished → score champion bets
         totalUpdated += checkAndScoreChampionBets(matchIds);
-
-        // 4. Check if any round just completed → award pool bonuses
-        bonusCalculationService.checkAndAwardBonuses(matchIds);
 
         log.info("Score calculation complete: {} bet(s) updated for {} match(es)", totalUpdated, matchIds.size());
         return totalUpdated;

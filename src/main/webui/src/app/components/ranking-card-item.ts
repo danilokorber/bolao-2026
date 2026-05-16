@@ -55,7 +55,6 @@ export class RankingCardItem {
     countInverted: number;
     countWrong: number;
     specialPoints: number;
-    bonusPoints: number;
     totalPoints: number;
   }>();
   currentUserId = computed(() => this.store.appuser()?.id);

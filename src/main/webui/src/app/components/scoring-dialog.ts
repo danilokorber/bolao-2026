@@ -105,27 +105,6 @@ import { TranslocoPipe } from '@jsverse/transloco';
           </div>
         </div>
 
-        <!-- Pool bonuses -->
-        <div class="flex flex-col gap-2">
-          <h3 class="text-lg font-semibold">🎯 {{ 'account.scoring.bonuses.title' | transloco }}</h3>
-          <p class="text-xs opacity-60 pl-2">{{ 'account.scoring.bonuses.subtitle' | transloco }}</p>
-          <div class="flex flex-col gap-1 pl-2">
-            <div class="flex items-center gap-2">
-              <span class="score-badge score-10">+5</span>
-              <span>{{ 'account.scoring.bonuses.bestPredictor' | transloco }}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="score-badge score-5">+2</span>
-              <span>{{ 'account.scoring.bonuses.topThree' | transloco }}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="score-badge score-3">+10</span>
-              <span>{{ 'account.scoring.bonuses.recovery' | transloco }}</span>
-            </div>
-          </div>
-          <p class="text-xs opacity-60 pl-2">{{ 'account.scoring.bonuses.note' | transloco }}</p>
-        </div>
-
         <button class="mt-2" (click)="close()">
           {{ 'account.scoring.close' | transloco }}
         </button>

@@ -80,15 +80,7 @@
         "semifinalist": "Jeder richtige Halbfinalist (außer wenn bereits als Champion/Zweiter gewertet)"
       },
       "open": "REGELN",
-      "close": "SCHLIESSEN",
-      "bonuses": {
-        "title": "Gruppenbonus",
-        "subtitle": "Wird pro Tippgruppe am Ende jeder Turnierrunde vergeben.",
-        "bestPredictor": "Bester Tipper der Runde",
-        "topThree": "2. und 3. bester Tipper der Runde",
-        "recovery": "Erholungsbonus — über dem Gruppendurchschnitt tippen, um Bonus in der nächsten Runde zu erhalten",
-        "note": "Bei Gleichstand teilen sich alle den gleichen Bonus. Kein Erholungsbonus nach dem Finale."
-      }
+      "close": "SCHLIESSEN"
     }
   },
   "dashboard": {
@@ -166,8 +158,7 @@
     "tierDiff": "Tordifferenz",
     "tierWinner": "Gewinner",
     "tierInverted": "Invertiertes Ergebnis",
-    "tierWrong": "Falsch",
-    "bonus": "Bonus"
+    "tierWrong": "Falsch"
   },
   "userBets": {
     "title": "Tipps",

@@ -80,15 +80,7 @@
         "semifinalist": "Cada semifinalista correto (exceto se já pontuou como campeão/vice)"
       },
       "open": "REGRAS",
-      "close": "FECHAR",
-      "bonuses": {
-        "title": "Bônus do Bolão",
-        "subtitle": "Concedidos por bolão ao final de cada rodada do torneio.",
-        "bestPredictor": "Melhor apostador da rodada",
-        "topThree": "2º e 3º melhores da rodada",
-        "recovery": "Bônus de recuperação — pontue acima da média do bolão para ganhar bônus na próxima rodada",
-        "note": "Empates dividem o mesmo bônus. Sem bônus de recuperação após a Final."
-      }
+      "close": "FECHAR"
     }
   },
   "dashboard": {
@@ -166,8 +158,7 @@
     "tierDiff": "Diferença de Gols",
     "tierWinner": "Vencedor",
     "tierInverted": "Placar Invertido",
-    "tierWrong": "Errado",
-    "bonus": "Bônus"
+    "tierWrong": "Errado"
   },
   "userBets": {
     "title": "Palpites",

@@ -50,9 +50,6 @@ public class RankingResource {
         String poolJoin = poolScoped
                 ? "JOIN user_pool up ON up.user_id = u.id AND up.pool_id = :poolId AND up.status = 'ACTIVE'"
                 : "";
-        String bonusSubquery = poolScoped
-                ? "COALESCE((SELECT SUM(pb.points_earned) FROM pool_bonus pb WHERE pb.user_id = u.id AND pb.pool_id = :poolId), 0)"
-                : "0";
 
         String sql = """
             SELECT u.id, u.name,
@@ -63,16 +60,14 @@ public class RankingResource {
                 COALESCE((SELECT COUNT(*) FROM bet b WHERE b.user_id = u.id AND b.score_tier = 'WRONG'), 0) AS count_wrong,
                 COALESCE((SELECT SUM(g.points_earned) FROM group_winner_bet g WHERE g.user_id = u.id), 0) +
                 COALESCE((SELECT SUM(c.bonus_points) FROM champion_bet c WHERE c.user_id = u.id), 0) AS special_points,
-                %s AS bonus_points,
                 COALESCE((SELECT SUM(b.points_earned) FROM bet b WHERE b.user_id = u.id), 0) +
                 COALESCE((SELECT SUM(g.points_earned) FROM group_winner_bet g WHERE g.user_id = u.id), 0) +
-                COALESCE((SELECT SUM(c.bonus_points) FROM champion_bet c WHERE c.user_id = u.id), 0) +
-                %s AS total_points
+                COALESCE((SELECT SUM(c.bonus_points) FROM champion_bet c WHERE c.user_id = u.id), 0) AS total_points
             FROM app_user u
             %s
             WHERE u.active = true
             ORDER BY total_points DESC, u.name ASC
-            """.formatted(bonusSubquery, bonusSubquery, poolJoin);
+            """.formatted(poolJoin);
 
         var query = em.createNativeQuery(sql, Tuple.class);
         if (poolScoped) {
@@ -94,7 +89,6 @@ public class RankingResource {
                     .countInverted(((Number) row.get("count_inverted")).longValue())
                     .countWrong(((Number) row.get("count_wrong")).longValue())
                     .specialPoints(((Number) row.get("special_points")).longValue())
-                    .bonusPoints(((Number) row.get("bonus_points")).longValue())
                     .totalPoints(((Number) row.get("total_points")).longValue())
                     .build());
         }
