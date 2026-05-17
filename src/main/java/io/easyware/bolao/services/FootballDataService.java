@@ -42,7 +42,7 @@ public class FootballDataService {
         Optional<Match> matchOpt = matchRepository.find("footballDataMatchId", footballDataId).firstResultOptional();
         
         if (matchOpt.isEmpty()) {
-            log.warn("No match found with football_data_match_id: {}", footballDataId);
+//            log.warn("No match found with football_data_match_id: {}", footballDataId);
             return Optional.empty();
         }
         

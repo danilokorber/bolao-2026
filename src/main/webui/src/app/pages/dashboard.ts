@@ -1,13 +1,20 @@
 import { LiveMatchesCard } from './../components/live-matches-card';
 import { httpResource } from '@angular/common/http';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, linkedSignal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { RankingCard } from '@components/ranking-card';
 import { RecentResultsCard } from '@components/recent-results-card';
 import { UpcomingMatchesCard } from '@components/upcoming-matches-card';
-import { Bet, ChampionBet, GroupWinnerBet, Match, PagedResponse } from '@interfaces/index';
+import {
+  Bet,
+  ChampionBet,
+  GroupWinnerBet,
+  Match,
+  MatchStatus,
+  PagedResponse,
+} from '@interfaces/index';
 import { RankingEntry } from '@interfaces/ranking-entry.interface';
 import { resourceValueOr404 } from '@utils/resource-utils';
 import { SignalStore } from '../store/signal-store';
@@ -43,6 +50,8 @@ export class Dashboard {
 
   matches = computed(() => this.matchesPage.value()?.content ?? []);
   bets = computed(() => this.betsPage.value()?.content ?? []);
+
+  hasLiveMatches = linkedSignal(() => this.matches().some((m) => m.status == MatchStatus.LIVE));
 
   groupBets = httpResource<GroupWinnerBet[]>(() => {
     const id = this.userId();

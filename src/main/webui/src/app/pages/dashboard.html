@@ -52,11 +52,7 @@
   </div>
 
   <!-- Live matches -->
-  @if (matchesPage.isLoading()) {
-    <div class="col-span-full">
-      <p>{{ 'dashboard.upcomingMatches.loading' | transloco }}</p>
-    </div>
-  } @else if (matchesPage.hasValue() && betsPage.hasValue()) {
+  @if (hasLiveMatches()) {
     <div class="col-span-full">
       <live-matches-card [matches]="matches()" [bets]="bets()"></live-matches-card>
     </div>

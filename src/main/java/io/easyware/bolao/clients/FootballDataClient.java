@@ -35,6 +35,6 @@ public interface FootballDataClient {
      * @return the full competition matches response
      */
     @GET
-    @Path("/competitions/2000/matches")
+    @Path("/competitions/2019/matches")
     FootballDataResponse getWorldCupMatches();
 }
