@@ -19,9 +19,11 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
@@ -82,13 +84,15 @@ public class GroupWinnerBetService {
     public GroupWinnerBetDTO save(GroupWinnerBetRequestDTO request) {
         // Check deadline: bets are locked once the second matchday of the group starts
         MatchStage stage = MatchStage.valueOf(request.getGroupName().name());
-        matchRepository.findSecondMatchdayStart(stage).ifPresent(deadline -> {
-            if (!LocalDateTime.now().isBefore(deadline)) {
-                throw new BadRequestException(
-                        "Betting for " + request.getGroupName() + " is closed. " +
-                        "The second matchday has already started.");
-            }
-        });
+        Optional<LocalDateTime> deadlineOpt = matchRepository.findSecondMatchdayStart(stage);
+        if (deadlineOpt.isEmpty()) {
+            throw new BadRequestException("Match schedule not yet available for " + request.getGroupName());
+        }
+        if (!LocalDateTime.now(ZoneOffset.UTC).isBefore(deadlineOpt.get())) {
+            throw new BadRequestException(
+                    "Betting for " + request.getGroupName() + " is closed. " +
+                    "The second matchday has already started.");
+        }
 
         GroupWinnerBet bet = groupWinnerBetRepository.findByUserAndGroup(
                 request.getUserId(), request.getGroupName());

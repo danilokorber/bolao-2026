@@ -80,7 +80,13 @@
         "semifinalist": "Cada semifinalista correto (exceto se já pontuou como campeão/vice)"
       },
       "open": "REGRAS",
-      "close": "FECHAR"
+      "close": "FECHAR",
+      "timeLimit": {
+        "title": "Prazo para Palpites",
+        "match": "Palpites de partidas devem ser feitos antes do início da partida.",
+        "group": "Palpites de classificação do grupo podem ser alterados até o início da segunda rodada do grupo.",
+        "champion": "Palpites de campeão e semifinalistas devem ser feitos antes do início da fase eliminatória."
+      }
     }
   },
   "dashboard": {

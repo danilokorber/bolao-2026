@@ -1,5 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import { Component, computed, inject, signal, viewChild } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { API } from '@api/api';
@@ -8,6 +8,7 @@ import { GroupBetRow } from '@components/group-bet-row';
 import { ScoringDialog } from '@components/scoring-dialog';
 import { ChampionBet, GroupName, GroupWinnerBet, Team } from '@interfaces/index';
 import { TeamService } from '@services/team.service';
+import { utcDate } from '@utils/date-utils';
 import { resourceLoadedOr404, resourceValueOr404 } from '@utils/resource-utils';
 import { SignalStore } from '../store/signal-store';
 import { AVAILABLE_LANGS, LANG_LABELS } from '../config/transloco.config';
@@ -31,6 +32,16 @@ export class Account {
   private readonly transloco = inject(TranslocoService);
   private readonly store = inject(SignalStore);
   private readonly teamService = inject(TeamService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  protected readonly now = signal(Date.now());
+
+  constructor() {
+    const interval = setInterval(() => this.now.set(Date.now()), 30_000);
+    this.destroyRef.onDestroy(() => clearInterval(interval));
+  }
+
+  protected refreshNow() { this.now.set(Date.now()); }
 
   scoringDialogRef = viewChild<ScoringDialog>('scoringDialog');
 
@@ -58,14 +69,14 @@ export class Account {
 
   championLocked = computed(() => {
     const d = this.championDeadline.value()?.deadline;
-    return d ? new Date() >= new Date(d) : false;
+    return d ? this.now() >= utcDate(d).getTime() : false;
   });
 
   groupRows = computed<GroupRow[]>(() => {
     const teams = this.allTeams.value() ?? [];
     const bets = this.userGroupBets.value() ?? [];
     const deadlineMap = this.deadlines.value() ?? {};
-    const now = new Date();
+    const now = this.now();
 
     return Object.values(GroupName).map((gn) => {
       const groupTeams = this.teamService.sortByName(
@@ -73,7 +84,7 @@ export class Account {
       );
       const bet = bets.find((b) => b.groupName === gn);
       const deadline = deadlineMap[gn];
-      const locked = deadline ? now >= new Date(deadline) : false;
+      const locked = deadline ? now >= utcDate(deadline).getTime() : false;
 
       return {
         groupName: gn,

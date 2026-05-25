@@ -17,6 +17,7 @@ import jakarta.ws.rs.NotFoundException;
 import lombok.extern.java.Log;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 
@@ -92,7 +93,7 @@ public class BetService {
         if (match == null) {
             throw new NotFoundException("Match not found: " + request.getMatchId());
         }
-        if (match.getMatchDatetime() != null && !LocalDateTime.now().isBefore(match.getMatchDatetime())) {
+        if (match.getMatchDatetime() != null && !LocalDateTime.now(ZoneOffset.UTC).isBefore(match.getMatchDatetime())) {
             throw new jakarta.ws.rs.BadRequestException("Bets cannot be placed after the match has started");
         }
 

@@ -5,7 +5,7 @@
   <div class="grid grid-cols-2 gap-4">
     <!-- Charts -->
     @if (history.hasValue() && history.value()!.length > 0) {
-      <card>
+      <card class="col-span-2 lg:col-span-1">
         <div card-header>{{ 'ranking.chartPoints' | transloco }}</div>
 
         <points-progression-chart
@@ -14,7 +14,7 @@
           [currentUserId]="currentUserId()"
         ></points-progression-chart>
       </card>
-      <card>
+      <card class="col-span-2 lg:col-span-1">
         <div card-header>{{ 'ranking.chartPosition' | transloco }}</div>
 
         <position-history-chart
@@ -119,7 +119,7 @@
       </div>
 
       <!-- Mobile cards -->
-      <div class="sm:hidden flex flex-col gap-2">
+      <div class="sm:hidden col-span-full flex flex-col gap-2">
         @for (entry of ranking.value()!; track entry.userId) {
           <a
             [routerLink]="['/bets', entry.userId]"

@@ -15,6 +15,7 @@
       [teams]="allTeams()"
       [bet]="betValue()"
       [locked]="locked()"
+      (deadlinePassed)="refreshNow()"
     ></champion-bet-form>
   }
 </div>

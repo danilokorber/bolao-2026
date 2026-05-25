@@ -15,6 +15,7 @@
             [initialFirst]="row.firstPlaceTeamId"
             [initialSecond]="row.secondPlaceTeamId"
             [locked]="row.locked"
+            (deadlinePassed)="refreshNow()"
           ></group-bet-row>
         }
       </div>
@@ -40,6 +41,7 @@
         [teams]="allTeamsList()"
         [bet]="championBet()"
         [locked]="championLocked()"
+        (deadlinePassed)="refreshNow()"
       ></champion-bet-form>
     }
   </div>

@@ -1,10 +1,11 @@
 import { httpResource } from '@angular/common/http';
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { ChampionBetForm } from '@components/champion-bet-form';
 import { ChampionBet, Team } from '@interfaces/index';
+import { utcDate } from '@utils/date-utils';
 import { resourceLoadedOr404, resourceValueOr404 } from '@utils/resource-utils';
 import { SignalStore } from '../store/signal-store';
 
@@ -16,6 +17,16 @@ import { SignalStore } from '../store/signal-store';
 export class ChampionBetPage {
   private readonly store = inject(SignalStore);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+
+  protected readonly now = signal(Date.now());
+
+  constructor() {
+    const interval = setInterval(() => this.now.set(Date.now()), 30_000);
+    this.destroyRef.onDestroy(() => clearInterval(interval));
+  }
+
+  protected refreshNow() { this.now.set(Date.now()); }
 
   private userId = computed(() => this.store.appuser()?.id);
 
@@ -37,7 +48,7 @@ export class ChampionBetPage {
 
   locked = computed(() => {
     const d = this.deadline.value()?.deadline;
-    return d ? new Date() >= new Date(d) : false;
+    return d ? this.now() >= utcDate(d).getTime() : false;
   });
 
   private readonly redirectIfComplete = effect(() => {

@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { TeamSelect } from '@components/team-select';
@@ -72,6 +72,7 @@ export class GroupBetRow {
   initialFirst = input<string | null>(null);
   initialSecond = input<string | null>(null);
   locked = input<boolean>(false);
+  deadlinePassed = output<void>();
 
   firstPlaceTeamId: string | null = null;
   secondPlaceTeamId: string | null = null;
@@ -120,7 +121,10 @@ export class GroupBetRow {
     this.betSaveService
       .save<GroupWinnerBet>(API.GROUP_WINNER_BETS.SAVE(), body, this.saveState)
       .subscribe({
-        error: (err) => console.error('Failed to save group winner bet', err),
+        error: (err) => {
+          if (err.status === 400) this.deadlinePassed.emit();
+          console.error('Failed to save group winner bet', err);
+        },
       });
   }
 }

@@ -19,6 +19,7 @@
           [initialFirst]="group.firstPlaceTeamId"
           [initialSecond]="group.secondPlaceTeamId"
           [locked]="group.locked"
+          (deadlinePassed)="refreshNow()"
         ></group-bet-card>
       }
     </div>

@@ -80,7 +80,13 @@
         "semifinalist": "Each correct semifinalist (except if already scored as champion/runner-up)"
       },
       "open": "RULES",
-      "close": "CLOSE"
+      "close": "CLOSE",
+      "timeLimit": {
+        "title": "Bet Time Limits",
+        "match": "Match bets must be placed before the match kicks off.",
+        "group": "Group winner bets can be changed until the second matchday of that group starts.",
+        "champion": "Champion and semifinalist bets must be placed before the knockout stage starts."
+      }
     }
   },
   "dashboard": {

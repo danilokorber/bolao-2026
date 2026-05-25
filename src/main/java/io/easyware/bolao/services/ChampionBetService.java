@@ -17,6 +17,7 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -78,12 +79,14 @@ public class ChampionBetService {
     @Transactional
     public ChampionBetDTO save(ChampionBetRequestDTO request) {
         // Check deadline: bets are locked once the knockout phase starts
-        matchRepository.findKnockoutPhaseStart().ifPresent(deadline -> {
-            if (!LocalDateTime.now().isBefore(deadline)) {
-                throw new BadRequestException(
-                        "Champion/semifinalist betting is closed. The knockout phase has already started.");
-            }
-        });
+        Optional<LocalDateTime> deadlineOpt = matchRepository.findKnockoutPhaseStart();
+        if (deadlineOpt.isEmpty()) {
+            throw new BadRequestException("Match schedule not yet available");
+        }
+        if (!LocalDateTime.now(ZoneOffset.UTC).isBefore(deadlineOpt.get())) {
+            throw new BadRequestException(
+                    "Champion/semifinalist betting is closed. The knockout phase has already started.");
+        }
 
         ChampionBet bet = championBetRepository.findByUser(request.getUserId());
 

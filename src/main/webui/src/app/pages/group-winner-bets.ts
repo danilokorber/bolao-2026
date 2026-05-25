@@ -1,11 +1,12 @@
 import { httpResource } from '@angular/common/http';
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { GroupBetCard } from '@components/group-bet-card';
 import { GroupName, GroupWinnerBet, Team } from '@interfaces/index';
 import { TeamService } from '@services/team.service';
+import { utcDate } from '@utils/date-utils';
 import { SignalStore } from '../store/signal-store';
 
 interface GroupData {
@@ -26,6 +27,16 @@ export class GroupWinnerBets {
   private readonly store = inject(SignalStore);
   private readonly teamService = inject(TeamService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+
+  protected readonly now = signal(Date.now());
+
+  constructor() {
+    const interval = setInterval(() => this.now.set(Date.now()), 30_000);
+    this.destroyRef.onDestroy(() => clearInterval(interval));
+  }
+
+  protected refreshNow() { this.now.set(Date.now()); }
 
   private userId = computed(() => this.store.appuser()?.id);
 
@@ -53,7 +64,7 @@ export class GroupWinnerBets {
     const allTeams = this.teams.value() ?? [];
     const bets = this.userBets.value() ?? [];
     const deadlineMap = this.deadlines.value() ?? {};
-    const now = new Date();
+    const now = this.now();
 
     return Object.values(GroupName).map((gn) => {
       const groupTeams = this.teamService.sortByName(
@@ -61,7 +72,7 @@ export class GroupWinnerBets {
       );
       const existingBet = bets.find((b) => b.groupName === gn);
       const deadline = deadlineMap[gn];
-      const locked = deadline ? now >= new Date(deadline) : false;
+      const locked = deadline ? now >= utcDate(deadline).getTime() : false;
 
       return {
         groupName: gn,

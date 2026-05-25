@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input, output } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { TeamSelect } from '@components/team-select';
@@ -154,6 +154,7 @@ export class ChampionBetForm {
   teams = input.required<Team[]>();
   bet = input<ChampionBet | null | undefined>(null);
   locked = input<boolean>(false);
+  deadlinePassed = output<void>();
 
   readonly semiSlots = [0, 1, 2, 3];
   semiIds: (string | null)[] = [null, null, null, null];
@@ -228,7 +229,10 @@ export class ChampionBetForm {
     this.betSaveService
       .save<ChampionBet>(API.CHAMPION_BETS.SAVE(), body, this.saveState)
       .subscribe({
-        error: (err) => console.error('Failed to save champion bet', err),
+        error: (err) => {
+          if (err.status === 400) this.deadlinePassed.emit();
+          console.error('Failed to save champion bet', err);
+        },
       });
   }
 }

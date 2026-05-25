@@ -12,15 +12,21 @@ import { TranslocoPipe } from '@jsverse/transloco';
     >
       <div class="flex flex-col gap-4">
         <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-bold text-primary-700">{{ 'account.scoring.title' | transloco }}</h2>
-          <button class="!px-3 !py-1 !border-0 text-lg" (click)="close()">✕</button>
+          <h2 class="text-2xl font-bold text-primary-700">
+            {{ 'account.scoring.title' | transloco }}
+          </h2>
+          <button class="px-3! py-1! border-0! text-lg" (click)="close()">✕</button>
         </div>
         <p class="text-sm opacity-75">{{ 'account.scoring.subtitle' | transloco }}</p>
 
         <!-- Match bets -->
         <div class="flex flex-col gap-2">
-          <h3 class="text-lg font-semibold">⚽ {{ 'account.scoring.matchBets.title' | transloco }}</h3>
-          <p class="text-xs opacity-60 pl-2">{{ 'account.scoring.matchBets.note90min' | transloco }}</p>
+          <h3 class="text-lg font-semibold">
+            ⚽ {{ 'account.scoring.matchBets.title' | transloco }}
+          </h3>
+          <p class="text-xs opacity-60 pl-2">
+            {{ 'account.scoring.matchBets.note90min' | transloco }}
+          </p>
           <div class="flex flex-col gap-1 pl-2">
             <div class="flex items-center gap-2">
               <span class="score-badge score-10">20</span>
@@ -47,8 +53,12 @@ import { TranslocoPipe } from '@jsverse/transloco';
 
         <!-- Stage multipliers -->
         <div class="flex flex-col gap-2">
-          <h3 class="text-lg font-semibold">📈 {{ 'account.scoring.multipliers.title' | transloco }}</h3>
-          <p class="text-xs opacity-60 pl-2">{{ 'account.scoring.multipliers.subtitle' | transloco }}</p>
+          <h3 class="text-lg font-semibold">
+            📈 {{ 'account.scoring.multipliers.title' | transloco }}
+          </h3>
+          <p class="text-xs opacity-60 pl-2">
+            {{ 'account.scoring.multipliers.subtitle' | transloco }}
+          </p>
           <div class="grid grid-cols-2 gap-1 pl-2 text-sm">
             <span class="opacity-75">{{ 'account.scoring.multipliers.group' | transloco }}</span>
             <span class="font-semibold">×1</span>
@@ -67,7 +77,9 @@ import { TranslocoPipe } from '@jsverse/transloco';
 
         <!-- Group winner bets -->
         <div class="flex flex-col gap-2">
-          <h3 class="text-lg font-semibold">🏅 {{ 'account.scoring.groupBets.title' | transloco }}</h3>
+          <h3 class="text-lg font-semibold">
+            🏅 {{ 'account.scoring.groupBets.title' | transloco }}
+          </h3>
           <div class="flex flex-col gap-1 pl-2">
             <div class="flex items-center gap-2">
               <span class="score-badge score-10">5</span>
@@ -103,6 +115,18 @@ import { TranslocoPipe } from '@jsverse/transloco';
               <span>{{ 'account.scoring.championBets.semifinalist' | transloco }}</span>
             </div>
           </div>
+        </div>
+
+        <!-- Time limits -->
+        <div class="flex flex-col gap-2">
+          <h3 class="text-lg font-semibold">
+            ⏰ {{ 'account.scoring.timeLimit.title' | transloco }}
+          </h3>
+          <ul class="flex flex-col gap-1 pl-2 text-sm list-disc list-inside">
+            <li>{{ 'account.scoring.timeLimit.match' | transloco }}</li>
+            <li>{{ 'account.scoring.timeLimit.group' | transloco }}</li>
+            <li>{{ 'account.scoring.timeLimit.champion' | transloco }}</li>
+          </ul>
         </div>
 
         <button class="mt-2" (click)="close()">
