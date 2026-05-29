@@ -1,20 +1,11 @@
-import {
-  Component,
-  effect,
-  inject,
-  input,
-  linkedSignal,
-  model,
-  output,
-  signal,
-} from '@angular/core';
-import { debounce, form, FormField, required } from '@angular/forms/signals';
-import { API } from '@api/api';
-import { Bet } from '@interfaces/bet.interface';
-import { SignalStore } from '../store/signal-store';
 import { HttpClient } from '@angular/common/http';
-import { Match } from '@interfaces/match.interface';
+import { Component, effect, inject, linkedSignal, model, output } from '@angular/core';
+import { debounce, form, FormField, min } from '@angular/forms/signals';
+import { API } from '@api/api';
 import { BetRequest } from '@interfaces/bet-request.interface';
+import { Bet } from '@interfaces/bet.interface';
+import { Match } from '@interfaces/match.interface';
+import { SignalStore } from '../store/signal-store';
 
 @Component({
   selector: 'match-card-bet-form',
@@ -61,8 +52,8 @@ export class MatchCardBetForm {
 
   form = form<BetRequest>(this.bet, (bet) => {
     debounce(bet, 300);
-    required(bet.homeGoalsBet);
-    required(bet.awayGoalsBet);
+    min(bet.homeGoalsBet, 0);
+    min(bet.awayGoalsBet, 0);
   });
 
   onPredictionChange = effect(() => {
