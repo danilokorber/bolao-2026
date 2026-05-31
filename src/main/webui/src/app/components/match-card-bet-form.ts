@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, effect, inject, linkedSignal, model, output } from '@angular/core';
-import { debounce, form, FormField, min } from '@angular/forms/signals';
+import { debounce, form, FormField, min, required } from '@angular/forms/signals';
 import { API } from '@api/api';
 import { BetRequest } from '@interfaces/bet-request.interface';
 import { Bet } from '@interfaces/bet.interface';
@@ -44,14 +44,18 @@ export class MatchCardBetForm {
       ({
         userId: this.store.appuser()?.id || '',
         matchId: this.match().id || '',
-        homeGoalsBet: this.match().userBet?.homeGoalsBet || null,
-        awayGoalsBet: this.match().userBet?.awayGoalsBet || null,
+        homeGoalsBet:
+          this.match().userBet?.homeGoalsBet >= 0 ? this.match().userBet?.homeGoalsBet : null,
+        awayGoalsBet:
+          this.match().userBet?.awayGoalsBet >= 0 ? this.match().userBet?.awayGoalsBet : null,
         winnerBetId: this.match().userBet?.winnerBetId,
       }) as BetRequest,
   );
 
   form = form<BetRequest>(this.bet, (bet) => {
     debounce(bet, 300);
+    required(bet.homeGoalsBet);
+    required(bet.awayGoalsBet);
     min(bet.homeGoalsBet, 0);
     min(bet.awayGoalsBet, 0);
   });
