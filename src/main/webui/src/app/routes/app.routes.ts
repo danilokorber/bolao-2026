@@ -19,7 +19,7 @@ export const routes: Routes = [
     path: '',
     loadChildren: () => import('@auth/routes/auth.routes'),
   },
-  { path: 'privacy', component: Privacy, title: 'Bolão da Copa' },
+  { path: 'privacy', component: Privacy, title: 'Bolão da Copa', pathMatch: 'full' },
   // Post login routes (require authentication)
   {
     path: '',
