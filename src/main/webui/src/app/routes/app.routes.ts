@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { isAuthenticated } from '@auth/guards/is-authenticated';
+import { NavigationLayout } from '@layout/navigation-layout';
 import { CleanLayout } from '../layout/clean-layout';
 import { Account } from '../pages/account';
 import { ChampionBetPage } from '../pages/champion-bet';
@@ -8,9 +9,9 @@ import { GroupWinnerBets } from '../pages/group-winner-bets';
 import { MatchDetail } from '../pages/match-detail';
 import { Matches } from '../pages/matches';
 import { PoolsPage } from '../pages/pools';
+import { Privacy } from '../pages/privacy';
 import { RankingPage } from '../pages/ranking';
 import { UserBetsPage } from '../pages/user-bets';
-import { NavigationLayout } from '@layout/navigation-layout';
 
 export const routes: Routes = [
   // Public routes (authentication pages)
@@ -18,7 +19,7 @@ export const routes: Routes = [
     path: '',
     loadChildren: () => import('@auth/routes/auth.routes'),
   },
-
+  { path: 'privacy', component: Privacy, title: 'Bolão da Copa' },
   // Post login routes (require authentication)
   {
     path: '',
