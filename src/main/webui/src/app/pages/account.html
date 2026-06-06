@@ -1,4 +1,14 @@
 <div class="flex flex-col gap-6">
+  <!-- Scoring rules — title + open button -->
+  <div class="flex items-center gap-2">
+    <h1 class="flex-1 mb-0!">{{ 'account.scoring.title' | transloco }}</h1>
+    <button (click)="openScoringDialog()">
+      {{ 'account.scoring.open' | transloco }}
+    </button>
+  </div>
+
+  <hr />
+
   <!-- Group winner bets -->
   <div class="flex flex-col gap-3">
     <h1 class="mb-0!">{{ 'groupWinnerBets.title' | transloco }}</h1>
@@ -59,16 +69,6 @@
         </div>
       </button>
     }
-  </div>
-
-  <hr />
-
-  <!-- Scoring rules — title + open button -->
-  <div class="flex items-center gap-2">
-    <h1 class="flex-1 mb-0!">{{ 'account.scoring.title' | transloco }}</h1>
-    <button (click)="openScoringDialog()">
-      {{ 'account.scoring.open' | transloco }}
-    </button>
   </div>
 
   <hr />
