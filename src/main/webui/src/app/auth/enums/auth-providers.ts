@@ -3,4 +3,6 @@ export enum AuthProvider {
   Twitter = 'twitter',
   Microsoft = 'microsoft',
   Facebook = 'facebook',
+  Linkedin = 'linkedin',
+  GitHub = 'github',
 }

@@ -15,6 +15,8 @@ import { AuthProvider } from './../enums/auth-providers';
         <!-- <login-button [provider]="AuthProvider.Facebook"></login-button> -->
         <!-- <login-button [provider]="AuthProvider.Twitter"></login-button> -->
         <login-button [provider]="AuthProvider.Microsoft"></login-button>
+        <login-button [provider]="AuthProvider.Linkedin"></login-button>
+        <login-button [provider]="AuthProvider.GitHub"></login-button>
       </div>
     </div>
   `,

@@ -1,7 +1,7 @@
 import { Component, inject, input, linkedSignal } from '@angular/core';
-import { TranslocoPipe } from '@jsverse/transloco';
 import { AuthProvider } from '@auth/enums/auth-providers';
 import { AuthService } from '@auth/services/auth.service';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'login-button',
@@ -38,6 +38,14 @@ export class LoginButton {
       classes: 'bg-gray-800 hover:bg-gray-900! text-white!',
       icon: 'pi pi-microsoft',
     },
+    [AuthProvider.Linkedin]: {
+      classes: 'bg-blue-700 hover:bg-blue-800! text-white!',
+      icon: 'pi pi-linkedin',
+    },
+    [AuthProvider.GitHub]: {
+      classes: 'bg-gray-900 hover:bg-gray-950! text-white!',
+      icon: 'pi pi-github',
+    },
   };
 
   providerName = linkedSignal(() => {
@@ -46,6 +54,8 @@ export class LoginButton {
       [AuthProvider.Facebook]: 'Facebook',
       [AuthProvider.Twitter]: 'Twitter',
       [AuthProvider.Microsoft]: 'Microsoft',
+      [AuthProvider.Linkedin]: 'LinkedIn',
+      [AuthProvider.GitHub]: 'GitHub',
     };
     return names[this.provider()];
   });
