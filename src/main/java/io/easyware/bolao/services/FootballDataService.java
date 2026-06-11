@@ -137,6 +137,7 @@ public class FootballDataService {
             log.info("{} match(es) need score recalculation", needsRecalc.size());
         }
 
+        log.info("Updated {} matches from football-data.org", response.getMatches().size());
         return needsRecalc;
     }
 

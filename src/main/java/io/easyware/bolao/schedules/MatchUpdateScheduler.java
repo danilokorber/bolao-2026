@@ -78,6 +78,7 @@ public class MatchUpdateScheduler {
                     response.getMatches().size(), liveCount);
 
             List<UUID> changedMatchIds = footballDataService.updateAllMatches(response);
+            log.info("Matches being recalculated: {}", changedMatchIds);
 
             if (!changedMatchIds.isEmpty()) {
                 log.info("{} match(es) changed — recalculating scores", changedMatchIds.size());

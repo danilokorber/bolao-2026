@@ -7,6 +7,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class FootballDataResponse {
@@ -18,6 +19,7 @@ public class FootballDataResponse {
     @Getter
     @Setter
     @Builder
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Filters {
@@ -27,6 +29,7 @@ public class FootballDataResponse {
     @Getter
     @Setter
     @Builder
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ResultSet {
@@ -39,6 +42,7 @@ public class FootballDataResponse {
     @Getter
     @Setter
     @Builder
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Competition {

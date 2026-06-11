@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class FootballDataMatch {
@@ -31,6 +32,7 @@ public class FootballDataMatch {
     @Getter
     @Setter
     @Builder
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Area {
@@ -43,6 +45,7 @@ public class FootballDataMatch {
     @Getter
     @Setter
     @Builder
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Competition {
@@ -56,6 +59,7 @@ public class FootballDataMatch {
     @Getter
     @Setter
     @Builder
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Season {
@@ -69,6 +73,7 @@ public class FootballDataMatch {
     @Getter
     @Setter
     @Builder
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Team {
@@ -82,6 +87,7 @@ public class FootballDataMatch {
     @Getter
     @Setter
     @Builder
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Score {
@@ -104,6 +110,7 @@ public class FootballDataMatch {
     @Getter
     @Setter
     @Builder
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Odds {
@@ -113,6 +120,7 @@ public class FootballDataMatch {
     @Getter
     @Setter
     @Builder
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Referee {
