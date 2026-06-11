@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @ApplicationScoped
 @Slf4j
@@ -50,7 +52,7 @@ public class FootballDataService {
         MatchStatus previousStatus = match.getStatus();
         Integer previousHomeGoals = match.getHomeGoals();
         Integer previousAwayGoals = match.getAwayGoals();
-        MatchStatus newStatus = mapStatus(footballDataMatch.getStatus());
+        MatchStatus newStatus = normalizeStatus(match, mapStatus(footballDataMatch.getStatus()));
 
         match.setStatus(newStatus);
         
@@ -152,5 +154,33 @@ public class FootballDataService {
                 yield io.easyware.bolao.enums.MatchStatus.SCHEDULED;
             }
         };
+    }
+
+    private MatchStatus normalizeStatus(Match match, MatchStatus incomingStatus) {
+        MatchStatus currentStatus = match.getStatus();
+
+        // football-data.org can lag around kickoff, so keep terminal/active states monotonic.
+        if (currentStatus == MatchStatus.FINISHED || currentStatus == MatchStatus.CANCELLED) {
+            return currentStatus;
+        }
+
+        if (currentStatus == MatchStatus.LIVE) {
+            return incomingStatus == MatchStatus.FINISHED ? MatchStatus.FINISHED : MatchStatus.LIVE;
+        }
+
+        if (incomingStatus == MatchStatus.SCHEDULED && hasStarted(match)) {
+            return MatchStatus.LIVE;
+        }
+
+        return incomingStatus;
+    }
+
+    private boolean hasStarted(Match match) {
+        if (match.getMatchDatetime() == null) {
+            return false;
+        }
+
+        LocalDateTime kickoffUtc = match.getMatchDatetime();
+        return !kickoffUtc.isAfter(LocalDateTime.now(ZoneOffset.UTC));
     }
 }
