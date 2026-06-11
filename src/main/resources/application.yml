@@ -9,6 +9,20 @@ bolao:
     matches:
       schedule: ${SCHEDULE_MATCHES_SCHEDULE:0 0/1 * * * ?} # Every minute
       enabled: ${SCHEDULE_MATCHES_ENABLED:true}
+  notifications:
+    enabled: ${NOTIFICATIONS_ENABLED:true}
+    global-send-zone: ${NOTIFICATIONS_GLOBAL_SEND_ZONE:UTC}
+    daily:
+      enabled: ${NOTIFICATIONS_DAILY_ENABLED:true}
+      time: ${NOTIFICATIONS_DAILY_TIME:08:00}
+    event:
+      enabled: ${NOTIFICATIONS_EVENT_ENABLED:true}
+    push:
+      enabled: ${NOTIFICATIONS_PUSH_ENABLED:true}
+      vapid:
+        public-key: ${NOTIFICATIONS_VAPID_PUBLIC_KEY:__not_configured__}
+        private-key: ${NOTIFICATIONS_VAPID_PRIVATE_KEY:__not_configured__}
+        subject: ${NOTIFICATIONS_VAPID_SUBJECT:mailto:admin@example.com}
 
 quarkus:
   banner:

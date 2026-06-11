@@ -21,7 +21,7 @@ import { TeamService } from '@services/team.service';
       <!-- Trigger -->
       <button
         type="button"
-        class="w-full flex items-center gap-2 px-3 py-2 rounded-lg border text-sm bg-white transition-colors outline-0"
+        class="w-full flex items-center gap-2 px-3 py-2 rounded-lg border text-sm bg-white dark:bg-primary-800 transition-colors outline-0"
         [class.border-primary-500]="open()"
         [class.ring-1]="open()"
         [class.ring-primary-500]="open()"
@@ -32,7 +32,9 @@ import { TeamService } from '@services/team.service';
         (click)="toggle()"
       >
         @if (selectedTeam(); as team) {
-          <div class="shrink-0 rounded-full overflow-hidden bg-white h-6 w-6 relative shadow-sm">
+          <div
+            class="shrink-0 rounded-full overflow-hidden bg-white dark:bg-primary-800 h-6 w-6 relative shadow-sm"
+          >
             <img
               [imgSrc]="team.flagUrl ?? ''"
               [alt]="team.fifaCode"
@@ -42,12 +44,12 @@ import { TeamService } from '@services/team.service';
             />
           </div>
           <span class="flex-1 text-left truncate">{{ localizedName(team) }}</span>
-          <span class="text-xs text-gray-400">({{ team.fifaCode }})</span>
+          <span class="text-xs text-gray-400 dark:text-gray-500">({{ team.fifaCode }})</span>
         } @else {
-          <span class="flex-1 text-left text-gray-400">{{ placeholder() }}</span>
+          <span class="flex-1 text-left text-gray-400 dark:text-gray-500">{{ placeholder() }}</span>
         }
         <svg
-          class="shrink-0 w-4 h-4 text-gray-400 transition-transform"
+          class="shrink-0 w-4 h-4 text-gray-400 dark:text-gray-500 transition-transform"
           [class.rotate-180]="open()"
           fill="none"
           stroke="currentColor"
@@ -65,15 +67,15 @@ import { TeamService } from '@services/team.service';
       <!-- Dropdown -->
       @if (open()) {
         <div
-          class="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+          class="absolute z-10 mt-1 w-full bg-white dark:bg-primary-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden"
         >
           <!-- Filter input -->
           @if (filterable()) {
-            <div class="px-2 py-1.5 border-b border-gray-100">
+            <div class="px-2 py-1.5 border-b border-gray-100 dark:border-gray-700">
               <input
                 #filterInput
                 type="text"
-                class="w-full px-2 py-1 text-sm border border-gray-200 rounded outline-0 focus:border-primary-400"
+                class="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded outline-0 focus:border-primary-400"
                 placeholder="🔍"
                 [value]="filter()"
                 (input)="filter.set(filterInput.value)"
@@ -85,13 +87,13 @@ import { TeamService } from '@services/team.service';
             @for (team of filteredTeams(); track team.id) {
               <button
                 type="button"
-                class="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-primary-50 transition-colors border-none! rounded-none!"
+                class="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-primary-50 dark:hover:bg-primary-700 transition-colors border-none! rounded-none!"
                 [class.bg-primary-100]="team.id === value()"
                 [class.font-semibold]="team.id === value()"
                 (click)="select(team)"
               >
                 <div
-                  class="shrink-0 rounded-full overflow-hidden bg-white h-6 w-6 relative shadow-sm"
+                  class="shrink-0 rounded-full overflow-hidden bg-white dark:bg-primary-800 h-6 w-6 relative shadow-sm"
                 >
                   <img
                     [imgSrc]="team.flagUrl ?? ''"

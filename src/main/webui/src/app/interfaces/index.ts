@@ -22,3 +22,5 @@ export * from './group-winner-bet.interface';
 export * from './group-winner-bet-request.interface';
 export * from './ranking-entry.interface';
 export * from './paged-response.interface';
+export * from './notification-preference.interface';
+export * from './push-public-key.interface';

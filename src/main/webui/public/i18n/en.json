@@ -85,8 +85,18 @@
         "title": "Bet Time Limits",
         "match": "Match bets must be placed before the match kicks off.",
         "group": "Group winner bets can be changed until the second matchday of that group starts.",
-        "champion": "Champion and semifinalist bets must be placed before the knockout stage starts."
+      "champion": "Champion and semifinalist bets must be placed before the knockout stage starts."
       }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "loading": "Loading notification settings...",
+      "pushEnable": "Enable push notifications",
+      "pushDisable": "Disable push notifications",
+      "dailyOn": "Daily notification: ON",
+      "dailyOff": "Daily notification: OFF",
+      "eventOn": "Match event notification: ON",
+      "eventOff": "Match event notification: OFF"
     }
   },
   "dashboard": {

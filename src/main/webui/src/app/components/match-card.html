@@ -1,9 +1,10 @@
 <div
   [id]="match().matchDatetime.substring(0, 10)"
-  class="relative w-full flex flex-row h-16 sm:h-24 rounded-full bg-white border-t border-l border-r"
+  class="relative w-full flex flex-row h-16 sm:h-24 rounded-full bg-white dark:bg-green-950 border-t border-l border-r"
   [class.shadow-lg]="!startIsInThePast()"
   [class.hover:shadow-xl]="!startIsInThePast()"
   [class.hover:bg-primary-50]="!startIsInThePast()"
+  [class.hover:dark:bg-primary-800]="!startIsInThePast()"
   [class.focus-within:bg-primary-50]="!startIsInThePast()"
   [class.opacity-75]="startIsInThePast()"
   [class.border-primary-900]="!startIsInThePast()"
@@ -34,7 +35,10 @@
           }
         </div>
       } @else {
-        <match-card-bet-form [match]="match()" (matchStarted)="startIsInThePast.set(true)"></match-card-bet-form>
+        <match-card-bet-form
+          [match]="match()"
+          (matchStarted)="startIsInThePast.set(true)"
+        ></match-card-bet-form>
       }
     </div>
     <match-card-team-name [team]="match().awayTeam!" [homeAway]="'away'"></match-card-team-name>

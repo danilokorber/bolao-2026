@@ -1,9 +1,9 @@
 import { Component, computed, effect, inject, input, output } from '@angular/core';
-import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
-import { TeamSelect } from '@components/team-select';
 import { SaveIndicator } from '@components/save-indicator';
+import { TeamSelect } from '@components/team-select';
 import { ChampionBet, ChampionBetRequest, Team } from '@interfaces/index';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { BetSaveService, SaveState } from '@services/bet-save.service';
 import { SignalStore } from '../store/signal-store';
 
@@ -15,7 +15,7 @@ import { SignalStore } from '../store/signal-store';
       <!-- Card layout (standalone page) -->
       <div class="flex flex-col gap-6">
         <!-- Semifinalists card -->
-        <div class="border border-gray-200 rounded-xl bg-white shadow-sm">
+        <div class="border border-gray-200 rounded-xl bg-white dark:bg-primary-800 shadow-sm">
           <div
             class="flex items-center justify-between px-4 py-2 bg-primary-700 text-white rounded-t-xl"
           >
@@ -43,7 +43,7 @@ import { SignalStore } from '../store/signal-store';
         </div>
 
         <!-- Champion & Runner-up card -->
-        <div class="border border-gray-200 rounded-xl bg-white shadow-sm">
+        <div class="border border-gray-200 rounded-xl bg-white dark:bg-primary-800 shadow-sm">
           <div
             class="flex items-center justify-between px-4 py-2 bg-secondary-600 text-white rounded-t-xl"
           >

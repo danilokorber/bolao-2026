@@ -3,6 +3,7 @@ package io.easyware.bolao.schedules;
 import io.easyware.bolao.clients.FootballDataClient;
 import io.easyware.bolao.dto.footballdata.FootballDataResponse;
 import io.easyware.bolao.services.FootballDataService;
+import io.easyware.bolao.services.NotificationService;
 import io.easyware.bolao.services.ScoreCalculationService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -40,11 +41,20 @@ public class MatchUpdateScheduler {
     ScoreCalculationService scoreCalculationService;
 
     @Inject
+    NotificationService notificationService;
+
+    @Inject
     @RestClient
     FootballDataClient footballDataClient;
 
     @ConfigProperty(name = "bolao.schedules.matches.enabled", defaultValue = "true")
     boolean enabled;
+
+    @ConfigProperty(name = "bolao.notifications.enabled", defaultValue = "false")
+    boolean notificationsEnabled;
+
+    @ConfigProperty(name = "bolao.notifications.event.enabled", defaultValue = "false")
+    boolean eventNotificationsEnabled;
 
     /**
      * Polls all World Cup matches from football-data.org and recalculates
@@ -72,6 +82,9 @@ public class MatchUpdateScheduler {
             if (!changedMatchIds.isEmpty()) {
                 log.info("{} match(es) changed — recalculating scores", changedMatchIds.size());
                 scoreCalculationService.calculatePointsForMatches(changedMatchIds);
+                if (notificationsEnabled && eventNotificationsEnabled) {
+                    notificationService.sendMatchFinishedNotifications(changedMatchIds);
+                }
             }
         } catch (Exception e) {
             log.error("Error polling football-data.org", e);

@@ -133,4 +133,13 @@ export const API = {
     UPDATE: (id: string) => `/api/v1/user-pools/id/${id}`,
     DELETE: (id: string) => `/api/v1/user-pools/id/${id}`,
   },
+
+  NOTIFICATIONS: {
+    GET_PREFERENCES: () => `/api/v1/notifications/preferences`,
+    UPDATE_PREFERENCES: () => `/api/v1/notifications/preferences`,
+    GET_PUSH_PUBLIC_KEY: () => `/api/v1/notifications/push/public-key`,
+    SUBSCRIBE: () => `/api/v1/notifications/push/subscriptions`,
+    UNSUBSCRIBE: (endpoint: string) =>
+      `/api/v1/notifications/push/subscriptions?endpoint=${encodeURIComponent(endpoint)}`,
+  },
 };

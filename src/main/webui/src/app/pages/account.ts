@@ -7,9 +7,12 @@ import { ChampionBetForm } from '@components/champion-bet-form';
 import { GroupBetRow } from '@components/group-bet-row';
 import { ScoringDialog } from '@components/scoring-dialog';
 import { ChampionBet, GroupName, GroupWinnerBet, Team } from '@interfaces/index';
+import { NotificationPreference } from '@interfaces/notification-preference.interface';
+import { NotificationService } from '@services/notification.service';
 import { TeamService } from '@services/team.service';
 import { utcDate } from '@utils/date-utils';
 import { resourceLoadedOr404, resourceValueOr404 } from '@utils/resource-utils';
+import { firstValueFrom } from 'rxjs';
 import { SignalStore } from '../store/signal-store';
 import { AVAILABLE_LANGS, LANG_LABELS } from '../config/transloco.config';
 
@@ -32,6 +35,7 @@ export class Account {
   private readonly transloco = inject(TranslocoService);
   private readonly store = inject(SignalStore);
   private readonly teamService = inject(TeamService);
+  private readonly notificationService = inject(NotificationService);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly now = signal(Date.now());
@@ -39,9 +43,14 @@ export class Account {
   constructor() {
     const interval = setInterval(() => this.now.set(Date.now()), 30_000);
     this.destroyRef.onDestroy(() => clearInterval(interval));
+    this.loadNotificationSettings();
   }
 
   protected refreshNow() { this.now.set(Date.now()); }
+
+  notificationPrefs = signal<NotificationPreference | null>(null);
+  notificationLoading = signal(false);
+  isPushSubscribed = signal(false);
 
   scoringDialogRef = viewChild<ScoringDialog>('scoringDialog');
 
@@ -109,5 +118,62 @@ export class Account {
 
   logout() {
     this.router.navigate(['/logout']);
+  }
+
+  async toggleDaily() {
+    const current = this.notificationPrefs();
+    if (!current) return;
+    await this.updateNotificationPrefs({
+      ...current,
+      dailyEnabled: !current.dailyEnabled,
+    });
+  }
+
+  async toggleEvent() {
+    const current = this.notificationPrefs();
+    if (!current) return;
+    await this.updateNotificationPrefs({
+      ...current,
+      eventEnabled: !current.eventEnabled,
+    });
+  }
+
+  async togglePushSubscription() {
+    this.notificationLoading.set(true);
+    try {
+      if (this.isPushSubscribed()) {
+        await this.notificationService.unsubscribe();
+        this.isPushSubscribed.set(false);
+      } else {
+        const subscribed = await this.notificationService.subscribe();
+        this.isPushSubscribed.set(subscribed);
+      }
+    } finally {
+      this.notificationLoading.set(false);
+    }
+  }
+
+  private async loadNotificationSettings() {
+    this.notificationLoading.set(true);
+    try {
+      const [prefs, subscribed] = await Promise.all([
+        firstValueFrom(this.notificationService.getPreferences()),
+        this.notificationService.isSubscribed(),
+      ]);
+      this.notificationPrefs.set(prefs);
+      this.isPushSubscribed.set(subscribed);
+    } finally {
+      this.notificationLoading.set(false);
+    }
+  }
+
+  private async updateNotificationPrefs(payload: NotificationPreference) {
+    this.notificationLoading.set(true);
+    try {
+      const updated = await firstValueFrom(this.notificationService.updatePreferences(payload));
+      this.notificationPrefs.set(updated);
+    } finally {
+      this.notificationLoading.set(false);
+    }
   }
 }

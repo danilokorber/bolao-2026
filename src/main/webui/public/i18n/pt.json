@@ -85,8 +85,18 @@
         "title": "Prazo para Palpites",
         "match": "Palpites de partidas devem ser feitos antes do início da partida.",
         "group": "Palpites de classificação do grupo podem ser alterados até o início da segunda rodada do grupo.",
-        "champion": "Palpites de campeão e semifinalistas devem ser feitos antes do início da fase eliminatória."
+      "champion": "Palpites de campeão e semifinalistas devem ser feitos antes do início da fase eliminatória."
       }
+    },
+    "notifications": {
+      "title": "Notificações",
+      "loading": "Carregando configurações de notificação...",
+      "pushEnable": "Ativar notificações push",
+      "pushDisable": "Desativar notificações push",
+      "dailyOn": "Notificação diária: ATIVA",
+      "dailyOff": "Notificação diária: INATIVA",
+      "eventOn": "Notificação de fim de jogo: ATIVA",
+      "eventOff": "Notificação de fim de jogo: INATIVA"
     }
   },
   "dashboard": {

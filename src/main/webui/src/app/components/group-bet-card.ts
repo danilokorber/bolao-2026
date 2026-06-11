@@ -1,9 +1,9 @@
 import { Component, inject, input, output } from '@angular/core';
-import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
-import { TeamSelect } from '@components/team-select';
 import { SaveIndicator } from '@components/save-indicator';
+import { TeamSelect } from '@components/team-select';
 import { GroupWinnerBet, GroupWinnerBetRequest, Team } from '@interfaces/index';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { BetSaveService, SaveState } from '@services/bet-save.service';
 import { SignalStore } from '../store/signal-store';
 
@@ -11,7 +11,7 @@ import { SignalStore } from '../store/signal-store';
   selector: 'group-bet-card',
   imports: [TranslocoPipe, TeamSelect, SaveIndicator],
   template: `
-    <div class="border border-gray-200 rounded-xl bg-white shadow-sm">
+    <div class="border border-gray-200 rounded-xl bg-white dark:bg-primary-800 shadow-sm">
       <!-- Group header -->
       <div
         class="flex items-center justify-between px-4 py-2 bg-primary-700 text-white rounded-t-xl"
@@ -27,7 +27,9 @@ import { SignalStore } from '../store/signal-store';
       <!-- Bet selectors -->
       <div class="px-4 py-3 flex flex-col gap-3">
         <div>
-          <label class="text-lg font-semibold text-primary-700 uppercase tracking-wide">
+          <label
+            class="text-lg font-semibold text-primary-700 dark:text-primary-300 uppercase tracking-wide"
+          >
             🥇 {{ 'groupWinnerBets.firstPlace' | transloco }}
           </label>
           <div class="mt-1">
@@ -41,7 +43,9 @@ import { SignalStore } from '../store/signal-store';
           </div>
         </div>
         <div>
-          <label class="text-lg font-semibold text-primary-700 uppercase tracking-wide">
+          <label
+            class="text-lg font-semibold text-primary-700 dark:text-primary-300 uppercase tracking-wide"
+          >
             🥈 {{ 'groupWinnerBets.secondPlace' | transloco }}
           </label>
           <div class="mt-1">

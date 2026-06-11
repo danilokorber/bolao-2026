@@ -73,8 +73,9 @@
           <tbody>
             @for (entry of ranking.value()!; track entry.userId) {
               <tr
-                class="border-t border-gray-100 transition-colors hover:bg-gray-50 cursor-pointer"
+                class="border-t border-gray-100 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
                 [class.bg-primary-50]="entry.userId === currentUserId()"
+                [class.dark:bg-primary-800]="entry.userId === currentUserId()"
                 [class.font-semibold]="entry.userId === currentUserId()"
                 [routerLink]="['/bets', entry.userId]"
               >
@@ -90,7 +91,7 @@
                     {{ entry.position }}
                   </div>
                 </td>
-                <td class="px-3 py-2 truncate max-w-[200px]">{{ entry.userName }}</td>
+                <td class="px-3 py-2 truncate max-w-50">{{ entry.userName }}</td>
                 <td class="px-3 py-2 text-center font-mono tabular-nums">
                   {{ entry.countExact || '–' }}
                 </td>
@@ -109,7 +110,9 @@
                 <td class="px-3 py-2 text-center font-mono tabular-nums">
                   {{ entry.specialPoints || '–' }}
                 </td>
-                <td class="px-3 py-2 text-right font-mono tabular-nums font-bold text-primary-700">
+                <td
+                  class="px-3 py-2 text-right font-mono tabular-nums font-bold text-primary-700 dark:text-white"
+                >
                   {{ entry.totalPoints }}
                 </td>
               </tr>

@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
-import { TranslocoPipe } from '@jsverse/transloco';
 import { MatchStage } from '@interfaces/match-stage.enum';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'match-stage-filter',
@@ -62,6 +62,11 @@ import { MatchStage } from '@interfaces/match-stage.enum';
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       background: rgba(255, 255, 255, 0.85);
+
+      /* Dark mode */
+      @media (prefers-color-scheme: dark) {
+        background: rgba(30, 30, 30, 0.85);
+      }
     }
     :host button {
       border: 0;

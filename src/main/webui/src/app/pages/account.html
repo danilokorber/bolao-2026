@@ -58,6 +58,40 @@
 
   <hr />
 
+  <!-- Notifications -->
+  <!-- <div class="flex flex-col gap-3">
+    <h1 class="mb-0!">{{ 'account.notifications.title' | transloco }}</h1>
+    @if (notificationLoading() && !notificationPrefs()) {
+      <p class="text-sm opacity-60">{{ 'account.notifications.loading' | transloco }}</p>
+    } @else {
+      <div class="flex flex-wrap gap-2">
+        <button (click)="togglePushSubscription()">
+          @if (isPushSubscribed()) {
+            {{ 'account.notifications.pushDisable' | transloco }}
+          } @else {
+            {{ 'account.notifications.pushEnable' | transloco }}
+          }
+        </button>
+        <button (click)="toggleDaily()" [disabled]="!notificationPrefs()">
+          @if (notificationPrefs()?.dailyEnabled) {
+            {{ 'account.notifications.dailyOn' | transloco }}
+          } @else {
+            {{ 'account.notifications.dailyOff' | transloco }}
+          }
+        </button>
+        <button (click)="toggleEvent()" [disabled]="!notificationPrefs()">
+          @if (notificationPrefs()?.eventEnabled) {
+            {{ 'account.notifications.eventOn' | transloco }}
+          } @else {
+            {{ 'account.notifications.eventOff' | transloco }}
+          }
+        </button>
+      </div>
+    }
+  </div> -->
+
+  <hr />
+
   <!-- Language selector -->
   <div class="flex items-center gap-2">
     <h1 class="flex-1 mb-0!">{{ 'account.language' | transloco }}</h1>

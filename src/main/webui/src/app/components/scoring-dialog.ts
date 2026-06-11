@@ -7,24 +7,26 @@ import { TranslocoPipe } from '@jsverse/transloco';
   template: `
     <dialog
       #dialog
-      class="rounded-2xl p-6 max-w-lg w-full backdrop:bg-black/50 shadow-xl"
+      class="rounded-2xl p-6 max-w-lg w-full backdrop:bg-black/50 shadow-xl dark:text-white dark:bg-primary-900"
       (click)="onBackdropClick($event)"
     >
       <div class="flex flex-col gap-4">
         <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-bold text-primary-700">
+          <h2 class="text-2xl font-bold text-primary-700 dark:text-primary-500">
             {{ 'account.scoring.title' | transloco }}
           </h2>
           <button class="px-3! py-1! border-0! text-lg" (click)="close()">✕</button>
         </div>
-        <p class="text-sm opacity-75">{{ 'account.scoring.subtitle' | transloco }}</p>
+        <p class="text-sm opacity-75 dark:opacity-60">
+          {{ 'account.scoring.subtitle' | transloco }}
+        </p>
 
         <!-- Match bets -->
         <div class="flex flex-col gap-2">
           <h3 class="text-lg font-semibold">
             ⚽ {{ 'account.scoring.matchBets.title' | transloco }}
           </h3>
-          <p class="text-xs opacity-60 pl-2">
+          <p class="text-xs opacity-60 dark:opacity-50 pl-2">
             {{ 'account.scoring.matchBets.note90min' | transloco }}
           </p>
           <div class="flex flex-col gap-1 pl-2">
@@ -56,7 +58,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
           <h3 class="text-lg font-semibold">
             📈 {{ 'account.scoring.multipliers.title' | transloco }}
           </h3>
-          <p class="text-xs opacity-60 pl-2">
+          <p class="text-xs opacity-60 dark:opacity-50 pl-2">
             {{ 'account.scoring.multipliers.subtitle' | transloco }}
           </p>
           <div class="grid grid-cols-2 gap-1 pl-2 text-sm">

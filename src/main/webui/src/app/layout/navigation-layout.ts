@@ -22,7 +22,7 @@ import { filter, map } from 'rxjs/operators';
 
       <div
         id="content"
-        class="flex flex-col w-4xl max-w-full bg-white border border-gray-300 rounded-t-3xl p-8"
+        class="flex flex-col w-4xl max-w-full bg-white dark:bg-primary-900 border border-gray-300 rounded-t-3xl p-8"
       >
         <router-outlet></router-outlet>
       </div>

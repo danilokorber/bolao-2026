@@ -1,7 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Component, effect, inject, PLATFORM_ID, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
-import { ICON, IconComponent } from '@components/icon';
+import { ICON } from '@components/icon';
 import { BolaoModule } from '@modules/bolao/bolao.module';
 import { filter, map } from 'rxjs/operators';
 
@@ -14,7 +14,7 @@ import { filter, map } from 'rxjs/operators';
     >
       <div
         id="content"
-        class="flex flex-col w-4xl max-w-full bg-white border border-gray-300 rounded-t-3xl p-8"
+        class="flex flex-col w-4xl max-w-full bg-white border border-gray-300 rounded-t-3xl p-8 dark:text-white dark:bg-primary-900"
       >
         <router-outlet></router-outlet>
       </div>

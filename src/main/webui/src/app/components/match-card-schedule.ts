@@ -1,7 +1,7 @@
-import { DatePipe, JsonPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, inject, input, linkedSignal } from '@angular/core';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Bet, Match, MatchStage, MatchStatus } from '@interfaces/index';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ScoreService } from '@services/score.service';
 import { utcDate } from '@utils/date-utils';
 
@@ -19,7 +19,7 @@ import { utcDate } from '@utils/date-utils';
     >
       {{ phase() }}&nbsp;&nbsp;•&nbsp;&nbsp;
       @if (isLive()) {
-        ⏱️ 17"
+        ⏱️
       } @else if (startIsInThePast()) {
         {{ bet()?.pointsEarned ?? 0 }}
         {{
