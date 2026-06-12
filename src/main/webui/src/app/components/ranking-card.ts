@@ -1,25 +1,40 @@
-import { Component, computed, inject, input } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { httpResource } from '@angular/common/http';
+import { Component, computed, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { API } from '@api/api';
 import { RankingEntry } from '@interfaces/ranking-entry.interface';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { SignalStore } from '../store/signal-store';
 import { Card } from './card';
 import { RankingCardItem } from './ranking-card-item';
+import { RankingCardItemSkeleton } from './ranking-card-item-skeleton';
 
 @Component({
   selector: 'ranking-card',
-  imports: [Card, RankingCardItem, TranslocoPipe],
+  imports: [Card, RankingCardItem, TranslocoPipe, RankingCardItemSkeleton],
   template: `
     <card>
       <div card-header (click)="route()" class="cursor-pointer">
         {{ 'dashboard.ranking.title' | transloco }}
       </div>
       <div class="p-0 flex flex-col">
-        @for (entry of displayEntries(); track entry.userId) {
-          <ranking-card-item [data]="entry"></ranking-card-item>
-        } @empty {
+        @if (ranking.isLoading()) {
+          <ranking-card-item-skeleton></ranking-card-item-skeleton>
+          <ranking-card-item-skeleton></ranking-card-item-skeleton>
+          <ranking-card-item-skeleton></ranking-card-item-skeleton>
+          <ranking-card-item-skeleton></ranking-card-item-skeleton>
+          <ranking-card-item-skeleton></ranking-card-item-skeleton>
+        } @else if (ranking.hasValue()) {
+          @for (entry of displayEntries(); track entry.userId) {
+            <ranking-card-item [data]="entry"></ranking-card-item>
+          } @empty {
+            <p class="text-sm opacity-60 px-3 py-2">
+              {{ 'dashboard.ranking.noData' | transloco }}
+            </p>
+          }
+        } @else if (ranking.error()) {
           <p class="text-sm opacity-60 px-3 py-2">
-            {{ 'dashboard.ranking.noData' | transloco }}
+            {{ 'dashboard.ranking.error' | transloco }}
           </p>
         }
       </div>
@@ -31,12 +46,13 @@ export class RankingCard {
   private readonly store = inject(SignalStore);
   private router = inject(Router);
 
-  ranking = input.required<RankingEntry[]>();
+  ranking = httpResource<RankingEntry[]>(() => API.RANKING.GET_ALL());
 
   currentUserId = computed(() => this.store.appuser()?.id);
 
   displayEntries = computed(() => {
-    const all = this.ranking();
+    if (!this.ranking.hasValue()) return [];
+    const all = this.ranking.value();
     const userId = this.currentUserId();
     if (!all || all.length === 0) return [];
 

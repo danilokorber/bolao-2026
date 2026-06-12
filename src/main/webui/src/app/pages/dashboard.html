@@ -34,36 +34,21 @@
   }
 
   <!-- Ranking -->
-  <div>
-    @if (ranking.isLoading()) {
-      <p>{{ 'dashboard.ranking.loading' | transloco }}</p>
-    } @else if (ranking.hasValue()) {
-      <ranking-card [ranking]="ranking.value()!"></ranking-card>
-    }
-  </div>
-
-  <!-- Recent results -->
-  <div>
-    @if (betsPage.isLoading()) {
-      <p>{{ 'dashboard.recentResults.loading' | transloco }}</p>
-    } @else if (betsPage.hasValue()) {
-      <recent-results-card [bets]="bets()"></recent-results-card>
-    }
-  </div>
+  <ranking-card></ranking-card>
+  <recent-results-card></recent-results-card>
 
   <!-- Live matches -->
   @if (hasLiveMatches()) {
-    <div class="col-span-full">
-      <live-matches-card [matches]="matches()" [bets]="bets()"></live-matches-card>
-    </div>
+    <live-matches-card
+      class="col-span-full"
+      [matches]="matches()"
+      [bets]="bets()"
+    ></live-matches-card>
   }
 
-  <!-- Upcoming matches -->
-  <div class="col-span-full">
-    @if (matchesPage.isLoading()) {
-      <p>{{ 'dashboard.upcomingMatches.loading' | transloco }}</p>
-    } @else if (matchesPage.hasValue() && betsPage.hasValue()) {
-      <upcoming-matches-card [matches]="matches()" [bets]="bets()"></upcoming-matches-card>
-    }
-  </div>
+  <upcoming-matches-card
+    class="col-span-full"
+    [userId]="userId()!"
+    [bets]="bets()"
+  ></upcoming-matches-card>
 </div>

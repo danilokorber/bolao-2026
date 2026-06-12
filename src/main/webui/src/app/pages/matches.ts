@@ -3,6 +3,7 @@ import { afterRenderEffect, Component, computed, inject, signal } from '@angular
 import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { MatchCard } from '@components/match-card';
+import { MatchCardSkeleton } from '@components/match-card-skeleton';
 import { MatchStageFilter } from '@components/match-stage-filter';
 import { Bet, PagedResponse } from '@interfaces/index';
 import { Match } from '@interfaces/match.interface';
@@ -12,7 +13,7 @@ import { SignalStore } from '../store/signal-store';
 
 @Component({
   selector: 'matches',
-  imports: [BolaoModule, MatchCard, MatchStageFilter, TranslocoPipe],
+  imports: [BolaoModule, MatchCard, MatchCardSkeleton, MatchStageFilter, TranslocoPipe],
   templateUrl: './matches.html',
 })
 export class Matches {

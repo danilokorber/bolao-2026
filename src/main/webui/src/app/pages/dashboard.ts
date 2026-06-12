@@ -1,8 +1,6 @@
-import { LiveMatchesCard } from './../components/live-matches-card';
 import { httpResource } from '@angular/common/http';
 import { Component, computed, inject, linkedSignal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TranslocoPipe } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { RankingCard } from '@components/ranking-card';
 import { RecentResultsCard } from '@components/recent-results-card';
@@ -15,9 +13,10 @@ import {
   MatchStatus,
   PagedResponse,
 } from '@interfaces/index';
-import { RankingEntry } from '@interfaces/ranking-entry.interface';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { resourceValueOr404 } from '@utils/resource-utils';
 import { SignalStore } from '../store/signal-store';
+import { LiveMatchesCard } from './../components/live-matches-card';
 
 @Component({
   selector: 'dashboard',
@@ -34,17 +33,17 @@ import { SignalStore } from '../store/signal-store';
 })
 export class Dashboard {
   private readonly store = inject(SignalStore);
-  private userId = computed(() => this.store.appuser()?.id);
+  userId = computed(() => this.store.appuser()?.id);
   private poolId = computed(() => this.store.currentPoolId?.());
 
   matchesPage = httpResource<PagedResponse<Match>>(() =>
     API.MATCHES.GET_ALL(this.userId(), 0, 200),
   );
 
-  ranking = httpResource<RankingEntry[]>(() => {
-    const pid = this.poolId();
-    return pid ? API.RANKING.GET_BY_POOL(pid) : API.RANKING.GET_ALL();
-  });
+  // ranking = httpResource<RankingEntry[]>(() => {
+  //   const pid = this.poolId();
+  //   return pid ? API.RANKING.GET_BY_POOL(pid) : API.RANKING.GET_ALL();
+  // });
 
   betsPage = httpResource<PagedResponse<Bet>>(() => API.BETS.GET_ALL(0, 10000));
 

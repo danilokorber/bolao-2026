@@ -1,28 +1,42 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { httpResource } from '@angular/common/http';
+import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { API } from '@api/api';
+import { Bet, MatchStatus, PagedResponse } from '@interfaces/index';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
-import { Bet, MatchStatus } from '@interfaces/index';
 import { ScoreService } from '@services/score.service';
 import { StageService } from '@services/stage.service';
 import { utcDate } from '@utils/date-utils';
 import { SignalStore } from '../store/signal-store';
 import { Card } from './card';
 import { RecentResultsCardItem } from './recent-results-card-item';
+import { RecentResultsCardItemSkeleton } from './recent-results-card-item-skeleton';
 
 @Component({
   selector: 'recent-results-card',
-  imports: [Card, TranslocoPipe, RecentResultsCardItem],
+  imports: [Card, TranslocoPipe, RecentResultsCardItem, RecentResultsCardItemSkeleton],
   template: `
     <card>
       <div card-header>{{ 'dashboard.recentResults.title' | transloco }}</div>
       <div class="p-0">
         <div class="flex flex-col">
-          @for (bet of recentBets(); track bet.id) {
-            <recent-results-card-item [bet]="bet"></recent-results-card-item>
-          } @empty {
+          @if (bets.isLoading()) {
+            <recent-results-card-item-skeleton></recent-results-card-item-skeleton>
+            <recent-results-card-item-skeleton></recent-results-card-item-skeleton>
+            <recent-results-card-item-skeleton></recent-results-card-item-skeleton>
+            <recent-results-card-item-skeleton></recent-results-card-item-skeleton>
+            <recent-results-card-item-skeleton></recent-results-card-item-skeleton>
+          } @else if (bets.hasValue()) {
+            @for (bet of recentBets(); track bet.id) {
+              <recent-results-card-item [bet]="bet"></recent-results-card-item>
+            } @empty {
+              <p class="text-sm opacity-60 px-3 py-2">
+                {{ 'dashboard.recentResults.noData' | transloco }}
+              </p>
+            }
+          } @else if (bets.error()) {
             <p class="text-sm opacity-60 px-3 py-2">
-              {{ 'dashboard.recentResults.noData' | transloco }}
+              {{ 'dashboard.recentResults.error' | transloco }}
             </p>
           }
         </div>
@@ -37,20 +51,27 @@ export class RecentResultsCard {
   protected readonly scoreService = inject(ScoreService);
   protected readonly stageService = inject(StageService);
 
-  bets = input.required<Bet[]>();
+  bets = httpResource<PagedResponse<Bet>>(() => API.BETS.GET_ALL(0, 10000));
+  // bets = input.required<Bet[]>();
 
   currentUserId = computed(() => this.store.appuser()?.id);
 
   recentBets = computed(() => {
+    if (!this.bets.hasValue()) {
+      return [];
+    }
+
     const userId = this.currentUserId();
     const now = Date.now();
 
-    const finished = this.bets().filter(
-      (b) =>
-        b.match &&
-        b.match.status === MatchStatus.FINISHED &&
-        utcDate(b.match.matchDatetime).getTime() < now,
-    );
+    const finished = this.bets
+      .value()!
+      .content.filter(
+        (b) =>
+          b.match &&
+          b.match.status === MatchStatus.FINISHED &&
+          utcDate(b.match.matchDatetime).getTime() < now,
+      );
 
     // Group bets by match, prefer current user's bet
     const byMatch = new Map<string, Bet>();

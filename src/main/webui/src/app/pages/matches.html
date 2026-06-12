@@ -1,10 +1,18 @@
 @if (matchesPage.isLoading()) {
-  <p>{{ 'matches.loading' | transloco }}</p>
+  <div class="flex flex-col gap-8" aria-hidden="true">
+    @for (i of [0, 1, 2, 3, 4]; track i) {
+      <match-card-skeleton></match-card-skeleton>
+    }
+  </div>
+  <p class="sr-only">{{ 'matches.loading' | transloco }}</p>
 } @else if (matchesPage.error()) {
-  <p class="text-red-500">{{ 'matches.error' | transloco }} {{ matchesPage.error() }}</p>
+  <p class="text-red-500">{{ 'matches.error' | transloco }}</p>
 } @else {
   <div class="flex flex-col gap-4">
-    <match-stage-filter [activeStage]="activeStage()" (stageChange)="onStageChange($event)"></match-stage-filter>
+    <match-stage-filter
+      [activeStage]="activeStage()"
+      (stageChange)="onStageChange($event)"
+    ></match-stage-filter>
 
     <!-- Matches list -->
     <div class="flex flex-col gap-8">

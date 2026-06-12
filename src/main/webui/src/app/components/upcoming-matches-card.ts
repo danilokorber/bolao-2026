@@ -1,13 +1,16 @@
-import { Card } from './card';
+import { httpResource } from '@angular/common/http';
 import { Component, computed, input } from '@angular/core';
+import { API } from '@api/api';
+import { Bet, Match, PagedResponse } from '@interfaces/index';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Bet, Match } from '@interfaces/index';
 import { utcDate } from '@utils/date-utils';
+import { Card } from './card';
 import { MatchCard } from './match-card';
+import { MatchCardSkeleton } from './match-card-skeleton';
 
 @Component({
   selector: 'upcoming-matches-card',
-  imports: [Card, TranslocoPipe, MatchCard],
+  imports: [Card, TranslocoPipe, MatchCard, MatchCardSkeleton],
   template: `
     <card>
       <div card-header>
@@ -19,10 +22,21 @@ import { MatchCard } from './match-card';
         }}
       </div>
       <div class="p-4 pt-6 flex flex-col gap-6 sm:gap-8">
-        @for (match of upcomingMatches(); track match.id) {
-          <match-card [match]="match" [bet]="betForMatch(match)"></match-card>
-        } @empty {
-          <p class="text-sm opacity-60">{{ 'dashboard.upcomingMatches.noData' | transloco }}</p>
+        @if (matches.isLoading()) {
+          <div class="p-4 pt-6 flex flex-col gap-6 sm:gap-8">
+            <match-card-skeleton></match-card-skeleton>
+            <match-card-skeleton></match-card-skeleton>
+          </div>
+        } @else if (matches.hasValue()) {
+          @for (match of upcomingMatches(); track match.id) {
+            <match-card [match]="match" [bet]="betForMatch(match)"></match-card>
+          } @empty {
+            <p class="text-sm opacity-60">{{ 'dashboard.upcomingMatches.noData' | transloco }}</p>
+          }
+        } @else if (matches.error()) {
+          <p class="text-sm opacity-60">
+            {{ 'dashboard.upcomingMatches.error' | transloco }}
+          </p>
         }
       </div>
     </card>
@@ -30,10 +44,13 @@ import { MatchCard } from './match-card';
   styles: ``,
 })
 export class UpcomingMatchesCard {
-  matches = input.required<Match[]>();
+  // matches = input.required<Match[]>();
+  userId = input<string | undefined>(undefined);
   bets = input.required<Bet[]>();
 
   showingPast = computed(() => false);
+
+  matches = httpResource<PagedResponse<Match>>(() => API.MATCHES.GET_ALL(this.userId(), 0, 200));
 
   private betsByMatch = computed(() => {
     const map = new Map<string, Bet>();
@@ -48,7 +65,8 @@ export class UpcomingMatchesCard {
   }
 
   upcomingMatches = computed(() => {
-    const all = this.matches();
+    if (!this.matches.hasValue()) return [];
+    const all = this.matches.value().content;
     if (!all || all.length === 0) return [];
 
     const now = Date.now();
