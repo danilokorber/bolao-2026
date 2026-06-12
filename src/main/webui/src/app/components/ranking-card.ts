@@ -48,6 +48,15 @@ export class RankingCard {
 
   ranking = httpResource<RankingEntry[]>(() => API.RANKING.GET_ALL());
 
+  constructor() {
+    setInterval(
+      () => {
+        this.ranking.reload();
+      },
+      Math.random() * 60_000 + 30_000,
+    ); // Random delay between 30s and 90s
+  }
+
   currentUserId = computed(() => this.store.appuser()?.id);
 
   displayEntries = computed(() => {

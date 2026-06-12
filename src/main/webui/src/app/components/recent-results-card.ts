@@ -52,7 +52,15 @@ export class RecentResultsCard {
   protected readonly stageService = inject(StageService);
 
   bets = httpResource<PagedResponse<Bet>>(() => API.BETS.GET_ALL(0, 10000));
-  // bets = input.required<Bet[]>();
+
+  constructor() {
+    setInterval(
+      () => {
+        this.bets.reload();
+      },
+      Math.random() * 60_000 + 30_000,
+    ); // Random delay between 30s and 90s
+  }
 
   currentUserId = computed(() => this.store.appuser()?.id);
 

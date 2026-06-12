@@ -39,6 +39,16 @@ export class RankingPage {
     return pid ? API.RANKING.GET_HISTORY_BY_POOL(pid) : API.RANKING.GET_HISTORY();
   });
 
+  constructor() {
+    setInterval(
+      () => {
+        this.ranking.reload();
+        this.history.reload();
+      },
+      Math.random() * 60_000 + 30_000,
+    ); // Random delay between 30s and 90s
+  }
+
   currentUserId = computed(() => this.store.appuser()?.id);
 
   chartUsers = computed(() => {

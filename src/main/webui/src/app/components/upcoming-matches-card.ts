@@ -52,6 +52,15 @@ export class UpcomingMatchesCard {
 
   matches = httpResource<PagedResponse<Match>>(() => API.MATCHES.GET_ALL(this.userId(), 0, 200));
 
+  constructor() {
+    setInterval(
+      () => {
+        this.matches.reload();
+      },
+      60_000, // Every minute
+    );
+  }
+
   private betsByMatch = computed(() => {
     const map = new Map<string, Bet>();
     for (const b of this.bets()) {

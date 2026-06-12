@@ -40,10 +40,15 @@ export class Dashboard {
     API.MATCHES.GET_ALL(this.userId(), 0, 200),
   );
 
-  // ranking = httpResource<RankingEntry[]>(() => {
-  //   const pid = this.poolId();
-  //   return pid ? API.RANKING.GET_BY_POOL(pid) : API.RANKING.GET_ALL();
-  // });
+  constructor() {
+    setInterval(
+      () => {
+        this.matchesPage.reload();
+        this.betsPage.reload();
+      },
+      Math.random() * 60_000 + 30_000,
+    ); // Random delay between 30s and 90s
+  }
 
   betsPage = httpResource<PagedResponse<Bet>>(() => API.BETS.GET_ALL(0, 10000));
 
