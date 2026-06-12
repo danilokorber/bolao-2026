@@ -26,7 +26,13 @@
     }
 
     @if (ranking.isLoading()) {
-      <p class="col-span-2 text-sm opacity-60">{{ 'ranking.loading' | transloco }}</p>
+      <div class="col-span-2 flex flex-col gap-2">
+        <ranking-item-skeleton></ranking-item-skeleton>
+        <ranking-item-skeleton></ranking-item-skeleton>
+        <ranking-item-skeleton></ranking-item-skeleton>
+        <ranking-item-skeleton></ranking-item-skeleton>
+        <ranking-item-skeleton></ranking-item-skeleton>
+      </div>
     } @else if (!ranking.hasValue() || ranking.value()!.length === 0) {
       <p class="col-span-2 text-sm opacity-60">{{ 'ranking.noData' | transloco }}</p>
     } @else {
