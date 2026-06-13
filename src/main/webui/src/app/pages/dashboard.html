@@ -37,9 +37,6 @@
   <ranking-card></ranking-card>
   <recent-results-card></recent-results-card>
 
-  <div class="h-64 overflow-y-scroll">{{ store.allMatches() | json }}</div>
-  <div class="h-64 overflow-y-scroll">{{ store.allBets() | json }}</div>
-
   <!-- Live matches -->
   @if (hasLiveMatches()) {
     <live-matches-card
