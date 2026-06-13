@@ -1,3 +1,4 @@
+import { JsonPipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
 import { Component, computed, inject, linkedSignal } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -5,14 +6,7 @@ import { API } from '@api/api';
 import { RankingCard } from '@components/ranking-card';
 import { RecentResultsCard } from '@components/recent-results-card';
 import { UpcomingMatchesCard } from '@components/upcoming-matches-card';
-import {
-  Bet,
-  ChampionBet,
-  GroupWinnerBet,
-  Match,
-  MatchStatus,
-  PagedResponse,
-} from '@interfaces/index';
+import { ChampionBet, GroupWinnerBet, MatchStatus } from '@interfaces/index';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { resourceValueOr404 } from '@utils/resource-utils';
 import { SignalStore } from '../store/signal-store';
@@ -27,33 +21,17 @@ import { LiveMatchesCard } from './../components/live-matches-card';
     UpcomingMatchesCard,
     TranslocoPipe,
     RouterLink,
+    JsonPipe,
   ],
   templateUrl: './dashboard.html',
   styles: ``,
 })
 export class Dashboard {
-  private readonly store = inject(SignalStore);
+  readonly store = inject(SignalStore);
   userId = computed(() => this.store.appuser()?.id);
-  private poolId = computed(() => this.store.currentPoolId?.());
 
-  matchesPage = httpResource<PagedResponse<Match>>(() =>
-    API.MATCHES.GET_ALL(this.userId(), 0, 200),
-  );
-
-  constructor() {
-    setInterval(
-      () => {
-        this.matchesPage.reload();
-        this.betsPage.reload();
-      },
-      Math.random() * 60_000 + 30_000,
-    ); // Random delay between 30s and 90s
-  }
-
-  betsPage = httpResource<PagedResponse<Bet>>(() => API.BETS.GET_ALL(0, 10000));
-
-  matches = computed(() => this.matchesPage.value()?.content ?? []);
-  bets = computed(() => this.betsPage.value()?.content ?? []);
+  matches = this.store.allMatches; // computed(() => this.matchesPage.value()?.content ?? []);
+  bets = this.store.allBets; // computed(() => this.betsPage.value()?.content ?? []);
 
   hasLiveMatches = linkedSignal(() => this.matches().some((m) => m.status == MatchStatus.LIVE));
 

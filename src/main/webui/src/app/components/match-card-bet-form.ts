@@ -39,17 +39,16 @@ export class MatchCardBetForm {
   match = model.required<Match>();
   matchStarted = output<void>();
 
-  bet = linkedSignal<BetRequest>(
+  bet = linkedSignal(
     () =>
+      this.store.betForMatch(this.match().id ?? '') ??
       ({
         userId: this.store.appuser()?.id || '',
         matchId: this.match().id || '',
-        homeGoalsBet:
-          this.match().userBet?.homeGoalsBet >= 0 ? this.match().userBet?.homeGoalsBet : null,
-        awayGoalsBet:
-          this.match().userBet?.awayGoalsBet >= 0 ? this.match().userBet?.awayGoalsBet : null,
+        homeGoalsBet: this.match().userBet?.homeGoalsBet ?? '',
+        awayGoalsBet: this.match().userBet?.awayGoalsBet ?? '',
         winnerBetId: this.match().userBet?.winnerBetId,
-      }) as BetRequest,
+      } as BetRequest),
   );
 
   form = form<BetRequest>(this.bet, (bet) => {

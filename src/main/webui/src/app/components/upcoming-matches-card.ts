@@ -1,9 +1,7 @@
-import { httpResource } from '@angular/common/http';
-import { Component, computed, input } from '@angular/core';
-import { API } from '@api/api';
-import { Bet, Match, PagedResponse } from '@interfaces/index';
+import { Component, computed, inject } from '@angular/core';
+import { Bet, Match } from '@interfaces/index';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { utcDate } from '@utils/date-utils';
+import { SignalStore } from '../store/signal-store';
 import { Card } from './card';
 import { MatchCard } from './match-card';
 import { MatchCardSkeleton } from './match-card-skeleton';
@@ -22,21 +20,17 @@ import { MatchCardSkeleton } from './match-card-skeleton';
         }}
       </div>
       <div class="p-4 pt-6 flex flex-col gap-6 sm:gap-8">
-        @if (matches.isLoading()) {
+        @if (!matchesLoaded()) {
           <div class="p-4 pt-6 flex flex-col gap-6 sm:gap-8">
             <match-card-skeleton></match-card-skeleton>
             <match-card-skeleton></match-card-skeleton>
           </div>
-        } @else if (matches.hasValue()) {
+        } @else if (matchesLoaded()) {
           @for (match of upcomingMatches(); track match.id) {
-            <match-card [match]="match" [bet]="betForMatch(match)"></match-card>
+            <match-card [match]="match"></match-card>
           } @empty {
             <p class="text-sm opacity-60">{{ 'dashboard.upcomingMatches.noData' | transloco }}</p>
           }
-        } @else if (matches.error()) {
-          <p class="text-sm opacity-60">
-            {{ 'dashboard.upcomingMatches.error' | transloco }}
-          </p>
         }
       </div>
     </card>
@@ -44,22 +38,17 @@ import { MatchCardSkeleton } from './match-card-skeleton';
   styles: ``,
 })
 export class UpcomingMatchesCard {
-  // matches = input.required<Match[]>();
-  userId = input<string | undefined>(undefined);
-  bets = input.required<Bet[]>();
+  readonly store = inject(SignalStore);
+  // userId = input<string | undefined>(undefined);
+  // bets = input.required<Bet[]>();
 
   showingPast = computed(() => false);
 
-  matches = httpResource<PagedResponse<Match>>(() => API.MATCHES.GET_ALL(this.userId(), 0, 200));
+  matchesLoaded = this.store.matchesInitiallyLoaded;
+  matches = this.store.allMatches;
+  upcomingMatches = this.store.upcomingMatches36h;
 
-  constructor() {
-    setInterval(
-      () => {
-        this.matches.reload();
-      },
-      60_000, // Every minute
-    );
-  }
+  bets = this.store.allBets;
 
   private betsByMatch = computed(() => {
     const map = new Map<string, Bet>();
@@ -73,23 +62,23 @@ export class UpcomingMatchesCard {
     return this.betsByMatch().get(match.id ?? '');
   }
 
-  upcomingMatches = computed(() => {
-    if (!this.matches.hasValue()) return [];
-    const all = this.matches.value().content;
-    if (!all || all.length === 0) return [];
+  // upcomingMatches = computed(() => {
+  //   if (!this.matches.hasValue()) return [];
+  //   const all = this.matches.value().content;
+  //   if (!all || all.length === 0) return [];
 
-    const now = Date.now();
+  //   const now = Date.now();
 
-    // Only future matches, sorted ascending
-    const future = [...all]
-      .filter((m) => utcDate(m.matchDatetime).getTime() > now)
-      .sort((a, b) => utcDate(a.matchDatetime).getTime() - utcDate(b.matchDatetime).getTime());
+  //   // Only future matches, sorted ascending
+  //   const future = [...all]
+  //     .filter((m) => utcDate(m.matchDatetime).getTime() > now)
+  //     .sort((a, b) => utcDate(a.matchDatetime).getTime() - utcDate(b.matchDatetime).getTime());
 
-    // Show matches in the next 36 hours OR the next 4, whichever is more
-    const cutoff = now + 36 * 60 * 60 * 1000;
-    const within36h = future.filter((m) => utcDate(m.matchDatetime).getTime() <= cutoff);
-    return within36h.length >= 4 ? within36h : future.slice(0, 4);
-  });
+  //   // Show matches in the next 36 hours OR the next 4, whichever is more
+  //   const cutoff = now + 36 * 60 * 60 * 1000;
+  //   const within36h = future.filter((m) => utcDate(m.matchDatetime).getTime() <= cutoff);
+  //   return within36h.length >= 4 ? within36h : future.slice(0, 4);
+  // });
 
   private dateStr(d: Date): string {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;

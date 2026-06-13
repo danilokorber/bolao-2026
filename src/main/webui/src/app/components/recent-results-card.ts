@@ -1,8 +1,6 @@
-import { httpResource } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { API } from '@api/api';
-import { Bet, MatchStatus, PagedResponse } from '@interfaces/index';
+import { Bet, MatchStatus } from '@interfaces/index';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ScoreService } from '@services/score.service';
 import { StageService } from '@services/stage.service';
@@ -20,13 +18,13 @@ import { RecentResultsCardItemSkeleton } from './recent-results-card-item-skelet
       <div card-header>{{ 'dashboard.recentResults.title' | transloco }}</div>
       <div class="p-0">
         <div class="flex flex-col">
-          @if (bets.isLoading()) {
+          @if (!store.betsInitiallyLoaded()) {
             <recent-results-card-item-skeleton></recent-results-card-item-skeleton>
             <recent-results-card-item-skeleton></recent-results-card-item-skeleton>
             <recent-results-card-item-skeleton></recent-results-card-item-skeleton>
             <recent-results-card-item-skeleton></recent-results-card-item-skeleton>
             <recent-results-card-item-skeleton></recent-results-card-item-skeleton>
-          } @else if (bets.hasValue()) {
+          } @else {
             @for (bet of recentBets(); track bet.id) {
               <recent-results-card-item [bet]="bet"></recent-results-card-item>
             } @empty {
@@ -34,10 +32,6 @@ import { RecentResultsCardItemSkeleton } from './recent-results-card-item-skelet
                 {{ 'dashboard.recentResults.noData' | transloco }}
               </p>
             }
-          } @else if (bets.error()) {
-            <p class="text-sm opacity-60 px-3 py-2">
-              {{ 'dashboard.recentResults.error' | transloco }}
-            </p>
           }
         </div>
       </div>
@@ -46,40 +40,29 @@ import { RecentResultsCardItemSkeleton } from './recent-results-card-item-skelet
   styles: ``,
 })
 export class RecentResultsCard {
-  private readonly store = inject(SignalStore);
+  protected readonly store = inject(SignalStore);
   private readonly router = inject(Router);
   protected readonly scoreService = inject(ScoreService);
   protected readonly stageService = inject(StageService);
 
-  bets = httpResource<PagedResponse<Bet>>(() => API.BETS.GET_ALL(0, 10000));
-
-  constructor() {
-    setInterval(
-      () => {
-        this.bets.reload();
-      },
-      Math.random() * 60_000 + 30_000,
-    ); // Random delay between 30s and 90s
-  }
+  bets = this.store.allBets;
 
   currentUserId = computed(() => this.store.appuser()?.id);
 
   recentBets = computed(() => {
-    if (!this.bets.hasValue()) {
+    if (!this.bets) {
       return [];
     }
 
     const userId = this.currentUserId();
     const now = Date.now();
 
-    const finished = this.bets
-      .value()!
-      .content.filter(
-        (b) =>
-          b.match &&
-          b.match.status === MatchStatus.FINISHED &&
-          utcDate(b.match.matchDatetime).getTime() < now,
-      );
+    const finished = this.bets()!.filter(
+      (b) =>
+        b.match &&
+        b.match.status === MatchStatus.FINISHED &&
+        utcDate(b.match.matchDatetime).getTime() < now,
+    );
 
     // Group bets by match, prefer current user's bet
     const byMatch = new Map<string, Bet>();

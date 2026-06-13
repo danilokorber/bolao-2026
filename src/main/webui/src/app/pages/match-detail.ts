@@ -1,10 +1,10 @@
 import { httpResource } from '@angular/common/http';
 import { Component, computed, inject, linkedSignal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { API } from '@api/api';
 import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
 import { Bet, Match, Team } from '@interfaces/index';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ScoreService } from '@services/score.service';
 import { StageService } from '@services/stage.service';
 import { TeamService } from '@services/team.service';
@@ -41,9 +41,7 @@ export class MatchDetail {
     return team ? this.teamService.localizedName(team) : '';
   }
 
-  stageLabel = linkedSignal(() =>
-    this.stageService.fullLabel(this.match.value()?.stage)
-  );
+  stageLabel = linkedSignal(() => this.stageService.fullLabel(this.match.value()?.stage));
 
   formattedDate = linkedSignal(() => {
     const dt = this.match.value()?.matchDatetime;

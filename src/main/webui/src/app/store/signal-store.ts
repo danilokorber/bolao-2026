@@ -1,57 +1,25 @@
-import { computed, inject } from '@angular/core';
-import {
-  patchState,
-  signalStore,
-  withComputed,
-  withHooks,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
-import { SignalStoreService } from './signal-store.service';
-import { AppUser } from '@interfaces/index';
+import { signalStore, withFeature, withHooks } from '@ngrx/signals';
+import { BETS_REFRESH_INTERVAL, withBetsFeature } from './features/bets.feature';
+import { MATCHES_REFRESH_INTERVAL, withMatchesFeature } from './features/matches.feature';
+import { withUserFeature } from './features/user.feature';
 
 export const SignalStore = signalStore(
   { providedIn: 'root' },
-  withState({
-    appuser: undefined as AppUser | undefined,
-    currentPoolId: undefined as string | undefined,
-  }),
 
-  withMethods((store) => {
-    const signalStoreService = inject(SignalStoreService);
-
-    return {
-      async loadAppUser() {
-        const appUser = await signalStoreService.setOrGetProfile();
-        patchState(store, { appuser: appUser });
-
-        if (appUser?.id) {
-          const poolId = await signalStoreService.getFirstActivePoolId(appUser.id);
-          patchState(store, { currentPoolId: poolId });
-        }
-      },
-
-      getAppUser() {
-        return computed(() => store.appuser() ?? this.loadAppUser());
-      },
-
-      setCurrentPoolId(id: string) {
-        patchState(store, { currentPoolId: id });
-      },
-    };
-  }),
+  withFeature(withMatchesFeature),
+  withFeature(withBetsFeature),
+  withFeature(withUserFeature),
 
   withHooks({
-    onInit({ loadAppUser }) {
+    onInit({ loadMatches, loadBets, loadAppUser }) {
+      // Load once on init
+      loadMatches();
+      loadBets();
       loadAppUser();
-    },
-    onDestroy() {
-      console.log('on destroy');
+
+      // Load recurrently
+      setInterval(() => loadMatches(), MATCHES_REFRESH_INTERVAL);
+      setInterval(() => loadBets(), BETS_REFRESH_INTERVAL);
     },
   }),
-
-  withComputed(({ appuser, currentPoolId }) => ({
-    appuser: computed(() => appuser()),
-    currentPoolId: computed(() => currentPoolId()),
-  })),
 );

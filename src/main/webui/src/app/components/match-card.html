@@ -29,7 +29,7 @@
           class="absolute -bottom-4 sm:-bottom-6 text-xs sm:text-lg text-gray-500 whitespace-nowrap"
         >
           @if (bet()) {
-            {{ bet()?.homeGoalsBet }} : {{ bet()?.awayGoalsBet }}
+            {{ bet()!.homeGoalsBet }} : {{ bet()!.awayGoalsBet }}
           } @else {
             {{ 'matchCard.noBet' | transloco }}
           }

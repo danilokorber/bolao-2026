@@ -1,15 +1,17 @@
+import { JsonPipe } from '@angular/common';
 import { Component, inject, input, linkedSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Match, MatchStatus } from '@interfaces/index';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Bet, Match, MatchStatus } from '@interfaces/index';
 import { ScoreService } from '@services/score.service';
 import { utcDate } from '@utils/date-utils';
-import { MatchInProgress } from './match-in-progress';
-import { MatchCardFlag } from './match-card-flag';
-import { MatchCardTeamName } from './match-card-team-name';
-import { MatchCardSchedule } from './match-card-schedule';
+import { SignalStore } from '../store/signal-store';
 import { MatchCardBetForm } from './match-card-bet-form';
+import { MatchCardFlag } from './match-card-flag';
+import { MatchCardSchedule } from './match-card-schedule';
+import { MatchCardTeamName } from './match-card-team-name';
+import { MatchInProgress } from './match-in-progress';
 
 @Component({
   selector: 'match-card',
@@ -21,6 +23,7 @@ import { MatchCardBetForm } from './match-card-bet-form';
     MatchInProgress,
     MatchCardSchedule,
     MatchCardBetForm,
+    JsonPipe,
   ],
   templateUrl: './match-card.html',
   styles: `
@@ -54,9 +57,10 @@ import { MatchCardBetForm } from './match-card-bet-form';
 export class MatchCard {
   private readonly router = inject(Router);
   private readonly scoreService = inject(ScoreService);
+  private readonly store = inject(SignalStore);
 
-  match = input.required<Match>();
-  bet = input.required<Bet | undefined>();
+  match = input<Match>({ id: '' } as Match);
+  bet = linkedSignal(() => this.store.betForMatch(this.match().id ?? ''));
 
   startIsInThePast = linkedSignal(() => {
     const NOW = new Date().getTime();
@@ -66,9 +70,7 @@ export class MatchCard {
 
   matchInProgress = linkedSignal(() => this.match().status == MatchStatus.LIVE);
 
-  scoreColor = linkedSignal(() =>
-    this.scoreService.color(this.bet()?.pointsEarned ?? 0)
-  );
+  scoreColor = linkedSignal(() => this.scoreService.color(this.bet()?.pointsEarned ?? 0));
 
   onCardClick() {
     if (this.startIsInThePast()) {
