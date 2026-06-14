@@ -33,6 +33,21 @@ export class RankingPage {
     const pid = this.poolId();
     return pid ? API.RANKING.GET_BY_POOL(pid) : API.RANKING.GET_ALL();
   });
+  rankingOnlyActive = computed(() => {
+    const entries = this.ranking.value() ?? [];
+    return entries
+      .filter(
+        (e) =>
+          e.countExact +
+            e.countDiff +
+            e.countWinner +
+            e.countInverted +
+            e.countWrong +
+            e.specialPoints >
+          0,
+      )
+      .map((e, i) => ({ ...e, position: i + 1 }));
+  });
 
   history = httpResource<HistoryEntry[]>(() => {
     const pid = this.poolId();

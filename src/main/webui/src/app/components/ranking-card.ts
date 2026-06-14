@@ -56,12 +56,27 @@ export class RankingCard {
       Math.random() * 60_000 + 30_000,
     ); // Random delay between 30s and 90s
   }
+  rankingOnlyActive = computed(() => {
+    const entries = this.ranking.value() ?? [];
+    return entries
+      .filter(
+        (e) =>
+          e.countExact +
+            e.countDiff +
+            e.countWinner +
+            e.countInverted +
+            e.countWrong +
+            e.specialPoints >
+          0,
+      )
+      .map((e, i) => ({ ...e, position: i + 1 }));
+  });
 
   currentUserId = computed(() => this.store.appuser()?.id);
 
   displayEntries = computed(() => {
     if (!this.ranking.hasValue()) return [];
-    const all = this.ranking.value();
+    const all = this.rankingOnlyActive();
     const userId = this.currentUserId();
     if (!all || all.length === 0) return [];
 
