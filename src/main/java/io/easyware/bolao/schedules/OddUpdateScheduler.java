@@ -5,6 +5,7 @@ import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.java.Log;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
 @Log
@@ -13,10 +14,14 @@ public class OddUpdateScheduler {
     @Inject
     OddsService oddsService;
 
-    @Scheduled(every = "1h",
+    @ConfigProperty(name = "the-odds-api.enabled", defaultValue = "false")
+    boolean enabled;
+
+    @Scheduled(every = "1d",
             identity = "odds-update-scheduler")
     public void scheduleOddsUpdate() {
+
         log.info("Scheduling Odds Update Schedule");
-        oddsService.printAllEventsWithMatchingMatches();
+        if (enabled) oddsService.printAllEventsWithMatchingMatches();
     }
 }

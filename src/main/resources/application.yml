@@ -1,8 +1,9 @@
 football-data:
-  api-key: ${FOOTBALL_DATA_API_KEY:1a8ebe538b1d4c71a2ea2e30e518236e}
+  api-key: ${FOOTBALL_DATA_API_KEY}
 
 the-odds-api:
-  api-key: ${THE_ODDS_API_API_KEY:ad998bbf253840bbffee35b914acb15e}
+  api-key: ${THE_ODDS_API_API_KEY}
+  enabled: ${THE_ODDS_API_ENABLED:false}
 
 bolao:
   auth:
