@@ -1,10 +1,13 @@
 package io.easyware.bolao.services;
 
 import io.easyware.bolao.dto.AppUserDTO;
+import io.easyware.bolao.dto.FavoriteToggleResponseDTO;
 import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.entities.AppUser;
+import io.easyware.bolao.entities.UserFavorite;
 import io.easyware.bolao.mappers.AppUserMapper;
 import io.easyware.bolao.repositories.AppUserRepository;
+import io.easyware.bolao.repositories.UserFavoriteRepository;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -26,6 +29,9 @@ public class AppUserService {
 
     @Inject
     AppUserMapper appUserMapper;
+
+    @Inject
+    UserFavoriteRepository userFavoriteRepository;
 
     /**
      * Lists all registered users.
@@ -174,5 +180,41 @@ public class AppUserService {
         if (!appUserRepository.deleteById(id)) {
             throw new NotFoundException("User not found with id: " + id);
         }
+    }
+
+    @Transactional
+    public FavoriteToggleResponseDTO toggleFavorite(UUID userId, UUID favoriteUserId) {
+        if (userId.equals(favoriteUserId)) {
+            throw new BadRequestException("You cannot favorite yourself");
+        }
+
+        AppUser user = appUserRepository.findById(userId);
+        if (user == null) {
+            throw new NotFoundException("User not found with id: " + userId);
+        }
+
+        AppUser favoriteUser = appUserRepository.findById(favoriteUserId);
+        if (favoriteUser == null) {
+            throw new NotFoundException("Favorite user not found with id: " + favoriteUserId);
+        }
+
+        UserFavorite existing = userFavoriteRepository.findByUserAndFavoriteUser(userId, favoriteUserId);
+        boolean favorite;
+        if (existing != null) {
+            userFavoriteRepository.delete(existing);
+            favorite = false;
+        } else {
+            userFavoriteRepository.persist(UserFavorite.builder()
+                    .user(user)
+                    .favoriteUser(favoriteUser)
+                    .build());
+            favorite = true;
+        }
+
+        return FavoriteToggleResponseDTO.builder()
+                .userId(userId)
+                .favoriteUserId(favoriteUserId)
+                .favorite(favorite)
+                .build();
     }
 }

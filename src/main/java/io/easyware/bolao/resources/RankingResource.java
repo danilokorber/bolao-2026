@@ -23,14 +23,16 @@ public class RankingResource {
     EntityManager em;
 
     @GET
-    public List<RankingEntryDTO> getRanking() {
-        return buildRanking(null);
+    public List<RankingEntryDTO> getRanking(@QueryParam("userId") UUID userId) {
+        return buildRanking(null, userId);
     }
 
     @GET
     @Path("/pool/{poolId}")
-    public List<RankingEntryDTO> getRankingByPool(@PathParam("poolId") UUID poolId) {
-        return buildRanking(poolId);
+    public List<RankingEntryDTO> getRankingByPool(
+            @PathParam("poolId") UUID poolId,
+            @QueryParam("userId") UUID userId) {
+        return buildRanking(poolId, userId);
     }
 
     @GET
@@ -45,14 +47,22 @@ public class RankingResource {
         return buildRankingHistory(poolId);
     }
 
-    private List<RankingEntryDTO> buildRanking(UUID poolId) {
+    private List<RankingEntryDTO> buildRanking(UUID poolId, UUID userId) {
         boolean poolScoped = poolId != null;
+        boolean includeFavorites = userId != null;
         String poolJoin = poolScoped
                 ? "JOIN user_pool up ON up.user_id = u.id AND up.pool_id = :poolId AND up.status = 'ACTIVE'"
                 : "";
+        String favoriteJoin = includeFavorites
+                ? "LEFT JOIN user_favorite uf ON uf.user_id = :userId AND uf.favorite_user_id = u.id"
+                : "";
+        String favoriteFlagExpr = includeFavorites
+                ? "CASE WHEN uf.id IS NOT NULL THEN TRUE ELSE FALSE END"
+                : "FALSE";
 
         String sql = """
             SELECT u.id, u.name,
+                %s AS is_favorite,
                 COALESCE((SELECT COUNT(*) FROM bet b WHERE b.user_id = u.id AND b.score_tier = 'EXACT'), 0) AS count_exact,
                 COALESCE((SELECT COUNT(*) FROM bet b WHERE b.user_id = u.id AND b.score_tier = 'DIFF'), 0) AS count_diff,
                 COALESCE((SELECT COUNT(*) FROM bet b WHERE b.user_id = u.id AND b.score_tier = 'WINNER'), 0) AS count_winner,
@@ -65,13 +75,17 @@ public class RankingResource {
                 COALESCE((SELECT SUM(c.bonus_points) FROM champion_bet c WHERE c.user_id = u.id), 0) AS total_points
             FROM app_user u
             %s
+            %s
             WHERE u.active = true
             ORDER BY total_points DESC, u.name ASC
-            """.formatted(poolJoin);
+            """.formatted(favoriteFlagExpr, poolJoin, favoriteJoin);
 
         var query = em.createNativeQuery(sql, Tuple.class);
         if (poolScoped) {
             query.setParameter("poolId", poolId);
+        }
+        if (includeFavorites) {
+            query.setParameter("userId", userId);
         }
 
         List<Tuple> results = query.getResultList();
@@ -83,6 +97,7 @@ public class RankingResource {
                     .position(position++)
                     .userId((UUID) row.get("id"))
                     .userName((String) row.get("name"))
+                    .isFavorite(Boolean.TRUE.equals(row.get("is_favorite")))
                     .countExact(((Number) row.get("count_exact")).longValue())
                     .countDiff(((Number) row.get("count_diff")).longValue())
                     .countWinner(((Number) row.get("count_winner")).longValue())

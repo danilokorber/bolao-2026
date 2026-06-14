@@ -43,6 +43,7 @@
             <tr class="bg-primary-700 text-white text-xs uppercase tracking-wide">
               <th class="px-3 py-2 text-left">#</th>
               <th class="px-3 py-2 text-left">{{ 'ranking.player' | transloco }}</th>
+              <th class="px-3 py-2 text-center" [title]="'ranking.favorite' | transloco">★</th>
               <th class="px-3 py-2 text-center">
                 <span class="score-badge score-10" title="{{ 'ranking.tierExact' | transloco }}"
                   >🎯</span
@@ -98,6 +99,27 @@
                   </div>
                 </td>
                 <td class="px-3 py-2 truncate max-w-50">{{ entry.userName }}</td>
+                <td class="px-3 py-2 text-center">
+                  @if (entry.userId !== currentUserId()) {
+                    <button
+                      type="button"
+                      class="text-lg leading-none cursor-pointer"
+                      [class.opacity-30]="!entry.isFavorite"
+                      [class.opacity-100]="entry.isFavorite"
+                      [class.text-yellow-500]="entry.isFavorite"
+                      [title]="
+                        entry.isFavorite
+                          ? ('ranking.unmarkFavorite' | transloco)
+                          : ('ranking.markFavorite' | transloco)
+                      "
+                      (click)="toggleFavorite(entry, $event)"
+                    >
+                      ★
+                    </button>
+                  } @else {
+                    <span class="opacity-20">—</span>
+                  }
+                </td>
                 <td class="px-3 py-2 text-center font-mono tabular-nums">
                   {{ entry.countExact || '–' }}
                 </td>
@@ -151,10 +173,27 @@
             <!-- Name + breakdown -->
             <div class="flex-1 min-w-0">
               <div
-                class="font-semibold truncate"
+                class="font-semibold truncate flex items-center gap-2"
                 [class.text-primary-700]="entry.userId === currentUserId()"
               >
-                {{ entry.userName }}
+                <span class="truncate">{{ entry.userName }}</span>
+                @if (entry.userId !== currentUserId()) {
+                  <button
+                    type="button"
+                    class="text-base leading-none cursor-pointer"
+                    [class.opacity-30]="!entry.isFavorite"
+                    [class.opacity-100]="entry.isFavorite"
+                    [class.text-yellow-500]="entry.isFavorite"
+                    [title]="
+                      entry.isFavorite
+                        ? ('ranking.unmarkFavorite' | transloco)
+                        : ('ranking.markFavorite' | transloco)
+                    "
+                    (click)="toggleFavorite(entry, $event)"
+                  >
+                    ★
+                  </button>
+                }
               </div>
               <div class="flex gap-2 text-xs text-gray-400 mt-0.5">
                 @if (entry.countExact) {

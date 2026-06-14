@@ -1,6 +1,8 @@
 package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.AppUserDTO;
+import io.easyware.bolao.dto.FavoriteToggleRequestDTO;
+import io.easyware.bolao.dto.FavoriteToggleResponseDTO;
 import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.services.AppUserService;
 import io.quarkus.security.Authenticated;
@@ -138,5 +140,13 @@ public class AppUserResource {
     public Response delete(@PathParam("id") UUID id) {
         appUserService.delete(id);
         return Response.noContent().build();
+    }
+
+    @POST
+    @Path("/id/{favoriteUserId}/favorite")
+    public FavoriteToggleResponseDTO toggleFavorite(
+            @PathParam("favoriteUserId") UUID favoriteUserId,
+            @Valid FavoriteToggleRequestDTO request) {
+        return appUserService.toggleFavorite(request.getUserId(), favoriteUserId);
     }
 }

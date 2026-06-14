@@ -31,6 +31,9 @@ import { SignalStore } from '../store/signal-store';
         {{ data().position }}
       </div>
       <span class="flex-1 text-sm sm:text-base truncate">{{ data().userName }}</span>
+      @if (data().isFavorite) {
+        <span class="text-yellow-500" [title]="'ranking.favorite' | transloco">★</span>
+      }
       <!-- @if (data().separator) {
         <span class="text-xs opacity-40">⋯</span>
       } -->
@@ -56,6 +59,7 @@ export class RankingCardItem {
     countWrong: number;
     specialPoints: number;
     totalPoints: number;
+    isFavorite: boolean;
   }>();
   currentUserId = computed(() => this.store.appuser()?.id);
 
