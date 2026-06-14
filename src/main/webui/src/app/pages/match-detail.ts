@@ -32,6 +32,13 @@ export class MatchDetail {
   match = httpResource<Match>(() => API.MATCHES.GET_BY_ID(this.matchId, this.userId()));
   bets = httpResource<Bet[]>(() => API.BETS.GET_BY_MATCH(this.matchId));
 
+  constructor() {
+    setInterval(() => {
+      this.match.reload();
+      this.bets.reload();
+    }, 60 * 1000); // Refresh match data every minute
+  }
+
   sortedBets = computed(() => {
     const list = this.bets.value() ?? [];
     return [...list].sort((a, b) => (b.pointsEarned ?? 0) - (a.pointsEarned ?? 0));
