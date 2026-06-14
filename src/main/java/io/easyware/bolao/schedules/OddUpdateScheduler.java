@@ -17,7 +17,7 @@ public class OddUpdateScheduler {
     @ConfigProperty(name = "the-odds-api.enabled", defaultValue = "false")
     boolean enabled;
 
-    @Scheduled(every = "1d",
+    @Scheduled(every = "168h",
             identity = "odds-update-scheduler")
     public void scheduleOddsUpdate() {
 
