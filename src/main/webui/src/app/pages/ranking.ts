@@ -1,4 +1,4 @@
-import { httpResource } from '@angular/common/http';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { API } from '@api/api';
@@ -9,6 +9,7 @@ import { RankingItemSkeleton } from '@components/ranking-item-skeleton';
 import { RankingEntry } from '@interfaces/ranking-entry.interface';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ScoreService } from '@services/score.service';
+import { lastValueFrom } from 'rxjs';
 import { SignalStore } from '../store/signal-store';
 
 @Component({
@@ -25,13 +26,16 @@ import { SignalStore } from '../store/signal-store';
 })
 export class RankingPage {
   private readonly store = inject(SignalStore);
+  private readonly http = inject(HttpClient);
   readonly scoreService = inject(ScoreService);
 
   private poolId = computed(() => this.store.currentPoolId?.());
+  currentUserId = computed(() => this.store.appuser()?.id);
 
   ranking = httpResource<RankingEntry[]>(() => {
     const pid = this.poolId();
-    return pid ? API.RANKING.GET_BY_POOL(pid) : API.RANKING.GET_ALL();
+    const userId = this.currentUserId();
+    return pid ? API.RANKING.GET_BY_POOL(pid, userId) : API.RANKING.GET_ALL(userId);
   });
   rankingOnlyActive = computed(() => {
     const entries = this.ranking.value() ?? [];
@@ -64,7 +68,22 @@ export class RankingPage {
     ); // Random delay between 30s and 90s
   }
 
-  currentUserId = computed(() => this.store.appuser()?.id);
+  async toggleFavorite(entry: RankingEntry, event: Event): Promise<void> {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const userId = this.currentUserId();
+    if (!userId || entry.userId === userId) {
+      return;
+    }
+
+    await lastValueFrom(
+      this.http.post(API.USERS.TOGGLE_FAVORITE(entry.userId), {
+        userId,
+      }),
+    );
+    this.ranking.reload();
+  }
 
   chartUsers = computed(() => {
     const entries = this.ranking.value() ?? [];

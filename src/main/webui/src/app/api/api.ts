@@ -15,6 +15,7 @@ export const API = {
     CREATE: () => `/api/v1/users`,
     UPDATE: (id: string) => `/api/v1/users/id/${id}`,
     DELETE: (id: string) => `/api/v1/users/id/${id}`,
+    TOGGLE_FAVORITE: (favoriteUserId: string) => `/api/v1/users/id/${favoriteUserId}/favorite`,
   },
 
   MATCHES: {
@@ -38,9 +39,10 @@ export const API = {
   },
 
   RANKING: {
-    GET_ALL: () => `/api/v1/ranking`,
+    GET_ALL: (userId?: string) => `/api/v1/ranking${userId ? '?userId=' + userId : ''}`,
     GET_HISTORY: () => `/api/v1/ranking/history`,
-    GET_BY_POOL: (poolId: string) => `/api/v1/ranking/pool/${poolId}`,
+    GET_BY_POOL: (poolId: string, userId?: string) =>
+      `/api/v1/ranking/pool/${poolId}${userId ? '?userId=' + userId : ''}`,
     GET_HISTORY_BY_POOL: (poolId: string) => `/api/v1/ranking/pool/${poolId}/history`,
   },
 

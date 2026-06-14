@@ -45,8 +45,9 @@ import { RankingCardItemSkeleton } from './ranking-card-item-skeleton';
 export class RankingCard {
   private readonly store = inject(SignalStore);
   private router = inject(Router);
+  currentUserId = computed(() => this.store.appuser()?.id);
 
-  ranking = httpResource<RankingEntry[]>(() => API.RANKING.GET_ALL());
+  ranking = httpResource<RankingEntry[]>(() => API.RANKING.GET_ALL(this.currentUserId()));
 
   constructor() {
     setInterval(
@@ -71,8 +72,6 @@ export class RankingCard {
       )
       .map((e, i) => ({ ...e, position: i + 1 }));
   });
-
-  currentUserId = computed(() => this.store.appuser()?.id);
 
   displayEntries = computed(() => {
     if (!this.ranking.hasValue()) return [];
