@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import jakarta.transaction.Transactional;
+
 @ApplicationScoped
 public class OddsService {
 
@@ -32,6 +34,7 @@ public class OddsService {
     @Inject
     MatchRepository matchRepository;
 
+    @Transactional
     public void printAllEventsWithMatchingMatches() {
         List<TheOddsEvent> events = theOddsApiClient.getEvents();
         List<Match> matches = matchRepository.listAll();
@@ -55,6 +58,12 @@ public class OddsService {
                 continue;
             }
 
+            if (match != null) {
+                match.setHomeOdds(roundOdds(odds.getAverageHome()));
+                match.setAwayOdds(roundOdds(odds.getAverageAway()));
+                match.setDrawOdds(roundOdds(odds.getAvarageDraw()));
+            }
+
             String line = String.format(
                     Locale.ROOT,
                     "%s  %s %s %.2f %.2f %.2f %s",
@@ -68,6 +77,10 @@ public class OddsService {
             );
             System.out.println(line);
         }
+    }
+
+    private Double roundOdds(double odds) {
+        return Math.round(odds * 100.0d) / 100.0d;
     }
 
     private void logUnmatchedEvent(TheOddsEvent event, List<Match> matches) {

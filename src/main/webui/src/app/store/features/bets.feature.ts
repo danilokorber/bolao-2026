@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable } from '@angular/core';
 import { API } from '@api/api';
-import { Bet, PagedResponse } from '@interfaces/index';
+import { Bet, BetRequest, PagedResponse } from '@interfaces/index';
 import {
   patchState,
   signalStoreFeature,
@@ -19,7 +19,11 @@ export const BETS_REFRESH_INTERVAL = Math.random() * 30000 + 30000; // Random in
 export class SignalStoreBetsService {
   private readonly http = inject(HttpClient);
   public getBets(): Promise<PagedResponse<Bet>> {
-    return lastValueFrom(this.http.get<PagedResponse<Bet>>(API.BETS.GET_ALL(0, 200)));
+    return lastValueFrom(this.http.get<PagedResponse<Bet>>(API.BETS.GET_ALL()));
+  }
+
+  public postBet(bet: BetRequest): Promise<Bet> {
+    return lastValueFrom(this.http.post<Bet>(API.BETS.SAVE(), bet));
   }
 }
 
@@ -49,6 +53,17 @@ export function withBetsFeature() {
           } catch (error) {
             // On error, keep last known state — prevents false "no bets" signals
             console.error('Failed to refresh bets:', error);
+          }
+        },
+
+        updateBetInStore(updatedBet: Bet) {
+          try {
+            const currentBets = store.bets().filter((b) => b.matchId !== updatedBet.matchId);
+            patchState(store, {
+              bets: [...currentBets, updatedBet],
+            });
+          } catch (error) {
+            console.error('Failed to create app:', error);
           }
         },
 

@@ -57,6 +57,15 @@ public class Match {
     @Column(name = "away_goals")
     private Integer awayGoals;
 
+    @Column(name = "home_odds")
+    private Double homeOdds;
+
+    @Column(name = "away_odds")
+    private Double awayOdds;
+
+    @Column(name = "draw_odds")
+    private Double drawOdds;
+
     @Column(name = "went_to_extra_time")
     @Builder.Default
     private Boolean wentToExtraTime = false;

@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common';
 import { Component, inject, input, linkedSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,6 +11,7 @@ import { MatchCardFlag } from './match-card-flag';
 import { MatchCardSchedule } from './match-card-schedule';
 import { MatchCardTeamName } from './match-card-team-name';
 import { MatchInProgress } from './match-in-progress';
+import { MatchOdds } from './match-odds';
 
 @Component({
   selector: 'match-card',
@@ -23,7 +23,7 @@ import { MatchInProgress } from './match-in-progress';
     MatchInProgress,
     MatchCardSchedule,
     MatchCardBetForm,
-    JsonPipe,
+    MatchOdds,
   ],
   templateUrl: './match-card.html',
   styles: `

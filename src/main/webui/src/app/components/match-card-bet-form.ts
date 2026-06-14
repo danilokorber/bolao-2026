@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, effect, inject, linkedSignal, model, output } from '@angular/core';
 import { debounce, form, FormField, min, required } from '@angular/forms/signals';
 import { API } from '@api/api';
+import { BetFormData } from '@interfaces/bet-form-data.interface';
 import { BetRequest } from '@interfaces/bet-request.interface';
 import { Bet } from '@interfaces/bet.interface';
 import { Match } from '@interfaces/match.interface';
@@ -39,24 +40,16 @@ export class MatchCardBetForm {
   match = model.required<Match>();
   matchStarted = output<void>();
 
-  bet = linkedSignal(
-    () =>
-      this.store.betForMatch(this.match().id ?? '') ??
-      ({
-        userId: this.store.appuser()?.id || '',
-        matchId: this.match().id || '',
-        homeGoalsBet: this.match().userBet?.homeGoalsBet ?? '',
-        awayGoalsBet: this.match().userBet?.awayGoalsBet ?? '',
-        winnerBetId: this.match().userBet?.winnerBetId,
-      } as BetRequest),
+  data = linkedSignal<BetFormData>(
+    () => this.store.betForMatch(this.match().id!) ?? ({} as BetFormData),
   );
 
-  form = form<BetRequest>(this.bet, (bet) => {
+  form = form<BetFormData>(this.data, (bet) => {
     debounce(bet, 300);
-    required(bet.homeGoalsBet);
-    required(bet.awayGoalsBet);
-    min(bet.homeGoalsBet, 0);
-    min(bet.awayGoalsBet, 0);
+    required(bet.homeGoalsBet!);
+    required(bet.awayGoalsBet!);
+    min(bet.homeGoalsBet!, 0);
+    min(bet.awayGoalsBet!, 0);
   });
 
   onPredictionChange = effect(() => {
@@ -79,12 +72,14 @@ export class MatchCardBetForm {
     const body: BetRequest = {
       userId,
       matchId,
-      homeGoalsBet: this.bet().homeGoalsBet,
-      awayGoalsBet: this.bet().awayGoalsBet,
+      homeGoalsBet: this.data().homeGoalsBet,
+      awayGoalsBet: this.data().awayGoalsBet,
     };
 
     this.http.post<Bet>(API.BETS.SAVE(), body).subscribe({
-      next: () => this.showSavedLabel(),
+      next: (updatedBet) => {
+        this.showSavedLabel();
+      },
       error: (err) => {
         if (err.status === 400) {
           this.matchStarted.emit();
@@ -95,7 +90,7 @@ export class MatchCardBetForm {
   }
 
   showSavedLabel() {
-    const savedTip = document.getElementById('savedTip' + this.bet().matchId);
+    const savedTip = document.getElementById('savedTip' + this.data().matchId);
     if (savedTip) {
       savedTip.classList.add('show');
       setTimeout(() => {

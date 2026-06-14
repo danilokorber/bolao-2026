@@ -1,5 +1,5 @@
 import { Component, computed, inject, input } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { SignalStore } from '../store/signal-store';
 
@@ -31,9 +31,9 @@ import { SignalStore } from '../store/signal-store';
         {{ data().position }}
       </div>
       <span class="flex-1 text-sm sm:text-base truncate">{{ data().userName }}</span>
-      @if (data().separator) {
+      <!-- @if (data().separator) {
         <span class="text-xs opacity-40">⋯</span>
-      }
+      } -->
       <span class="text-sm sm:text-base font-mono tabular-nums">{{ data().totalPoints }}</span>
       <span class="text-xs opacity-50">{{ 'matchSchedule.points' | transloco }}</span>
     </div>

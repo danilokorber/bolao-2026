@@ -14,7 +14,11 @@
   (click)="onCardClick()"
 >
   <match-card-schedule [match]="match()" [bet]="bet()"></match-card-schedule>
-  <match-in-progress class="absolute -top-1" [show]="matchInProgress()"></match-in-progress>
+  @if (!startIsInThePast()) {
+    <match-odds class="absolute top-4" [match]="match()"></match-odds>
+  } @else {
+    <match-in-progress class="absolute -top-1" [show]="matchInProgress()"></match-in-progress>
+  }
   <match-card-flag [team]="match().homeTeam!"></match-card-flag>
   <div class="flex-1 w-full flex flex-row gap-1 sm:gap-2 justify-center items-center">
     <match-card-team-name [team]="match().homeTeam!" [homeAway]="'home'"></match-card-team-name>
