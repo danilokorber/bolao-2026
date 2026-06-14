@@ -1,6 +1,9 @@
 football-data:
   api-key: ${FOOTBALL_DATA_API_KEY:1a8ebe538b1d4c71a2ea2e30e518236e}
 
+the-odds-api:
+  api-key: ${THE_ODDS_API_API_KEY:ad998bbf253840bbffee35b914acb15e}
+
 bolao:
   auth:
     header:
@@ -95,6 +98,10 @@ quarkus:
       read-timeout: 600000
     football-data:
       url: https://api.football-data.org/v4
+      connect-timeout: 5000
+      read-timeout: 10000
+    the-odds-api:
+      url: https://api.the-odds-api.com/v4
       connect-timeout: 5000
       read-timeout: 10000
 

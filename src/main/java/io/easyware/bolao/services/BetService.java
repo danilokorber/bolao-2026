@@ -3,12 +3,14 @@ package io.easyware.bolao.services;
 import io.easyware.bolao.dto.BetDTO;
 import io.easyware.bolao.dto.BetRequestDTO;
 import io.easyware.bolao.dto.PagedResponse;
+import io.easyware.bolao.entities.AppUser;
 import io.easyware.bolao.entities.Bet;
 import io.easyware.bolao.mappers.BetMapper;
 import io.easyware.bolao.repositories.AppUserRepository;
 import io.easyware.bolao.repositories.BetRepository;
 import io.easyware.bolao.repositories.MatchRepository;
 import io.easyware.bolao.repositories.TeamRepository;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -18,6 +20,7 @@ import lombok.extern.java.Log;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,6 +52,14 @@ public class BetService {
         query.page(page, size);
         long totalElements = query.count();
         List<BetDTO> content = betMapper.toDTOList(query.list());
+        return new PagedResponse<>(content, page, size, totalElements);
+    }
+
+    public PagedResponse<BetDTO> findAll(int page, int size, String username) {
+        PanacheQuery<Bet> query = betRepository.findAll();
+        query.page(page, size);
+        long totalElements = query.count();
+        List<BetDTO> content = betMapper.toDTOList(query.list()).stream().filter(b -> b.getUser().getEmail().equalsIgnoreCase(username)).toList();
         return new PagedResponse<>(content, page, size, totalElements);
     }
 

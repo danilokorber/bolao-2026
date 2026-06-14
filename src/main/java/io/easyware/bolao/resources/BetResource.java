@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,11 +25,15 @@ public class BetResource {
     @Inject
     BetService betService;
 
+    @Inject
+    SecurityContext securityContext;
+
     @GET
     public PagedResponse<BetDTO> getAll(
             @QueryParam("page") @DefaultValue("0") int page,
-            @QueryParam("size") @DefaultValue("50") int size) {
-        return betService.findAll(page, size);
+            @QueryParam("size") @DefaultValue("10000") int size) {
+        String sub = securityContext.getUserPrincipal().getName();
+        return betService.findAll(page, size, sub);
     }
 
     @GET
