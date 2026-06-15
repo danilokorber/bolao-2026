@@ -42,20 +42,14 @@ export class MatchCardBetForm {
 
   match = input.required<MatchV2>();
 
-  currentBet = linkedSignal(() =>
-    this.match().bets
-      ? this.match().bets!.find((b) => b.userId === this.store.appuser()?.id)
-      : ({} as Bet),
+  currentBet = linkedSignal<Bet | null>(
+    () => this.match().bets?.find((b) => b.userId === this.store.appuser()?.id) ?? null,
   );
 
-  formData = linkedSignal<BetFormData>(() =>
-    this.currentBet()
-      ? ({
-          homeGoalsBet: this.currentBet()?.homeGoalsBet,
-          awayGoalsBet: this.currentBet()?.awayGoalsBet,
-        } as BetFormData)
-      : ({} as BetFormData),
-  );
+  formData = linkedSignal<BetFormData>(() => ({
+    homeGoalsBet: this.currentBet()?.homeGoalsBet ?? '',
+    awayGoalsBet: this.currentBet()?.awayGoalsBet ?? '',
+  }));
 
   form = form<BetFormData>(this.formData, (bet) => {
     debounce(bet, 300);
@@ -68,7 +62,7 @@ export class MatchCardBetForm {
   });
 
   onPredictionChange = effect(() => {
-    if (!this.form().valid() && !this.form().dirty()) return; // Invalid values
+    if (!this.form().valid() || !this.form().dirty()) return;
 
     if (
       this.form().value().homeGoalsBet != this.currentBet()?.homeGoalsBet ||
@@ -88,14 +82,19 @@ export class MatchCardBetForm {
   }
 
   private saveBet() {
-    this.store.placeBet(
-      this.store.appuser()?.id!,
-      this.match()?.id!,
-      this.form.homeGoalsBet().value(),
-      this.form.awayGoalsBet().value(),
-    );
-    this.currentBet()!.homeGoalsBet = this.form.homeGoalsBet().value();
-    this.currentBet()!.awayGoalsBet = this.form.awayGoalsBet().value();
+    const userId = this.store.appuser()?.id!;
+    const matchId = this.match()?.id!;
+    const homeGoalsBet = Number(this.form.homeGoalsBet().value());
+    const awayGoalsBet = Number(this.form.awayGoalsBet().value());
+
+    this.store.placeBet(userId, matchId, homeGoalsBet, awayGoalsBet);
+
+    if (this.currentBet()) {
+      this.currentBet.update((bet) => (bet ? { ...bet, homeGoalsBet, awayGoalsBet } : bet));
+    } else {
+      this.currentBet.set({ userId, matchId, homeGoalsBet, awayGoalsBet });
+    }
+
     this.showSavedLabel();
     this.form().reset(this.formData());
   }

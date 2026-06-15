@@ -48,7 +48,7 @@ public class MatchResourceV2 {
     @GET
     public List<MatchV2DTO> getAll() {
         String keycloakId = securityContext.getUserPrincipal().getName();
-        AppUser currentUser = appUserRepository.findByKeycloakId(keycloakId);
+        AppUser currentUser = appUserRepository.findByEmail(keycloakId);
 
         List<Match> matches = matchRepository.listAll(io.quarkus.panache.common.Sort.by("matchDatetime"));
         LocalDateTime now = LocalDateTime.now();

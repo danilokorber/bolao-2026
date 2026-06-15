@@ -85,7 +85,7 @@
         "title": "Tippfristen",
         "match": "Spieltipps müssen vor dem Anpfiff abgegeben werden.",
         "group": "Gruppensieger-Tipps können bis zum Beginn des zweiten Spieltags der Gruppe geändert werden.",
-      "champion": "Champion- und Halbfinalist-Tipps müssen vor Beginn der K.O.-Phase abgegeben werden."
+        "champion": "Champion- und Halbfinalist-Tipps müssen vor Beginn der K.O.-Phase abgegeben werden."
       }
     },
     "notifications": {
@@ -183,7 +183,8 @@
     "tierDiff": "Tordifferenz",
     "tierWinner": "Gewinner",
     "tierInverted": "Invertiertes Ergebnis",
-    "tierWrong": "Falsch"
+    "tierWrong": "Falsch",
+    "bonus": "Bonus"
   },
   "userBets": {
     "title": "Tipps",

@@ -1,4 +1,4 @@
 export interface BetFormData {
-  homeGoalsBet: number;
-  awayGoalsBet: number;
+  homeGoalsBet: number | string;
+  awayGoalsBet: number | string;
 }
