@@ -1,0 +1,61 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version number without the leading v
+        required: true
+        type: string
+      description:
+        description: Release description
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create tag and release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+          DESCRIPTION: ${{ inputs.description }}
+        run: |
+          set -euo pipefail
+
+          TAG="v${VERSION}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git ls-remote --exit-code --tags origin "refs/tags/${TAG}" >/dev/null 2>&1 && {
+            echo "Tag ${TAG} already exists remotely" >&2
+            exit 1
+          }
+
+          git rev-parse --verify "refs/tags/${TAG}" >/dev/null 2>&1 && {
+            echo "Tag ${TAG} already exists" >&2
+            exit 1
+          }
+
+          gh release view "${TAG}" >/dev/null 2>&1 && {
+            echo "Release ${TAG} already exists" >&2
+            exit 1
+          }
+
+          git tag -a "${TAG}" -m "${DESCRIPTION}"
+          git push origin "${TAG}"
+
+          gh release create "${TAG}" \
+            --title "${VERSION}" \
+            --notes "${DESCRIPTION}" \
+            --target "${GITHUB_SHA}"
