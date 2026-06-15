@@ -15,7 +15,12 @@ import { SignalStore } from '../store/signal-store';
   selector: 'match-detail',
   imports: [TranslocoPipe, FlagFallbackDirective],
   templateUrl: './match-detail.html',
-  styles: ``,
+  styles: `
+    .flag {
+      height: 100%;
+      max-width: none;
+    }
+  `,
   host: { class: 'flex flex-col gap-8 w-full mx-auto' },
 })
 export class MatchDetail {
