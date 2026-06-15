@@ -14,17 +14,23 @@ import { SignalStore } from '../store/signal-store';
   template: `
     <div>
       <input
+        #homeInput
         class="w-6 sm:w-8 text-lg sm:text-3xl text-center border-b border-primary-500 outline-0"
         type="number"
         [formField]="form.homeGoalsBet"
+        (focus)="homeInput.select()"
+        (input)="onGoalInput(homeInput, awayInput)"
       />
     </div>
     <div class="w-4 sm:w-8 text-center">:</div>
     <div>
       <input
+        #awayInput
         class="w-6 sm:w-8 text-lg sm:text-3xl text-center border-b border-primary-500 outline-0"
         type="number"
         [formField]="form.awayGoalsBet"
+        (focus)="awayInput.select()"
+        (input)="onGoalInput(awayInput)"
       />
     </div>
   `,
@@ -87,6 +93,14 @@ export class MatchCardBetForm {
         console.error('Failed to save bet', err);
       },
     });
+  }
+
+  onGoalInput(current: HTMLInputElement, next?: HTMLInputElement) {
+    const val = current.valueAsNumber;
+    if (!isNaN(val) && val >= 0 && val <= 9 && next) {
+      next.focus();
+      next.select();
+    }
   }
 
   showSavedLabel() {
