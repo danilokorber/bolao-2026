@@ -1,15 +1,12 @@
-import { HttpClient, httpResource } from '@angular/common/http';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { API } from '@api/api';
 import { Card } from '@components/card';
-import { HistoryEntry, PointsProgressionChart } from '@components/points-progression-chart';
+import { PointsProgressionChart } from '@components/points-progression-chart';
 import { PositionHistoryChart } from '@components/position-history-chart';
 import { RankingItemSkeleton } from '@components/ranking-item-skeleton';
-import { RankingEntry } from '@interfaces/ranking-entry.interface';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ScoreService } from '@services/score.service';
-import { lastValueFrom } from 'rxjs';
+import { UserFavoriteService } from '../services/user-favorite.service';
 import { SignalStore } from '../store/signal-store';
 
 @Component({
@@ -25,68 +22,28 @@ import { SignalStore } from '../store/signal-store';
   templateUrl: './ranking.html',
 })
 export class RankingPage {
-  private readonly store = inject(SignalStore);
-  private readonly http = inject(HttpClient);
+  readonly store = inject(SignalStore);
   readonly scoreService = inject(ScoreService);
+  private favoriteService = inject(UserFavoriteService);
 
   private poolId = computed(() => this.store.currentPoolId?.());
+
+  showFavorite = signal(false);
+
+  ranking = this.store.rankingSorted;
+
+  history = this.store.history;
+
+  toggleFavorite(userId: string) {
+    this.favoriteService.toggleFavorite(userId).subscribe((response) => {
+      console.log('Is now favorite:', response.isFavorite);
+    });
+  }
+
   currentUserId = computed(() => this.store.appuser()?.id);
 
-  ranking = httpResource<RankingEntry[]>(() => {
-    const pid = this.poolId();
-    const userId = this.currentUserId();
-    return pid ? API.RANKING.GET_BY_POOL(pid, userId) : API.RANKING.GET_ALL(userId);
-  });
-  rankingOnlyActive = computed(() => {
-    const entries = this.ranking.value() ?? [];
-    return entries
-      .filter(
-        (e) =>
-          e.countExact +
-            e.countDiff +
-            e.countWinner +
-            e.countInverted +
-            e.countWrong +
-            e.specialPoints >
-          0,
-      )
-      .map((e, i) => ({ ...e, position: i + 1 }));
-  });
-
-  history = httpResource<HistoryEntry[]>(() => {
-    const pid = this.poolId();
-    return pid ? API.RANKING.GET_HISTORY_BY_POOL(pid) : API.RANKING.GET_HISTORY();
-  });
-
-  constructor() {
-    setInterval(
-      () => {
-        this.ranking.reload();
-        this.history.reload();
-      },
-      Math.random() * 60_000 + 30_000,
-    ); // Random delay between 30s and 90s
-  }
-
-  async toggleFavorite(entry: RankingEntry, event: Event): Promise<void> {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const userId = this.currentUserId();
-    if (!userId || entry.userId === userId) {
-      return;
-    }
-
-    await lastValueFrom(
-      this.http.post(API.USERS.TOGGLE_FAVORITE(entry.userId), {
-        userId,
-      }),
-    );
-    this.ranking.reload();
-  }
-
   chartUsers = computed(() => {
-    const entries = this.ranking.value() ?? [];
+    const entries = this.ranking() ?? [];
     const userId = this.currentUserId();
     const top5 = entries.slice(0, 5);
     const userInTop5 = top5.some((e) => e.userId === userId);

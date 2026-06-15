@@ -4,13 +4,13 @@
   </h1>
   <div class="grid grid-cols-2 gap-4">
     <!-- Charts -->
-    @if (history.hasValue() && history.value()!.length > 0) {
+    @if (history() && history()!.length > 0) {
       <card class="col-span-2 lg:col-span-1">
         <div card-header>{{ 'ranking.chartPoints' | transloco }}</div>
 
         <points-progression-chart
           [users]="chartUsers()"
-          [history]="history.value()!"
+          [history]="history()!"
           [currentUserId]="currentUserId()"
         ></points-progression-chart>
       </card>
@@ -19,13 +19,13 @@
 
         <position-history-chart
           [users]="chartUsers()"
-          [history]="history.value()!"
+          [history]="history()!"
           [currentUserId]="currentUserId()"
         ></position-history-chart>
       </card>
     }
 
-    @if (ranking.isLoading()) {
+    @if (!store.rankingInitiallyLoaded()) {
       <div class="col-span-2 flex flex-col gap-2">
         <ranking-item-skeleton></ranking-item-skeleton>
         <ranking-item-skeleton></ranking-item-skeleton>
@@ -33,7 +33,7 @@
         <ranking-item-skeleton></ranking-item-skeleton>
         <ranking-item-skeleton></ranking-item-skeleton>
       </div>
-    } @else if (!ranking.hasValue() || ranking.value()!.length === 0) {
+    } @else if (!ranking() || ranking()!.length === 0) {
       <p class="col-span-2 text-sm opacity-60">{{ 'ranking.noData' | transloco }}</p>
     } @else {
       <!-- Desktop table -->
@@ -42,8 +42,14 @@
           <thead>
             <tr class="bg-primary-700 text-white text-xs uppercase tracking-wide">
               <th class="px-3 py-2 text-left">#</th>
+              <td
+                class="px-3 py-2 truncate w-4 cursor-pointer"
+                (click)="showFavorite.set(!showFavorite())"
+              >
+                {{ showFavorite() ? '⭐' : '☆' }}
+              </td>
+
               <th class="px-3 py-2 text-left">{{ 'ranking.player' | transloco }}</th>
-              <th class="px-3 py-2 text-center" [title]="'ranking.favorite' | transloco">★</th>
               <th class="px-3 py-2 text-center">
                 <span class="score-badge score-10" title="{{ 'ranking.tierExact' | transloco }}"
                   >🎯</span
@@ -78,72 +84,59 @@
             </tr>
           </thead>
           <tbody>
-            @for (entry of rankingOnlyActive()!; track entry.userId) {
-              <tr
-                class="border-t border-gray-100 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
-                [class.bg-primary-50]="entry.userId === currentUserId()"
-                [class.dark:bg-primary-800]="entry.userId === currentUserId()"
-                [class.font-semibold]="entry.userId === currentUserId()"
-                [routerLink]="['/bets', entry.userId]"
-              >
-                <td class="px-3 py-2">
-                  <div
-                    class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                    [class.bg-yellow-500]="entry.position === 1"
-                    [class.bg-gray-400]="entry.position === 2"
-                    [class.bg-amber-700]="entry.position === 3"
-                    [class.bg-gray-200]="entry.position > 3"
-                    [class.!text-gray-500]="entry.position > 3"
-                  >
-                    {{ entry.position }}
-                  </div>
-                </td>
-                <td class="px-3 py-2 truncate max-w-50">{{ entry.userName }}</td>
-                <td class="px-3 py-2 text-center">
-                  @if (entry.userId !== currentUserId()) {
-                    <button
-                      type="button"
-                      class="text-lg leading-none cursor-pointer"
-                      [class.opacity-30]="!entry.isFavorite"
-                      [class.opacity-100]="entry.isFavorite"
-                      [class.text-yellow-500]="entry.isFavorite"
-                      [title]="
-                        entry.isFavorite
-                          ? ('ranking.unmarkFavorite' | transloco)
-                          : ('ranking.markFavorite' | transloco)
-                      "
-                      (click)="toggleFavorite(entry, $event)"
-                    >
-                      ★
-                    </button>
-                  } @else {
-                    <span class="opacity-20">—</span>
-                  }
-                </td>
-                <td class="px-3 py-2 text-center font-mono tabular-nums">
-                  {{ entry.countExact || '–' }}
-                </td>
-                <td class="px-3 py-2 text-center font-mono tabular-nums">
-                  {{ entry.countDiff || '–' }}
-                </td>
-                <td class="px-3 py-2 text-center font-mono tabular-nums">
-                  {{ entry.countWinner || '–' }}
-                </td>
-                <td class="px-3 py-2 text-center font-mono tabular-nums">
-                  {{ entry.countInverted || '–' }}
-                </td>
-                <td class="px-3 py-2 text-center font-mono tabular-nums text-red-600">
-                  {{ entry.countWrong || '–' }}
-                </td>
-                <td class="px-3 py-2 text-center font-mono tabular-nums">
-                  {{ entry.specialPoints || '–' }}
-                </td>
-                <td
-                  class="px-3 py-2 text-right font-mono tabular-nums font-bold text-primary-700 dark:text-white"
+            @for (entry of ranking()!; track entry.userId) {
+              @if (!showFavorite() || (showFavorite() && entry.isFavorite)) {
+                <tr
+                  class="border-t border-gray-100 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                  [class.bg-primary-50]="entry.userId === currentUserId()"
+                  [class.dark:bg-primary-800]="entry.userId === currentUserId()"
+                  [class.font-semibold]="entry.userId === currentUserId()"
+                  [routerLink]="['/bets', entry.userId]"
                 >
-                  {{ entry.totalPoints }}
-                </td>
-              </tr>
+                  <td class="px-3 py-2">
+                    <div
+                      class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                      [class.bg-yellow-500]="entry.position === 1"
+                      [class.bg-gray-400]="entry.position === 2"
+                      [class.bg-amber-700]="entry.position === 3"
+                      [class.bg-gray-200]="entry.position > 3"
+                      [class.!text-gray-500]="entry.position > 3"
+                    >
+                      {{ entry.position }}
+                    </div>
+                  </td>
+                  <td
+                    class="px-3 py-2 truncate w-4 cursor-pointer"
+                    (click)="$event.stopPropagation(); toggleFavorite(entry.userId)"
+                  >
+                    {{ entry.isFavorite ? '⭐' : '☆' }}
+                  </td>
+                  <td class="px-3 py-2 truncate max-w-50">{{ entry.userName }}</td>
+                  <td class="px-3 py-2 text-center font-mono tabular-nums">
+                    {{ entry.countExact || '–' }}
+                  </td>
+                  <td class="px-3 py-2 text-center font-mono tabular-nums">
+                    {{ entry.countDiff || '–' }}
+                  </td>
+                  <td class="px-3 py-2 text-center font-mono tabular-nums">
+                    {{ entry.countWinner || '–' }}
+                  </td>
+                  <td class="px-3 py-2 text-center font-mono tabular-nums">
+                    {{ entry.countInverted || '–' }}
+                  </td>
+                  <td class="px-3 py-2 text-center font-mono tabular-nums text-red-600">
+                    {{ entry.countWrong || '–' }}
+                  </td>
+                  <td class="px-3 py-2 text-center font-mono tabular-nums">
+                    {{ entry.specialPoints || '–' }}
+                  </td>
+                  <td
+                    class="px-3 py-2 text-right font-mono tabular-nums font-bold text-primary-700 dark:text-white"
+                  >
+                    {{ entry.totalPoints }}
+                  </td>
+                </tr>
+              }
             }
           </tbody>
         </table>
@@ -151,7 +144,7 @@
 
       <!-- Mobile cards -->
       <div class="sm:hidden col-span-full flex flex-col gap-2">
-        @for (entry of ranking.value()!; track entry.userId) {
+        @for (entry of ranking()!; track entry.userId) {
           <a
             [routerLink]="['/bets', entry.userId]"
             class="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-gray-200 bg-white no-underline text-inherit"
@@ -173,60 +166,43 @@
             <!-- Name + breakdown -->
             <div class="flex-1 min-w-0">
               <div
-                class="font-semibold truncate flex items-center gap-2"
+                class="font-semibold truncate"
                 [class.text-primary-700]="entry.userId === currentUserId()"
               >
-                <span class="truncate">{{ entry.userName }}</span>
-                @if (entry.userId !== currentUserId()) {
-                  <button
-                    type="button"
-                    class="text-base leading-none cursor-pointer"
-                    [class.opacity-30]="!entry.isFavorite"
-                    [class.opacity-100]="entry.isFavorite"
-                    [class.text-yellow-500]="entry.isFavorite"
-                    [title]="
-                      entry.isFavorite
-                        ? ('ranking.unmarkFavorite' | transloco)
-                        : ('ranking.markFavorite' | transloco)
-                    "
-                    (click)="toggleFavorite(entry, $event)"
-                  >
-                    ★
-                  </button>
-                }
+                {{ entry.userName }}
               </div>
               <div class="flex gap-2 text-xs text-gray-400 mt-0.5">
                 @if (entry.countExact) {
                   <span
-                    ><span class="score-badge score-10 !text-[10px] !w-4 !h-4">✓</span> ×{{
+                    ><span class="score-badge score-10 text-[10px]! w-4! h-4!">✓</span> ×{{
                       entry.countExact
                     }}</span
                   >
                 }
                 @if (entry.countDiff) {
                   <span
-                    ><span class="score-badge score-5 !text-[10px] !w-4 !h-4">±</span> ×{{
+                    ><span class="score-badge score-5 text-[10px]! w-4! h-4!">±</span> ×{{
                       entry.countDiff
                     }}</span
                   >
                 }
                 @if (entry.countWinner) {
                   <span
-                    ><span class="score-badge score-3 !text-[10px] !w-4 !h-4">W</span> ×{{
+                    ><span class="score-badge score-3 text-[10px]! w-4! h-4!">W</span> ×{{
                       entry.countWinner
                     }}</span
                   >
                 }
                 @if (entry.countInverted) {
                   <span
-                    ><span class="score-badge score-1 !text-[10px] !w-4 !h-4">↕</span> ×{{
+                    ><span class="score-badge score-1 text-[10px]! w-4! h-4!">↕</span> ×{{
                       entry.countInverted
                     }}</span
                   >
                 }
                 @if (entry.countWrong) {
                   <span
-                    ><span class="score-badge score-neg !text-[10px] !w-4 !h-4">✗</span> ×{{
+                    ><span class="score-badge score-neg text-[10px]! w-4! h-4!">✗</span> ×{{
                       entry.countWrong
                     }}</span
                   >

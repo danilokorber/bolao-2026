@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { Match } from '@interfaces/match.interface';
+import { MatchV2 } from '@interfaces/index';
 
 @Component({
   selector: 'match-odds',
@@ -14,5 +14,5 @@ import { Match } from '@interfaces/match.interface';
   host: { class: 'w-full flex flex-row justify-center items-center text-xs gap-6' },
 })
 export class MatchOdds {
-  match = input.required<Match>();
+  match = input.required<MatchV2>();
 }

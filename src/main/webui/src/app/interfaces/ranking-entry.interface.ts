@@ -2,7 +2,6 @@ export interface RankingEntry {
   position: number;
   userId: string;
   userName: string;
-  isFavorite: boolean;
   countExact: number;
   countDiff: number;
   countWinner: number;
@@ -10,4 +9,5 @@ export interface RankingEntry {
   countWrong: number;
   specialPoints: number;
   totalPoints: number;
+  isFavorite?: boolean;
 }

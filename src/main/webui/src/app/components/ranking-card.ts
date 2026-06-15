@@ -1,8 +1,5 @@
-import { httpResource } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { API } from '@api/api';
-import { RankingEntry } from '@interfaces/ranking-entry.interface';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { SignalStore } from '../store/signal-store';
 import { Card } from './card';
@@ -18,13 +15,13 @@ import { RankingCardItemSkeleton } from './ranking-card-item-skeleton';
         {{ 'dashboard.ranking.title' | transloco }}
       </div>
       <div class="p-0 flex flex-col">
-        @if (ranking.isLoading()) {
+        @if (!store.rankingInitiallyLoaded()) {
           <ranking-card-item-skeleton></ranking-card-item-skeleton>
           <ranking-card-item-skeleton></ranking-card-item-skeleton>
           <ranking-card-item-skeleton></ranking-card-item-skeleton>
           <ranking-card-item-skeleton></ranking-card-item-skeleton>
           <ranking-card-item-skeleton></ranking-card-item-skeleton>
-        } @else if (ranking.hasValue()) {
+        } @else {
           @for (entry of displayEntries(); track entry.userId) {
             <ranking-card-item [data]="entry"></ranking-card-item>
           } @empty {
@@ -32,10 +29,6 @@ import { RankingCardItemSkeleton } from './ranking-card-item-skeleton';
               {{ 'dashboard.ranking.noData' | transloco }}
             </p>
           }
-        } @else if (ranking.error()) {
-          <p class="text-sm opacity-60 px-3 py-2">
-            {{ 'dashboard.ranking.error' | transloco }}
-          </p>
         }
       </div>
     </card>
@@ -43,39 +36,16 @@ import { RankingCardItemSkeleton } from './ranking-card-item-skeleton';
   styles: ``,
 })
 export class RankingCard {
-  private readonly store = inject(SignalStore);
+  readonly store = inject(SignalStore);
   private router = inject(Router);
+
+  ranking = this.store.rankingSorted;
+
   currentUserId = computed(() => this.store.appuser()?.id);
 
-  ranking = httpResource<RankingEntry[]>(() => API.RANKING.GET_ALL(this.currentUserId()));
-
-  constructor() {
-    setInterval(
-      () => {
-        this.ranking.reload();
-      },
-      Math.random() * 60_000 + 30_000,
-    ); // Random delay between 30s and 90s
-  }
-  rankingOnlyActive = computed(() => {
-    const entries = this.ranking.value() ?? [];
-    return entries
-      .filter(
-        (e) =>
-          e.countExact +
-            e.countDiff +
-            e.countWinner +
-            e.countInverted +
-            e.countWrong +
-            e.specialPoints >
-          0,
-      )
-      .map((e, i) => ({ ...e, position: i + 1 }));
-  });
-
   displayEntries = computed(() => {
-    if (!this.ranking.hasValue()) return [];
-    const all = this.rankingOnlyActive();
+    if (!this.ranking() || this.ranking().length === 0) return [];
+    const all = this.ranking();
     const userId = this.currentUserId();
     if (!all || all.length === 0) return [];
 

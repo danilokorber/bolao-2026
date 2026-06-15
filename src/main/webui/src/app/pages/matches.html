@@ -1,4 +1,4 @@
-@if (!store.matchesInitiallyLoaded()) {
+@if (!store.matchesV2InitiallyLoaded()) {
   <div class="flex flex-col gap-8" aria-hidden="true">
     @for (i of [0, 1, 2, 3, 4]; track i) {
       <match-card-skeleton></match-card-skeleton>

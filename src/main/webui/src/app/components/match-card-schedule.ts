@@ -1,9 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject, input, linkedSignal } from '@angular/core';
-import { Bet, Match, MatchStage, MatchStatus } from '@interfaces/index';
+import { MatchStage, MatchStatus, MatchV2 } from '@interfaces/index';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ScoreService } from '@services/score.service';
 import { utcDate } from '@utils/date-utils';
+import { SignalStore } from '../store/signal-store';
 
 @Component({
   selector: 'match-card-schedule',
@@ -36,11 +37,14 @@ import { utcDate } from '@utils/date-utils';
   host: { class: 'absolute -top-3 sm:-top-3.5 w-full flex justify-center' },
 })
 export class MatchCardSchedule {
+  private readonly store = inject(SignalStore);
   private readonly scoreService = inject(ScoreService);
   private readonly translocoSerice = inject(TranslocoService);
 
-  match = input.required<Match>();
-  bet = input.required<Bet | undefined>();
+  match = input.required<MatchV2>();
+  bet = linkedSignal(() =>
+    this.match().bets?.find((bet) => bet.userId === this.store.appuser()!.id),
+  );
 
   phase = linkedSignal(() => {
     const match = this.match();

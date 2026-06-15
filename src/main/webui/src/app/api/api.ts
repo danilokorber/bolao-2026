@@ -15,7 +15,7 @@ export const API = {
     CREATE: () => `/api/v1/users`,
     UPDATE: (id: string) => `/api/v1/users/id/${id}`,
     DELETE: (id: string) => `/api/v1/users/id/${id}`,
-    TOGGLE_FAVORITE: (favoriteUserId: string) => `/api/v1/users/id/${favoriteUserId}/favorite`,
+    TOGGLE_FAVORITE: (userId: string) => `/api/v1/users/${userId}/toggle-favorite`,
   },
 
   MATCHES: {
@@ -26,11 +26,13 @@ export const API = {
       if (size !== undefined) params.push(`size=${size}`);
       return `/api/v1/matches${params.length ? '?' + params.join('&') : ''}`;
     },
-    GET_BY_ID: (id: string, userId?: string) => `/api/v1/matches/id/${id}${userId ? '?userId=' + userId : ''}`,
+    GET_BY_ID: (id: string, userId?: string) =>
+      `/api/v1/matches/id/${id}${userId ? '?userId=' + userId : ''}`,
     GET_BY_STAGE: (stage: string) => `/api/v1/matches/stage/${stage}`,
     GET_BY_STATUS: (status: string) => `/api/v1/matches/status/${status}`,
     GET_BY_TEAM: (teamId: string) => `/api/v1/matches/team/id/${teamId}`,
-    GET_UPCOMING: (next: number = 128, userId?: string) => `/api/v1/matches/upcoming?next=${next}${userId ? '&userId=' + userId : ''}`,
+    GET_UPCOMING: (next: number = 128, userId?: string) =>
+      `/api/v1/matches/upcoming?next=${next}${userId ? '&userId=' + userId : ''}`,
     GET_BY_DATE_RANGE: (start: string, end: string) =>
       `/api/v1/matches/date-range?start=${start}&end=${end}`,
     CREATE: () => `/api/v1/matches`,
@@ -38,11 +40,14 @@ export const API = {
     DELETE: (id: string) => `/api/v1/matches/id/${id}`,
   },
 
+  MATCHES_V2: {
+    GET_ALL: () => `/api/v2/matches`,
+  },
+
   RANKING: {
-    GET_ALL: (userId?: string) => `/api/v1/ranking${userId ? '?userId=' + userId : ''}`,
+    GET_ALL: () => `/api/v1/ranking`,
     GET_HISTORY: () => `/api/v1/ranking/history`,
-    GET_BY_POOL: (poolId: string, userId?: string) =>
-      `/api/v1/ranking/pool/${poolId}${userId ? '?userId=' + userId : ''}`,
+    GET_BY_POOL: (poolId: string) => `/api/v1/ranking/pool/${poolId}`,
     GET_HISTORY_BY_POOL: (poolId: string) => `/api/v1/ranking/pool/${poolId}/history`,
   },
 
@@ -60,7 +65,8 @@ export const API = {
   },
 
   CHAMPION_BETS: {
-    GET_ALL: (page?: number, size?: number) => `/api/v1/champion-bets${buildPageParams(page, size)}`,
+    GET_ALL: (page?: number, size?: number) =>
+      `/api/v1/champion-bets${buildPageParams(page, size)}`,
     GET_BY_ID: (id: string) => `/api/v1/champion-bets/id/${id}`,
     GET_BY_USER: (userId: string) => `/api/v1/champion-bets/user/id/${userId}`,
     GET_DEADLINE: () => `/api/v1/champion-bets/deadline`,
@@ -71,7 +77,8 @@ export const API = {
   },
 
   GROUP_WINNER_BETS: {
-    GET_ALL: (page?: number, size?: number) => `/api/v1/group-winner-bets${buildPageParams(page, size)}`,
+    GET_ALL: (page?: number, size?: number) =>
+      `/api/v1/group-winner-bets${buildPageParams(page, size)}`,
     GET_BY_ID: (id: string) => `/api/v1/group-winner-bets/id/${id}`,
     GET_BY_USER: (userId: string) => `/api/v1/group-winner-bets/user/id/${userId}`,
     GET_BY_GROUP: (groupName: string) => `/api/v1/group-winner-bets/group/${groupName}`,

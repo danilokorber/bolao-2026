@@ -13,7 +13,7 @@
   [style.border-color]="startIsInThePast() ? scoreColor() : 'border-primary-900'"
   (click)="onCardClick()"
 >
-  <match-card-schedule [match]="match()" [bet]="bet()"></match-card-schedule>
+  <match-card-schedule [match]="match()"></match-card-schedule>
   @if (!startIsInThePast()) {
     <match-odds class="absolute top-4" [match]="match()"></match-odds>
   } @else {
@@ -39,10 +39,7 @@
           }
         </div>
       } @else {
-        <match-card-bet-form
-          [match]="match()"
-          (matchStarted)="startIsInThePast.set(true)"
-        ></match-card-bet-form>
+        <match-card-bet-form [match]="match()"></match-card-bet-form>
       }
     </div>
     <match-card-team-name [team]="match().awayTeam!" [homeAway]="'away'"></match-card-team-name>

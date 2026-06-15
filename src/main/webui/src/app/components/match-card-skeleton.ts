@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Account } from '../pages/account';
 
 @Component({
   selector: 'match-card-skeleton',
@@ -91,6 +90,6 @@ import { Account } from '../pages/account';
       visibility: visible;
     }
   `,
-  imports: [Account],
+  imports: [],
 })
 export class MatchCardSkeleton {}

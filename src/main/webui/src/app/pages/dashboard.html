@@ -1,50 +1,14 @@
 <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2">
   <!-- Quick links -->
-  @if (!groupBetsComplete() || !championBetComplete()) {
-    <div class="col-span-full flex flex-col gap-3">
-      @if (!groupBetsComplete()) {
-        <a
-          routerLink="/group-bets"
-          class="flex items-center gap-3 px-4 py-3 rounded-xl border border-secondary-200 bg-secondary-50 hover:bg-secondary-100 transition-colors cursor-pointer"
-        >
-          <span class="text-2xl">🏅</span>
-          <div class="flex-1">
-            <span class="font-bold text-primary-700">{{
-              'groupWinnerBets.title' | transloco
-            }}</span>
-            <p class="text-xs text-gray-500">{{ 'dashboard.groupBetsLink' | transloco }}</p>
-          </div>
-          <span class="ml-auto text-primary-400">→</span>
-        </a>
-      }
-      @if (!championBetComplete()) {
-        <a
-          routerLink="/champion-bet"
-          class="flex items-center gap-3 px-4 py-3 rounded-xl border border-secondary-200 bg-secondary-50 hover:bg-secondary-100 transition-colors cursor-pointer"
-        >
-          <span class="text-2xl">🏆</span>
-          <div class="flex-1">
-            <span class="font-bold text-secondary-700">{{ 'championBet.title' | transloco }}</span>
-            <p class="text-xs text-gray-500">{{ 'dashboard.championBetLink' | transloco }}</p>
-          </div>
-          <span class="ml-auto text-secondary-400">→</span>
-        </a>
-      }
-    </div>
-  }
+  <bonus-bets-groups-alert></bonus-bets-groups-alert>
+  <bonus-bets-champions-alert></bonus-bets-champions-alert>
 
   <!-- Ranking -->
   <ranking-card></ranking-card>
   <recent-results-card></recent-results-card>
 
   <!-- Live matches -->
-  @if (hasLiveMatches()) {
-    <live-matches-card
-      class="col-span-full"
-      [matches]="matches()"
-      [bets]="bets()"
-    ></live-matches-card>
-  }
+  <live-matches-card class="col-span-full"></live-matches-card>
 
   <upcoming-matches-card class="col-span-full"></upcoming-matches-card>
 </div>

@@ -1,7 +1,7 @@
 import { Component, inject, input, linkedSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Match, MatchStatus } from '@interfaces/index';
+import { MatchStatus, MatchV2 } from '@interfaces/index';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ScoreService } from '@services/score.service';
 import { utcDate } from '@utils/date-utils';
@@ -59,8 +59,10 @@ export class MatchCard {
   private readonly scoreService = inject(ScoreService);
   private readonly store = inject(SignalStore);
 
-  match = input<Match>({ id: '' } as Match);
-  bet = linkedSignal(() => this.store.betForMatch(this.match().id ?? ''));
+  match = input.required<MatchV2>();
+  bet = linkedSignal(() =>
+    this.match().bets?.find((bet) => bet.userId === this.store.appuser()!.id),
+  );
 
   startIsInThePast = linkedSignal(() => {
     const NOW = new Date().getTime();

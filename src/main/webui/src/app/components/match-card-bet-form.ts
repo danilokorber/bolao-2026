@@ -1,38 +1,36 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, effect, inject, linkedSignal, model, output } from '@angular/core';
-import { debounce, form, FormField, min, required } from '@angular/forms/signals';
-import { API } from '@api/api';
+import { Component, effect, inject, input, linkedSignal } from '@angular/core';
+import { debounce, form, FormField, max, min, required } from '@angular/forms/signals';
 import { BetFormData } from '@interfaces/bet-form-data.interface';
-import { BetRequest } from '@interfaces/bet-request.interface';
-import { Bet } from '@interfaces/bet.interface';
-import { Match } from '@interfaces/match.interface';
+import { Bet, MatchV2 } from '@interfaces/index';
 import { SignalStore } from '../store/signal-store';
 
 @Component({
   selector: 'match-card-bet-form',
   imports: [FormField],
   template: `
-    <div>
-      <input
-        #homeInput
-        class="w-6 sm:w-8 text-lg sm:text-3xl text-center border-b border-primary-500 outline-0"
-        type="number"
-        [formField]="form.homeGoalsBet"
-        (focus)="homeInput.select()"
-        (input)="onGoalInput(homeInput, awayInput)"
-      />
-    </div>
-    <div class="w-4 sm:w-8 text-center">:</div>
-    <div>
-      <input
-        #awayInput
-        class="w-6 sm:w-8 text-lg sm:text-3xl text-center border-b border-primary-500 outline-0"
-        type="number"
-        [formField]="form.awayGoalsBet"
-        (focus)="awayInput.select()"
-        (input)="onGoalInput(awayInput)"
-      />
-    </div>
+    @if (match().status === 'SCHEDULED') {
+      <div>
+        <input
+          #homeInput
+          class="w-6 sm:w-8 text-lg sm:text-3xl text-center border-b border-primary-500 outline-0"
+          type="number"
+          [formField]="form.homeGoalsBet"
+          (focus)="homeInput.select()"
+          (input)="onGoalInput(homeInput, awayInput)"
+        />
+      </div>
+      <div class="w-4 sm:w-8 text-center">:</div>
+      <div>
+        <input
+          #awayInput
+          class="w-6 sm:w-8 text-lg sm:text-3xl text-center border-b border-primary-500 outline-0"
+          type="number"
+          [formField]="form.awayGoalsBet"
+          (focus)="awayInput.select()"
+          (input)="onGoalInput(awayInput)"
+        />
+      </div>
+    }
   `,
   styles: ``,
   host: {
@@ -40,60 +38,46 @@ import { SignalStore } from '../store/signal-store';
   },
 })
 export class MatchCardBetForm {
-  private readonly http = inject(HttpClient);
   private readonly store = inject(SignalStore);
 
-  match = model.required<Match>();
-  matchStarted = output<void>();
+  match = input.required<MatchV2>();
 
-  data = linkedSignal<BetFormData>(
-    () => this.store.betForMatch(this.match().id!) ?? ({} as BetFormData),
+  currentBet = linkedSignal(() =>
+    this.match().bets
+      ? this.match().bets!.find((b) => b.userId === this.store.appuser()?.id)
+      : ({} as Bet),
   );
 
-  form = form<BetFormData>(this.data, (bet) => {
+  formData = linkedSignal<BetFormData>(() =>
+    this.currentBet()
+      ? ({
+          homeGoalsBet: this.currentBet()?.homeGoalsBet,
+          awayGoalsBet: this.currentBet()?.awayGoalsBet,
+        } as BetFormData)
+      : ({} as BetFormData),
+  );
+
+  form = form<BetFormData>(this.formData, (bet) => {
     debounce(bet, 300);
-    required(bet.homeGoalsBet!);
-    required(bet.awayGoalsBet!);
-    min(bet.homeGoalsBet!, 0);
-    min(bet.awayGoalsBet!, 0);
+    required(bet.homeGoalsBet);
+    required(bet.awayGoalsBet);
+    min(bet.homeGoalsBet, 0);
+    min(bet.awayGoalsBet, 0);
+    max(bet.homeGoalsBet, 9);
+    max(bet.awayGoalsBet, 9);
   });
 
   onPredictionChange = effect(() => {
-    const homeDirty = this.form.homeGoalsBet().dirty();
-    const awayDirty = this.form.awayGoalsBet().dirty();
-    if (!homeDirty && !awayDirty) return; // No changes
+    if (!this.form().valid() && !this.form().dirty()) return; // Invalid values
 
-    const homeValid = this.form.homeGoalsBet().valid();
-    const awayValid = this.form.awayGoalsBet().valid();
-    if (!homeValid || !awayValid) return; // Invalid values
-
-    this.saveBet();
+    if (
+      this.form().value().homeGoalsBet != this.currentBet()?.homeGoalsBet ||
+      this.form().value().awayGoalsBet != this.currentBet()?.awayGoalsBet
+    ) {
+      // Only save if values have actually changed
+      this.saveBet();
+    }
   });
-
-  private saveBet() {
-    const userId = this.store.appuser()?.id;
-    const matchId = this.match()?.id;
-    if (!userId || !matchId) return;
-
-    const body: BetRequest = {
-      userId,
-      matchId,
-      homeGoalsBet: this.data().homeGoalsBet,
-      awayGoalsBet: this.data().awayGoalsBet,
-    };
-
-    this.http.post<Bet>(API.BETS.SAVE(), body).subscribe({
-      next: (updatedBet) => {
-        this.showSavedLabel();
-      },
-      error: (err) => {
-        if (err.status === 400) {
-          this.matchStarted.emit();
-        }
-        console.error('Failed to save bet', err);
-      },
-    });
-  }
 
   onGoalInput(current: HTMLInputElement, next?: HTMLInputElement) {
     const val = current.valueAsNumber;
@@ -103,8 +87,21 @@ export class MatchCardBetForm {
     }
   }
 
+  private saveBet() {
+    this.store.placeBet(
+      this.store.appuser()?.id!,
+      this.match()?.id!,
+      this.form.homeGoalsBet().value(),
+      this.form.awayGoalsBet().value(),
+    );
+    this.currentBet()!.homeGoalsBet = this.form.homeGoalsBet().value();
+    this.currentBet()!.awayGoalsBet = this.form.awayGoalsBet().value();
+    this.showSavedLabel();
+    this.form().reset(this.formData());
+  }
+
   showSavedLabel() {
-    const savedTip = document.getElementById('savedTip' + this.data().matchId);
+    const savedTip = document.getElementById('savedTip' + this.match()?.id);
     if (savedTip) {
       savedTip.classList.add('show');
       setTimeout(() => {

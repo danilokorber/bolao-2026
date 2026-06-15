@@ -1,5 +1,6 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
+import { RankingEntry } from '@interfaces/ranking-entry.interface';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { SignalStore } from '../store/signal-store';
 
@@ -47,20 +48,21 @@ export class RankingCardItem {
   private readonly store = inject(SignalStore);
   private router = inject(Router);
 
-  data = input.required<{
-    separator: boolean;
-    position: number;
-    userId: string;
-    userName: string;
-    countExact: number;
-    countDiff: number;
-    countWinner: number;
-    countInverted: number;
-    countWrong: number;
-    specialPoints: number;
-    totalPoints: number;
-    isFavorite: boolean;
-  }>();
+  data = input.required<RankingEntry>();
+  // data = input.required<{
+  //   separator: boolean;
+  //   position: number;
+  //   userId: string;
+  //   userName: string;
+  //   countExact: number;
+  //   countDiff: number;
+  //   countWinner: number;
+  //   countInverted: number;
+  //   countWrong: number;
+  //   specialPoints: number;
+  //   totalPoints: number;
+  //   isFavorite: boolean;
+  // }>();
   currentUserId = computed(() => this.store.appuser()?.id);
 
   route() {

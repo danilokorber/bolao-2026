@@ -1,25 +1,28 @@
 import { signalStore, withFeature, withHooks } from '@ngrx/signals';
-import { BETS_REFRESH_INTERVAL, withBetsFeature } from './features/bets.feature';
-import { MATCHES_REFRESH_INTERVAL, withMatchesFeature } from './features/matches.feature';
+// import { withBetsFeature } from './features/bets.feature';
+import { MATCHESV2_REFRESH_INTERVAL, withMatchesV2Feature } from './features/matchesV2.feature';
+import { RANKING_REFRESH_INTERVAL, withRankingFeature } from './features/ranking.feature';
 import { withUserFeature } from './features/user.feature';
 
 export const SignalStore = signalStore(
   { providedIn: 'root' },
 
-  withFeature(withMatchesFeature),
-  withFeature(withBetsFeature),
+  withFeature(withMatchesV2Feature),
+  withFeature(withRankingFeature),
   withFeature(withUserFeature),
 
   withHooks({
-    onInit({ loadMatches, loadBets, loadAppUser }) {
+    onInit({ loadMatchesV2, loadRanking, loadHistory, loadAppUser }) {
       // Load once on init
-      loadMatches();
-      loadBets();
+      loadMatchesV2();
+      loadRanking();
+      loadHistory();
       loadAppUser();
 
       // Load recurrently
-      setInterval(() => loadMatches(), MATCHES_REFRESH_INTERVAL);
-      setInterval(() => loadBets(), BETS_REFRESH_INTERVAL);
+      setInterval(() => loadMatchesV2(), MATCHESV2_REFRESH_INTERVAL);
+      setInterval(() => loadRanking(), RANKING_REFRESH_INTERVAL);
+      setInterval(() => loadHistory(), RANKING_REFRESH_INTERVAL);
     },
   }),
 );

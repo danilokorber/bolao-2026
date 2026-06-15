@@ -16,8 +16,7 @@ export class Matches {
   protected readonly store = inject(SignalStore);
   private userId = computed(() => this.store.appuser()?.id);
 
-  matches = this.store.allMatches;
-  bets = this.store.allBets;
+  matches = this.store.allMatchesV2;
 
   activeStage = signal<MatchStage | null>(null);
 
