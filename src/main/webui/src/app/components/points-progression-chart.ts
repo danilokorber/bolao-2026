@@ -94,8 +94,8 @@ export class PointsProgressionChart {
         {
           type: 'number' as const,
           position: 'left' as const,
-          preferredMin: minVal,
-          preferredMax: safeMax,
+          min: minVal,
+          max: safeMax,
           label: { fontSize: 11 },
           nice: false,
         },

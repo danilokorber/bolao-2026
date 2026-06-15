@@ -15,7 +15,7 @@
 >
   <match-card-schedule [match]="match()"></match-card-schedule>
   @if (!startIsInThePast()) {
-    <match-odds class="absolute top-4" [match]="match()"></match-odds>
+    <match-odds class="absolute top-2 md:top-4" [match]="match()"></match-odds>
   } @else {
     <match-in-progress class="absolute -top-1" [show]="matchInProgress()"></match-in-progress>
   }

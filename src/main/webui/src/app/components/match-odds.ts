@@ -11,7 +11,7 @@ import { MatchV2 } from '@interfaces/index';
     <div class="flex-1 text-left">{{ match().awayOdds | number: '1.2-2' }}</div>
   `,
   styles: ``,
-  host: { class: 'w-full flex flex-row justify-center items-center text-xs gap-6' },
+  host: { class: 'w-full flex flex-row justify-center items-center text-xs gap-1 md:gap-6' },
 })
 export class MatchOdds {
   match = input.required<MatchV2>();

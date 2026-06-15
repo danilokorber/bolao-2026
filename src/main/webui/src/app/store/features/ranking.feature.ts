@@ -35,7 +35,7 @@ export function withRankingFeature() {
       rankingInitiallyLoaded: false,
     }),
 
-    withComputed(({ ranking, history, rankingInitiallyLoaded }) => ({
+    withComputed(({ ranking, rankingInitiallyLoaded }) => ({
       rankingLoaded: computed<boolean>(() => rankingInitiallyLoaded()),
       rankingSorted: computed<RankingEntry[]>(() => {
         const list = Array.isArray(ranking()) ? ranking() : [];
@@ -48,7 +48,6 @@ export function withRankingFeature() {
           .sort((a, b) => b.totalPoints - a.totalPoints)
           .map((e, i) => ({ ...e, position: i + 1 }));
       }),
-      history: computed<HistoryEntry[]>(() => history()),
     })),
 
     withMethods((store) => {

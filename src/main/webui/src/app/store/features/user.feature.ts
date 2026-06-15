@@ -6,7 +6,6 @@ import { AppUser, UserPool } from '@interfaces/index';
 import {
   patchState,
   signalStoreFeature,
-  withComputed,
   withMethods,
   withState,
 } from '@ngrx/signals';
@@ -46,11 +45,6 @@ export function withUserFeature() {
       appuser: undefined as AppUser | undefined,
       currentPoolId: undefined as string | undefined,
     }),
-
-    withComputed(({ appuser, currentPoolId }) => ({
-      appuser: computed(() => appuser()),
-      currentPoolId: computed(() => currentPoolId()),
-    })),
 
     withMethods((store) => {
       const signalStoreService = inject(SignalStoreUserService);
