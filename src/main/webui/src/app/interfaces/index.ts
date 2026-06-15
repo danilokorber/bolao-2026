@@ -10,6 +10,7 @@ export * from './payment-status.enum';
 // Interfaces
 export * from './team.interface';
 export * from './match.interface';
+export * from './match-v2.interface';
 export * from './app-user.interface';
 export * from './pool.interface';
 export * from './user-pool.interface';
