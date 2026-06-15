@@ -37,6 +37,7 @@ export class RankingPage {
   toggleFavorite(userId: string) {
     this.favoriteService.toggleFavorite(userId).subscribe((response) => {
       console.log('Is now favorite:', response.isFavorite);
+      this.store.loadRanking();
     });
   }
 

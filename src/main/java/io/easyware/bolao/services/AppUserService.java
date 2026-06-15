@@ -1,13 +1,13 @@
 package io.easyware.bolao.services;
 
 import io.easyware.bolao.dto.AppUserDTO;
-//import io.easyware.bolao.dto.FavoriteToggleResponseDTO;
+import io.easyware.bolao.dto.FavoriteToggleResponseDTO;
 import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.entities.AppUser;
-//import io.easyware.bolao.entities.UserFavorite;
+import io.easyware.bolao.entities.AppUserFavorite;
 import io.easyware.bolao.mappers.AppUserMapper;
 import io.easyware.bolao.repositories.AppUserRepository;
-//import io.easyware.bolao.repositories.UserFavoriteRepository;
+import io.easyware.bolao.repositories.AppUserFavoriteRepository;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -30,8 +30,8 @@ public class AppUserService {
     @Inject
     AppUserMapper appUserMapper;
 
-//    @Inject
-//    UserFavoriteRepository userFavoriteRepository;
+    @Inject
+    AppUserFavoriteRepository appUserFavoriteRepository;
 
     /**
      * Lists all registered users.
@@ -182,39 +182,43 @@ public class AppUserService {
         }
     }
 
-//    @Transactional
-//    public FavoriteToggleResponseDTO toggleFavorite(UUID userId, UUID favoriteUserId) {
-//        if (userId.equals(favoriteUserId)) {
-//            throw new BadRequestException("You cannot favorite yourself");
-//        }
-//
-//        AppUser user = appUserRepository.findById(userId);
-//        if (user == null) {
-//            throw new NotFoundException("User not found with id: " + userId);
-//        }
-//
-//        AppUser favoriteUser = appUserRepository.findById(favoriteUserId);
-//        if (favoriteUser == null) {
-//            throw new NotFoundException("Favorite user not found with id: " + favoriteUserId);
-//        }
-//
-//        UserFavorite existing = userFavoriteRepository.findByUserAndFavoriteUser(userId, favoriteUserId);
-//        boolean favorite;
-//        if (existing != null) {
-//            userFavoriteRepository.delete(existing);
-//            favorite = false;
-//        } else {
-//            userFavoriteRepository.persist(UserFavorite.builder()
-//                    .user(user)
-//                    .favoriteUser(favoriteUser)
-//                    .build());
-//            favorite = true;
-//        }
-//
-//        return FavoriteToggleResponseDTO.builder()
-//                .userId(userId)
-//                .favoriteUserId(favoriteUserId)
-//                .favorite(favorite)
-//                .build();
-//    }
+    @Transactional
+    public FavoriteToggleResponseDTO toggleFavorite(String currentUserIdentifier, UUID favoriteUserId) {
+        AppUser user = appUserRepository.findByKeycloakId(currentUserIdentifier);
+        if (user == null) {
+            user = appUserRepository.findByEmail(currentUserIdentifier);
+        }
+        if (user == null) {
+            throw new NotFoundException("User not found for authenticated principal: " + currentUserIdentifier);
+        }
+
+        UUID userId = user.getId();
+        if (userId.equals(favoriteUserId)) {
+            throw new BadRequestException("You cannot favorite yourself");
+        }
+
+        AppUser favoriteUser = appUserRepository.findById(favoriteUserId);
+        if (favoriteUser == null) {
+            throw new NotFoundException("Favorite user not found with id: " + favoriteUserId);
+        }
+
+        AppUserFavorite existing = appUserFavoriteRepository.findByUserIdAndFavoriteId(userId, favoriteUserId);
+        boolean isFavorite;
+        if (existing != null) {
+            appUserFavoriteRepository.delete(existing);
+            isFavorite = false;
+        } else {
+            appUserFavoriteRepository.persist(AppUserFavorite.builder()
+                    .userId(userId)
+                    .favoriteId(favoriteUserId)
+                    .build());
+            isFavorite = true;
+        }
+
+        return FavoriteToggleResponseDTO.builder()
+                .userId(userId)
+                .favoriteUserId(favoriteUserId)
+                .isFavorite(isFavorite)
+                .build();
+    }
 }

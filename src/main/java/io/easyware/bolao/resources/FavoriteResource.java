@@ -14,8 +14,10 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.SecurityContext;
+import lombok.extern.java.Log;
 
-@Path("/api/favorite")
+@Log
+@Path("/v1/favorites")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Authenticated
@@ -29,10 +31,12 @@ public class FavoriteResource {
 
     @POST
     public FavoriteToggleResponseDTO toggleFavorite(@Valid FavoriteToggleRequestDTO request) {
+        log.info("toggleFavorite: " + request.getFavoriteUserId());
         if (securityContext.getUserPrincipal() == null || securityContext.getUserPrincipal().getName() == null) {
             throw new NotAuthorizedException("Missing authenticated principal");
         }
-        String currentUserEmail = securityContext.getUserPrincipal().getName();
-        return appUserService.toggleFavorite(currentUserEmail, request.getFavoriteUserId());
+        String currentUserIdentifier = securityContext.getUserPrincipal().getName();
+        log.info("currentUserIdentifier: " + currentUserIdentifier);
+        return appUserService.toggleFavorite(currentUserIdentifier, request.getFavoriteUserId());
     }
 }

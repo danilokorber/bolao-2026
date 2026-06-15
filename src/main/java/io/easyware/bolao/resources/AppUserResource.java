@@ -140,11 +140,4 @@ public class AppUserResource {
         return Response.noContent().build();
     }
 
-//    @POST
-//    @Path("/id/{favoriteUserId}/favorite")
-//    public FavoriteToggleResponseDTO toggleFavorite(
-//            @PathParam("favoriteUserId") UUID favoriteUserId,
-//            @Valid FavoriteToggleRequestDTO request) {
-//        return appUserService.toggleFavorite(request.getUserId(), favoriteUserId);
-//    }
 }

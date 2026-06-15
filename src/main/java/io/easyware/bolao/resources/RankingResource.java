@@ -1,12 +1,16 @@
 package io.easyware.bolao.resources;
 
 import io.easyware.bolao.dto.RankingEntryDTO;
+import io.easyware.bolao.entities.AppUser;
+import io.easyware.bolao.repositories.AppUserRepository;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Tuple;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.SecurityContext;
 import lombok.extern.java.Log;
 
 import java.time.LocalDate;
@@ -22,9 +26,15 @@ public class RankingResource {
     @Inject
     EntityManager em;
 
+    @Inject
+    AppUserRepository appUserRepository;
+
+    @Context
+    SecurityContext securityContext;
+
     @GET
     public List<RankingEntryDTO> getRanking(@QueryParam("userId") UUID userId) {
-        return buildRanking(null, userId);
+        return buildRanking(null, resolveEffectiveUserId(userId));
     }
 
     @GET
@@ -32,7 +42,7 @@ public class RankingResource {
     public List<RankingEntryDTO> getRankingByPool(
             @PathParam("poolId") UUID poolId,
             @QueryParam("userId") UUID userId) {
-        return buildRanking(poolId, userId);
+        return buildRanking(poolId, resolveEffectiveUserId(userId));
     }
 
     @GET
@@ -54,7 +64,7 @@ public class RankingResource {
                 ? "JOIN user_pool up ON up.user_id = u.id AND up.pool_id = :poolId AND up.status = 'ACTIVE'"
                 : "";
         String favoriteJoin = includeFavorites
-                ? "LEFT JOIN user_favorite uf ON uf.user_id = :userId AND uf.favorite_user_id = u.id"
+                ? "LEFT JOIN app_user_favorite uf ON uf.user_id = :userId AND uf.favorite_id = u.id"
                 : "";
         String favoriteFlagExpr = includeFavorites
                 ? "CASE WHEN uf.id IS NOT NULL THEN TRUE ELSE FALSE END"
@@ -97,7 +107,7 @@ public class RankingResource {
                     .position(position++)
                     .userId((UUID) row.get("id"))
                     .userName((String) row.get("name"))
-                    .isFavorite(Boolean.TRUE.equals(row.get("is_favorite")))
+                    .isFavorite(toBoolean(row.get("is_favorite")))
                     .countExact(((Number) row.get("count_exact")).longValue())
                     .countDiff(((Number) row.get("count_diff")).longValue())
                     .countWinner(((Number) row.get("count_winner")).longValue())
@@ -108,6 +118,40 @@ public class RankingResource {
                     .build());
         }
         return ranking;
+    }
+
+    private UUID resolveEffectiveUserId(UUID userId) {
+        if (userId != null) {
+            return userId;
+        }
+        if (securityContext == null || securityContext.getUserPrincipal() == null) {
+            return null;
+        }
+
+        String currentUserIdentifier = securityContext.getUserPrincipal().getName();
+        if (currentUserIdentifier == null || currentUserIdentifier.isBlank()) {
+            return null;
+        }
+
+        AppUser currentUser = appUserRepository.findByKeycloakId(currentUserIdentifier);
+        if (currentUser == null) {
+            currentUser = appUserRepository.findByEmail(currentUserIdentifier);
+        }
+        return currentUser != null ? currentUser.getId() : null;
+    }
+
+    private boolean toBoolean(Object value) {
+        if (value == null) {
+            return false;
+        }
+        if (value instanceof Boolean bool) {
+            return bool;
+        }
+        if (value instanceof Number number) {
+            return number.intValue() != 0;
+        }
+        String text = value.toString().trim();
+        return "true".equalsIgnoreCase(text) || "t".equalsIgnoreCase(text) || "1".equals(text);
     }
 
     /**

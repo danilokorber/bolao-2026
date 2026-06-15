@@ -15,7 +15,10 @@ export const API = {
     CREATE: () => `/api/v1/users`,
     UPDATE: (id: string) => `/api/v1/users/id/${id}`,
     DELETE: (id: string) => `/api/v1/users/id/${id}`,
-    TOGGLE_FAVORITE: (userId: string) => `/api/v1/users/${userId}/toggle-favorite`,
+  },
+
+  FAVORITES: {
+    TOGGLE_FAVORITE: () => `/api/v1/favorites`,
   },
 
   MATCHES: {

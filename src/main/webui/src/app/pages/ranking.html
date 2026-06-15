@@ -41,12 +41,13 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="bg-primary-700 text-white text-xs uppercase tracking-wide">
-              <th class="px-3 py-2 text-left">#</th>
+              <th class="px-3 py-2 text-left w-20">#</th>
               <td
-                class="px-3 py-2 truncate w-4 cursor-pointer"
+                class="px-3 py-2 truncate w-4 cursor-pointer text-base"
+                [style]="showFavorite() ? '' : 'filter: grayscale(100%) brightness(0);'"
                 (click)="showFavorite.set(!showFavorite())"
               >
-                {{ showFavorite() ? '⭐' : '☆' }}
+                ⭐
               </td>
 
               <th class="px-3 py-2 text-left">{{ 'ranking.player' | transloco }}</th>
@@ -107,9 +108,10 @@
                   </td>
                   <td
                     class="px-3 py-2 truncate w-4 cursor-pointer"
+                    [style]="entry.isFavorite ? '' : 'filter: grayscale(100%) brightness(0);'"
                     (click)="$event.stopPropagation(); toggleFavorite(entry.userId)"
                   >
-                    {{ entry.isFavorite ? '⭐' : '☆' }}
+                    ⭐
                   </td>
                   <td class="px-3 py-2 truncate max-w-50">{{ entry.userName }}</td>
                   <td class="px-3 py-2 text-center font-mono tabular-nums">

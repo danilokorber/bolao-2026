@@ -3,7 +3,13 @@ import { inject, Injectable } from '@angular/core';
 import { API } from '@api/api';
 
 export interface FavoriteToggleResponse {
+  userId: string;
+  favoriteUserId: string;
   isFavorite: boolean;
+}
+
+export interface FavoriteToggleRequest {
+  favoriteUserId: string;
 }
 
 @Injectable({
@@ -14,13 +20,14 @@ export class UserFavoriteService {
 
   /**
    * Toggle the favorite status of a user.
-   * @param userId The ID of the user to toggle as favorite
+   * @param favoriteUserId The ID of the user to toggle as favorite
    * @returns Observable with the new favorite status
    */
-  toggleFavorite(userId: string) {
+  toggleFavorite(favoriteUserId: string) {
+    const body: FavoriteToggleRequest = { favoriteUserId };
     return this.http.post<FavoriteToggleResponse>(
-      API.USERS.TOGGLE_FAVORITE(userId),
-      {}
+      API.FAVORITES.TOGGLE_FAVORITE(),
+      body
     );
   }
 }
