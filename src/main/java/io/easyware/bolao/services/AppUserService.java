@@ -193,10 +193,6 @@ public class AppUserService {
         }
 
         UUID userId = user.getId();
-//        if (userId.equals(favoriteUserId)) {
-//            throw new BadRequestException("You cannot favorite yourself");
-//        }
-
         AppUser favoriteUser = appUserRepository.findById(favoriteUserId);
         if (favoriteUser == null) {
             throw new NotFoundException("Favorite user not found with id: " + favoriteUserId);
