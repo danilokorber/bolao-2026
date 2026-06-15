@@ -1,0 +1,32 @@
+import { Bet } from './bet.interface';
+import { MatchStage } from './match-stage.enum';
+import { MatchStatus } from './match-status.enum';
+import { Team } from './team.interface';
+
+export interface MatchV2 {
+  id?: string;
+  matchId?: number;
+  footballDataMatchId?: number;
+  homeTeamId: string;
+  awayTeamId: string;
+  homeTeam?: Team;
+  awayTeam?: Team;
+  matchDatetime: string;
+  stage: MatchStage;
+  homeGoals?: number;
+  awayGoals?: number;
+  homeOdds?: number;
+  awayOdds?: number;
+  drawOdds?: number;
+  wentToExtraTime?: boolean;
+  wentToPenalties?: boolean;
+  winnerId?: string;
+  winner?: Team;
+  status: MatchStatus;
+  inProgress?: boolean;
+  /**
+   * Past matches: all bets placed on this match.
+   * Future matches: single-element array with the current user's bet, or null if no bet was placed.
+   */
+  bets: Bet[] | null;
+}
