@@ -1,4 +1,4 @@
-import { Component, inject, input, linkedSignal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatchStatus, MatchV2 } from '@interfaces/index';
@@ -63,6 +63,14 @@ export class MatchCard {
   bet = linkedSignal(() =>
     this.match().bets?.find((bet) => bet.userId === this.store.appuser()!.id),
   );
+
+  isZebra = computed(() => {
+    const bets = this.match().bets ?? [];
+    if (bets.length === 0) return false; // No bets, default to non-zebra
+
+    const betsWrong = bets.filter((bet) => bet.pointsEarned === -6).length;
+    return betsWrong / bets.length >= 0.75; // Zebra if 75% or more bets are wrong
+  });
 
   startIsInThePast = linkedSignal(() => {
     const NOW = new Date().getTime();

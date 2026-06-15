@@ -1,6 +1,6 @@
-@if (match.isLoading()) {
+@if (!store.matchesV2InitiallyLoaded()) {
   <p class="text-center py-8 opacity-60">{{ 'matchDetail.loading' | transloco }}</p>
-} @else if (match.hasValue()) {
+} @else if (match()) {
   <!-- Back button -->
   <button
     (click)="goBack()"
@@ -20,7 +20,7 @@
 
     <!-- Teams & score -->
     <div class="relative flex items-center justify-center gap-4 sm:gap-8 py-6 px-4">
-      @if (match.value().matchId == 43) {
+      @if (isZebra()) {
         <div class="absolute -bottom-3.5 left-[calc(50%-2rem)] z-10">
           <img
             src="/zebra.png"
@@ -36,29 +36,29 @@
           class="shrink-0 rounded-full overflow-hidden shadow-lg bg-white h-16 w-16 sm:h-20 sm:w-20 relative"
         >
           <img
-            [imgSrc]="match.value()!.homeTeam?.flagUrl ?? ''"
-            [alt]="match.value()!.homeTeam?.fifaCode ?? ''"
-            title="{{ match.value()!.homeTeam?.fifaCode ?? '' }}"
+            [imgSrc]="match()!.homeTeam?.flagUrl ?? ''"
+            [alt]="match()!.homeTeam?.fifaCode ?? ''"
+            title="{{ match()!.homeTeam?.fifaCode ?? '' }}"
             class="flag absolute inset-0 w-full h-full object-cover"
             flag-fallback
           />
         </div>
         <span class="text-sm sm:text-lg font-bold text-center">{{
-          localizedName(match.value()!.homeTeam)
+          localizedName(match()!.homeTeam)
         }}</span>
-        <span class="text-xs opacity-50">{{ match.value()!.homeTeam?.fifaCode }}</span>
+        <span class="text-xs opacity-50">{{ match()!.homeTeam?.fifaCode }}</span>
       </div>
 
       <!-- Score -->
       <div class="flex flex-col items-center">
         <div class="text-4xl sm:text-5xl font-bold flex items-center gap-2 sm:gap-3">
-          <span>{{ match.value()!.homeGoals }}</span>
+          <span>{{ match()!.homeGoals }}</span>
           <span class="opacity-30">:</span>
-          <span>{{ match.value()!.awayGoals }}</span>
+          <span>{{ match()!.awayGoals }}</span>
         </div>
-        @if (match.value()!.wentToPenalties) {
+        @if (match()!.wentToPenalties) {
           <span class="text-xs mt-1 opacity-50">{{ 'matchDetail.penalties' | transloco }}</span>
-        } @else if (match.value()!.wentToExtraTime) {
+        } @else if (match()!.wentToExtraTime) {
           <span class="text-xs mt-1 opacity-50">{{ 'matchDetail.extraTime' | transloco }}</span>
         }
       </div>
@@ -69,17 +69,17 @@
           class="shrink-0 rounded-full overflow-hidden shadow-lg bg-white h-16 w-16 sm:h-20 sm:w-20 relative"
         >
           <img
-            [imgSrc]="match.value()!.awayTeam?.flagUrl ?? ''"
-            [alt]="match.value()!.awayTeam?.fifaCode ?? ''"
-            title="{{ match.value()!.awayTeam?.fifaCode ?? '' }}"
+            [imgSrc]="match()!.awayTeam?.flagUrl ?? ''"
+            [alt]="match()!.awayTeam?.fifaCode ?? ''"
+            title="{{ match()!.awayTeam?.fifaCode ?? '' }}"
             class="flag absolute inset-0 w-full h-full object-cover"
             flag-fallback
           />
         </div>
         <span class="text-sm sm:text-lg font-bold text-center">{{
-          localizedName(match.value()!.awayTeam)
+          localizedName(match()!.awayTeam)
         }}</span>
-        <span class="text-xs opacity-50">{{ match.value()!.awayTeam?.fifaCode }}</span>
+        <span class="text-xs opacity-50">{{ match()!.awayTeam?.fifaCode }}</span>
       </div>
     </div>
   </div>
@@ -90,9 +90,7 @@
       <span class="text-sm font-semibold">{{ 'matchDetail.betsTitle' | transloco }}</span>
     </div>
 
-    @if (bets.isLoading()) {
-      <p class="text-center py-4 opacity-60 text-sm">{{ 'matchDetail.loadingBets' | transloco }}</p>
-    } @else if (sortedBets().length === 0) {
+    @if (sortedBets().length === 0) {
       <p class="text-center py-4 opacity-60 text-sm">{{ 'matchDetail.noBets' | transloco }}</p>
     } @else {
       <div class="divide-y divide-gray-100 dark:divide-gray-700">

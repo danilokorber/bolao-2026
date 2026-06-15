@@ -126,6 +126,12 @@ export function withMatchesV2Feature() {
           console.log('Bet placed successfully');
           this.loadMatchesV2(); // Refresh matches to get the updated bet — can be optimized by just updating the relevant match in the state instead of reloading everything
         },
+
+        match: (matchId: string) => {
+          return computed<MatchV2 | undefined>(() =>
+            store.matchesV2().find((m) => m.id === matchId),
+          );
+        },
       };
     }),
   );
