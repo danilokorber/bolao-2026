@@ -46,6 +46,12 @@
   </div>
   <match-card-flag [team]="match().awayTeam!"></match-card-flag>
 
+  @if (match().matchId == 43) {
+    <div class="absolute -bottom-2.75 left-1/5 md:left-1/4 z-10">
+      <img src="/zebra.png" title="?" alt="?" class="h-16 w-16 md:w-20 md:h-20 inline-block mr-1" />
+    </div>
+  }
+
   <div class="absolute bottom-0.5 w-full flex justify-center items-center">
     <div
       [id]="'savedTip' + match().id"
