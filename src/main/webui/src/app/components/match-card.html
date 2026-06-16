@@ -6,7 +6,7 @@
   [class.hover:bg-primary-50]="!startIsInThePast()"
   [class.hover:dark:bg-primary-800]="!startIsInThePast()"
   [class.focus-within:bg-primary-50]="!startIsInThePast()"
-  [class.opacity-75]="startIsInThePast()"
+  [class.opacity-75]="startIsInThePast() && match().status == MatchStatus.FINISHED"
   [class.border-primary-900]="!startIsInThePast()"
   [class.border-primary-300]="startIsInThePast()"
   [class.cursor-pointer]="startIsInThePast()"
@@ -47,8 +47,13 @@
   <match-card-flag [team]="match().awayTeam!"></match-card-flag>
 
   @if (isZebra()) {
-    <div class="absolute -top-15 left-1/5 md:left-1/4 z-10">
-      <img src="/zebra.png" title="?" alt="?" class="h-16 w-16 md:w-20 md:h-20 inline-block mr-1" />
+    <div class="absolute -top-14.75 left-1/5 md:left-1/4 z-10 opacity-100">
+      <img
+        src="/zebra.png"
+        title="?"
+        alt="?"
+        class="drop-shadow h-16 w-16 md:w-20 md:h-20 inline-block mr-1"
+      />
     </div>
   }
 
