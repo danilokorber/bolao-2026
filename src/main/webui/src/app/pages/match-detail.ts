@@ -1,7 +1,7 @@
 import { Component, computed, inject, linkedSignal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FlagFallbackDirective } from '@directives/flag-fallback.directive';
-import { Team } from '@interfaces/index';
+import { MatchStatus, Team } from '@interfaces/index';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ScoreService } from '@services/score.service';
 import { StageService } from '@services/stage.service';
@@ -28,6 +28,8 @@ export class MatchDetail {
   protected readonly scoreService = inject(ScoreService);
   private readonly stageService = inject(StageService);
   private readonly teamService = inject(TeamService);
+
+  MatchStatus = MatchStatus;
 
   matchId = this.route.snapshot.paramMap.get('id') ?? '';
   private userId = computed(() => this.store.appuser()?.id);

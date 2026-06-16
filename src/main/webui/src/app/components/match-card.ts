@@ -59,6 +59,8 @@ export class MatchCard {
   private readonly scoreService = inject(ScoreService);
   private readonly store = inject(SignalStore);
 
+  MatchStatus = MatchStatus;
+
   match = input.required<MatchV2>();
   bet = linkedSignal(() =>
     this.match().bets?.find((bet) => bet.userId === this.store.appuser()!.id),
