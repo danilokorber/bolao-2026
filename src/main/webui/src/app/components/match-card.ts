@@ -10,6 +10,7 @@ import { MatchCardBetForm } from './match-card-bet-form';
 import { MatchCardFlag } from './match-card-flag';
 import { MatchCardSchedule } from './match-card-schedule';
 import { MatchCardTeamName } from './match-card-team-name';
+import { MatchFireworks } from './match-fireworks';
 import { MatchInProgress } from './match-in-progress';
 import { MatchOdds } from './match-odds';
 
@@ -24,6 +25,7 @@ import { MatchOdds } from './match-odds';
     MatchCardSchedule,
     MatchCardBetForm,
     MatchOdds,
+    MatchFireworks,
   ],
   templateUrl: './match-card.html',
   styles: `
