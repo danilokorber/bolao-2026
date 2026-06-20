@@ -12,6 +12,7 @@ import io.easyware.bolao.repositories.BetRepository;
 import io.easyware.bolao.repositories.ChampionBetRepository;
 import io.easyware.bolao.repositories.GroupWinnerBetRepository;
 import io.easyware.bolao.repositories.MatchRepository;
+import io.easyware.bolao.repositories.TeamRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -73,6 +74,9 @@ public class ScoreCalculationService {
 
     @Inject
     ChampionBetRepository championBetRepository;
+
+    @Inject
+    TeamRepository teamRepository;
 
     /** Returns the current instant as a UTC LocalDateTime. */
     private static LocalDateTime nowUtc() {
@@ -278,6 +282,61 @@ public class ScoreCalculationService {
         log.info("Scored {} group winner bet(s) for {} (1st: {}, 2nd: {})",
                 updated, groupName,
                 standings.first.getFifaCode(), standings.second.getFifaCode());
+        return updated;
+    }
+
+    /**
+     * Scores group winner bets for a single group using the manually resolved
+     * knockout slots (WG{letter} = 1st place, RG{letter} = 2nd place) rather than
+     * deriving standings from match results.
+     *
+     * <p>This is the <strong>authoritative</strong> source: the admin resolves these
+     * slots applying FIFA tiebreakers (head-to-head, fair play, drawing of lots) that
+     * a pure points/goal-difference sort cannot reproduce.
+     *
+     * <p>No-ops until <em>both</em> the winner and runner-up slots for the group have
+     * been resolved, so it is safe to call after resolving either slot.
+     *
+     * @param groupName the group to score (e.g. {@code GROUP_A})
+     * @return the number of bets whose points changed
+     */
+    @Transactional
+    public int scoreGroupWinnerBetsFromResolvedSlots(GroupName groupName) {
+        // GroupName is GROUP_A..GROUP_L; slot fifa codes are WG{A..L} / RG{A..L}.
+        String letter = groupName.name().substring("GROUP_".length());
+
+        Team winnerSlot = teamRepository.findByFifaCode("WG" + letter);
+        Team runnerSlot = teamRepository.findByFifaCode("RG" + letter);
+
+        if (winnerSlot == null || runnerSlot == null) {
+            log.warn("Missing slot placeholder(s) for {} (WG{}/RG{}) — skipping slot-based scoring",
+                    groupName, letter, letter);
+            return 0;
+        }
+
+        Team first = winnerSlot.getResolvedTeam();
+        Team second = runnerSlot.getResolvedTeam();
+
+        if (first == null || second == null) {
+            log.info("Group {} not fully resolved yet (1st: {}, 2nd: {}) — skipping slot-based scoring",
+                    groupName,
+                    first == null ? "?" : first.getFifaCode(),
+                    second == null ? "?" : second.getFifaCode());
+            return 0;
+        }
+
+        List<GroupWinnerBet> bets = groupWinnerBetRepository.findByGroup(groupName);
+        int updated = 0;
+        for (GroupWinnerBet bet : bets) {
+            int points = bet.calculatePoints(first, second);
+            if (!Objects.equals(bet.getPointsEarned(), points)) {
+                bet.setPointsEarned(points);
+                updated++;
+            }
+        }
+
+        log.info("Scored {} group winner bet(s) for {} from resolved slots (1st: {}, 2nd: {})",
+                updated, groupName, first.getFifaCode(), second.getFifaCode());
         return updated;
     }
 

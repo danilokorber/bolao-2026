@@ -26,6 +26,17 @@ public class MatchRepository implements PanacheRepositoryBase<Match, UUID> {
         return list("homeTeam.id = ?1 or awayTeam.id = ?1", teamId);
     }
 
+    /**
+     * Finds all matches that reference a given team in any team slot:
+     * home team, away team, or winner.
+     *
+     * @param teamId the team id to search for
+     * @return matches referencing the team in any slot
+     */
+    public List<Match> findByTeamIncludingWinner(UUID teamId) {
+        return list("homeTeam.id = ?1 or awayTeam.id = ?1 or winner.id = ?1", teamId);
+    }
+
     public List<Match> findUpcoming(int next) {
         return find("matchDatetime > ?1 and status = ?2 order by matchDatetime",
                     LocalDateTime.now(), MatchStatus.SCHEDULED)

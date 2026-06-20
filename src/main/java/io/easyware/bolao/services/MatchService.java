@@ -5,6 +5,8 @@ import io.easyware.bolao.dto.MatchDTO;
 import io.easyware.bolao.dto.PagedResponse;
 import io.easyware.bolao.entities.Bet;
 import io.easyware.bolao.entities.Match;
+import io.easyware.bolao.entities.Team;
+import io.easyware.bolao.enums.GroupName;
 import io.easyware.bolao.enums.MatchStage;
 import io.easyware.bolao.enums.MatchStatus;
 import io.easyware.bolao.mappers.BetMapper;
@@ -42,6 +44,9 @@ public class MatchService {
 
     @Inject
     BetMapper betMapper;
+
+    @Inject
+    ScoreCalculationService scoreCalculationService;
 
     public List<MatchDTO> findAll(UUID userId) {
         List<MatchDTO> dtos = matchMapper.toDTOList(
@@ -130,6 +135,68 @@ public class MatchService {
         }
 
         return matchMapper.toDTO(match);
+    }
+
+    /**
+     * Resolves a knockout-phase slot placeholder to a real team.
+     * <p>
+     * Looks up the placeholder team by its synthetic slot code and the real qualifier
+     * by its fifa code, then re-points every match FK (home/away/winner) that currently
+     * references the placeholder to the real team row. This avoids mutating the
+     * placeholder's fifa code, which would violate the unique constraint on
+     * {@code team.fifa_code}.
+     *
+     * @param slotCode synthetic fifa code of the placeholder slot (e.g. {@code WGA})
+     * @param fifaCode real fifa code of the qualified team (e.g. {@code MEX})
+     * @return the number of matches updated
+     */
+    @Transactional
+    public int resolveSlot(String slotCode, String fifaCode) {
+        Team placeholder = teamRepository.findByFifaCode(slotCode);
+        if (placeholder == null) {
+            throw new NotFoundException("Placeholder slot not found with fifa code: " + slotCode);
+        }
+        Team realTeam = teamRepository.findByFifaCode(fifaCode);
+        if (realTeam == null) {
+            throw new NotFoundException("Team not found with fifa code: " + fifaCode);
+        }
+
+        UUID placeholderId = placeholder.getId();
+        List<Match> matches = matchRepository.findByTeamIncludingWinner(placeholderId);
+        int updated = 0;
+        for (Match match : matches) {
+            boolean changed = false;
+            if (match.getHomeTeam() != null && placeholderId.equals(match.getHomeTeam().getId())) {
+                match.setHomeTeam(realTeam);
+                changed = true;
+            }
+            if (match.getAwayTeam() != null && placeholderId.equals(match.getAwayTeam().getId())) {
+                match.setAwayTeam(realTeam);
+                changed = true;
+            }
+            if (match.getWinner() != null && placeholderId.equals(match.getWinner().getId())) {
+                match.setWinner(realTeam);
+                changed = true;
+            }
+            if (changed) {
+                updated++;
+            }
+        }
+
+        // Persist the slot -> real team mapping so group scoring can read both the
+        // winner (WG{x}) and runner-up (RG{x}) regardless of resolution order.
+        placeholder.setResolvedTeam(realTeam);
+
+        // When a group winner/runner-up slot is resolved, the admin decision is the
+        // authoritative source of 1st/2nd place (it applies FIFA tiebreakers). Score
+        // the affected group's winner bets immediately.
+        if (slotCode.matches("^(WG|RG)[A-L]$")) {
+            String letter = slotCode.substring(2);
+            GroupName groupName = GroupName.valueOf("GROUP_" + letter);
+            scoreCalculationService.scoreGroupWinnerBetsFromResolvedSlots(groupName);
+        }
+
+        return updated;
     }
 
     @Transactional

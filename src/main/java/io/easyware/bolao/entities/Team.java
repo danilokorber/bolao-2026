@@ -40,4 +40,12 @@ public class Team {
     @Enumerated(EnumType.STRING)
     @Column(name = "group_name", length = 10)
     private GroupName groupName;
+
+    /**
+     * For knockout placeholder slots (e.g. {@code WGA}, {@code RGA}), the real team
+     * the slot has been resolved to. Null for real teams and unresolved slots.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resolved_team_id")
+    private Team resolvedTeam;
 }
