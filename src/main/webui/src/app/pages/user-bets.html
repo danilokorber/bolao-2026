@@ -176,4 +176,146 @@
       </span>
     </div>
   }
+
+  <!-- Group winner bonus bets -->
+  @if (sortedGroupBets().length > 0) {
+    <section class="flex flex-col gap-2">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-primary-700">
+          {{ 'groupWinnerBets.title' | transloco }}
+        </h2>
+        <span class="text-sm opacity-50">
+          {{ groupBetsTotalPoints() }} {{ 'matchSchedule.points' | transloco }}
+        </span>
+      </div>
+      <div class="border border-gray-200 rounded-xl overflow-hidden bg-white">
+        @for (gb of sortedGroupBets(); track gb.id) {
+          <div class="flex items-center gap-3 px-3 py-2 border-t border-gray-100 first:border-t-0">
+            <!-- Group badge -->
+            <div
+              class="shrink-0 w-7 h-7 rounded-full bg-primary-700 text-white flex items-center justify-center text-xs font-bold"
+            >
+              {{ groupLabel(gb.groupName) }}
+            </div>
+            <!-- Predicted 1st / 2nd place -->
+            <div class="flex-1 min-w-0 flex flex-col gap-1">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="shrink-0 text-base">🥇</span>
+                <div class="shrink-0 rounded-full overflow-hidden bg-white h-5 w-5 relative">
+                  <img
+                    [imgSrc]="gb.firstPlaceTeam?.flagUrl ?? ''"
+                    [alt]="gb.firstPlaceTeam?.fifaCode ?? ''"
+                    class="absolute inset-0 w-full h-full object-cover"
+                    style="height: 100%; max-width: none"
+                    flag-fallback
+                  />
+                </div>
+                <span class="truncate text-sm">{{ localizedName(gb.firstPlaceTeam) }}</span>
+              </div>
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="shrink-0 text-base">🥈</span>
+                <div class="shrink-0 rounded-full overflow-hidden bg-white h-5 w-5 relative">
+                  <img
+                    [imgSrc]="gb.secondPlaceTeam?.flagUrl ?? ''"
+                    [alt]="gb.secondPlaceTeam?.fifaCode ?? ''"
+                    class="absolute inset-0 w-full h-full object-cover"
+                    style="height: 100%; max-width: none"
+                    flag-fallback
+                  />
+                </div>
+                <span class="truncate text-sm">{{ localizedName(gb.secondPlaceTeam) }}</span>
+              </div>
+            </div>
+            <!-- Points -->
+            <div
+              class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white"
+              [style.background-color]="scoreService.color(gb.pointsEarned ?? 0)"
+            >
+              {{ gb.pointsEarned ?? 0 }}
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- Champion / semifinal-final bonus bet (revealed after knockout kickoff) -->
+  @if (championBetVisible()) {
+    <section class="flex flex-col gap-2">
+      <h2 class="text-lg font-bold text-secondary-700">
+        {{ 'championBet.title' | transloco }}
+      </h2>
+      <div class="border border-gray-200 rounded-xl bg-white overflow-hidden">
+        <!-- Final + points -->
+        <div class="flex items-center justify-between px-4 py-2 bg-secondary-600 text-white">
+          <span class="font-bold">🏆 {{ 'championBet.final' | transloco }}</span>
+          <div
+            class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white"
+            [style.background-color]="scoreService.color(championBet()?.bonusPoints ?? 0)"
+          >
+            {{ championBet()?.bonusPoints ?? 0 }}
+          </div>
+        </div>
+        <div class="px-4 py-3 flex flex-col gap-4">
+          <!-- Champion & runner-up -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="shrink-0 text-base">🥇</span>
+              <div class="shrink-0 rounded-full overflow-hidden bg-white h-6 w-6 relative">
+                <img
+                  [imgSrc]="championBet()?.championTeam?.flagUrl ?? ''"
+                  [alt]="championBet()?.championTeam?.fifaCode ?? ''"
+                  class="absolute inset-0 w-full h-full object-cover"
+                  style="height: 100%; max-width: none"
+                  flag-fallback
+                />
+              </div>
+              <span class="truncate text-sm font-medium">{{
+                localizedName(championBet()?.championTeam)
+              }}</span>
+            </div>
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="shrink-0 text-base">🥈</span>
+              <div class="shrink-0 rounded-full overflow-hidden bg-white h-6 w-6 relative">
+                <img
+                  [imgSrc]="championBet()?.runnerUpTeam?.flagUrl ?? ''"
+                  [alt]="championBet()?.runnerUpTeam?.fifaCode ?? ''"
+                  class="absolute inset-0 w-full h-full object-cover"
+                  style="height: 100%; max-width: none"
+                  flag-fallback
+                />
+              </div>
+              <span class="truncate text-sm font-medium">{{
+                localizedName(championBet()?.runnerUpTeam)
+              }}</span>
+            </div>
+          </div>
+          <!-- Semifinalists -->
+          @if (championSemifinalists().length > 0) {
+            <div class="flex flex-col gap-1.5 border-t border-gray-100 pt-3">
+              <span class="text-xs font-semibold uppercase tracking-wide opacity-50">
+                ⚽ {{ 'championBet.semifinalists' | transloco }}
+              </span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                @for (semi of championSemifinalists(); track semi.id) {
+                  <div class="flex items-center gap-2 min-w-0">
+                    <div class="shrink-0 rounded-full overflow-hidden bg-white h-5 w-5 relative">
+                      <img
+                        [imgSrc]="semi.flagUrl ?? ''"
+                        [alt]="semi.fifaCode"
+                        class="absolute inset-0 w-full h-full object-cover"
+                        style="height: 100%; max-width: none"
+                        flag-fallback
+                      />
+                    </div>
+                    <span class="truncate text-sm">{{ localizedName(semi) }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  }
 </div>

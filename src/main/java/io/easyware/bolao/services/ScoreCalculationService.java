@@ -44,7 +44,11 @@ import java.util.stream.Collectors;
  * </ul>
  *
  * <h3>Group Winner Bet Scoring</h3>
- * Triggered when all 6 matches in a group are finished.
+ * The admin-resolved knockout slots (WG{x} = winner, RG{x} = runner-up) are the
+ * authoritative source of each group's 1st/2nd place — they already encode the
+ * official FIFA tiebreakers (head-to-head, fair play, drawing of lots), which a
+ * pure points/goal-difference sort cannot reproduce. Bets are (re)scored whenever
+ * the admin resolves those slots, and the operation no-ops until both are set.
  * <ul>
  *   <li>Correct 1st place: 5 points</li>
  *   <li>Correct 2nd place: 3 points</li>
@@ -240,49 +244,21 @@ public class ScoreCalculationService {
 
     private int checkAndScoreGroupWinnerBets(List<UUID> matchIds) {
         // Determine which groups are affected by the newly finished matches
-        LocalDateTime now = nowUtc();
-        Set<MatchStage> affectedGroups = matchIds.stream()
+        Set<GroupName> affectedGroups = matchIds.stream()
                 .map(matchRepository::findById)
                 .filter(Objects::nonNull)
                 .map(Match::getStage)
                 .filter(this::isGroupStage)
+                .map(stage -> GroupName.valueOf(stage.name()))
                 .collect(Collectors.toSet());
 
         int totalUpdated = 0;
-        for (MatchStage groupStage : affectedGroups) {
-            if (matchRepository.isGroupCompleteAndPast(groupStage, now)) {
-                totalUpdated += scoreGroupWinnerBets(groupStage);
-            }
+        for (GroupName groupName : affectedGroups) {
+            // 1st/2nd place are taken from the admin-resolved WG/RG slots, not from
+            // derived standings. No-ops until the admin has resolved both slots.
+            totalUpdated += scoreGroupWinnerBetsFromResolvedSlots(groupName);
         }
         return totalUpdated;
-    }
-
-    private int scoreGroupWinnerBets(MatchStage groupStage) {
-        GroupName groupName = GroupName.valueOf(groupStage.name());
-
-        // Determine actual 1st and 2nd place from match results
-        List<Match> groupMatches = matchRepository.findFinishedByStage(groupStage);
-        GroupStandings standings = calculateGroupStandings(groupMatches);
-
-        if (standings.first == null || standings.second == null) {
-            log.warn("Could not determine standings for {} — skipping group winner scoring", groupName);
-            return 0;
-        }
-
-        List<GroupWinnerBet> bets = groupWinnerBetRepository.findByGroup(groupName);
-        int updated = 0;
-        for (GroupWinnerBet bet : bets) {
-            int points = bet.calculatePoints(standings.first, standings.second);
-            if (!Objects.equals(bet.getPointsEarned(), points)) {
-                bet.setPointsEarned(points);
-                updated++;
-            }
-        }
-
-        log.info("Scored {} group winner bet(s) for {} (1st: {}, 2nd: {})",
-                updated, groupName,
-                standings.first.getFifaCode(), standings.second.getFifaCode());
-        return updated;
     }
 
     /**
@@ -343,17 +319,16 @@ public class ScoreCalculationService {
     // ── Group winner bets (direct, for recalculateAll) ────────────────────────
 
     /**
-     * Iterates all 12 groups and scores group winner bets for every completed group.
+     * Iterates all groups and scores group winner bets from the admin-resolved
+     * WG/RG slots. Groups whose winner/runner-up have not been resolved are skipped.
      * Used by recalculateAll to avoid the indirect match-ID-based lookup.
      */
     private int scoreAllCompleteGroupWinnerBets() {
-        LocalDateTime now = nowUtc();
         int totalUpdated = 0;
         for (GroupName groupName : GroupName.values()) {
-            MatchStage groupStage = MatchStage.valueOf(groupName.name());
-            if (matchRepository.isGroupCompleteAndPast(groupStage, now)) {
-                totalUpdated += scoreGroupWinnerBets(groupStage);
-            }
+            // Source of truth: the admin-resolved WG/RG slots. No-ops for groups
+            // whose winner/runner-up have not been resolved yet.
+            totalUpdated += scoreGroupWinnerBetsFromResolvedSlots(groupName);
         }
         return totalUpdated;
     }
@@ -440,72 +415,7 @@ public class ScoreCalculationService {
         return updated;
     }
 
-    // ── Group standings calculation ─────────────────────────────────────────────
-
-    /**
-     * Calculates group standings from finished matches using FIFA tiebreaker rules:
-     * 1. Points (W=3, D=1, L=0)
-     * 2. Goal difference
-     * 3. Goals for
-     */
-    private GroupStandings calculateGroupStandings(List<Match> groupMatches) {
-        Map<UUID, TeamStats> statsMap = new HashMap<>();
-
-        for (Match m : groupMatches) {
-            if (m.getHomeGoals() == null || m.getAwayGoals() == null) continue;
-
-            TeamStats home = statsMap.computeIfAbsent(m.getHomeTeam().getId(),
-                    k -> new TeamStats(m.getHomeTeam()));
-            TeamStats away = statsMap.computeIfAbsent(m.getAwayTeam().getId(),
-                    k -> new TeamStats(m.getAwayTeam()));
-
-            int hg = m.getHomeGoals();
-            int ag = m.getAwayGoals();
-
-            home.goalsFor += hg;
-            home.goalsAgainst += ag;
-            away.goalsFor += ag;
-            away.goalsAgainst += hg;
-
-            if (hg > ag) {
-                home.points += 3;
-            } else if (hg < ag) {
-                away.points += 3;
-            } else {
-                home.points += 1;
-                away.points += 1;
-            }
-        }
-
-        List<TeamStats> sorted = statsMap.values().stream()
-                .sorted(Comparator.comparingInt((TeamStats s) -> s.points).reversed()
-                        .thenComparingInt((TeamStats s) -> s.goalsFor - s.goalsAgainst).reversed()
-                        .thenComparingInt((TeamStats s) -> s.goalsFor).reversed())
-                .toList();
-
-        GroupStandings standings = new GroupStandings();
-        if (sorted.size() >= 1) standings.first = sorted.get(0).team;
-        if (sorted.size() >= 2) standings.second = sorted.get(1).team;
-        return standings;
-    }
-
     private boolean isGroupStage(MatchStage stage) {
         return stage != null && stage.name().startsWith("GROUP_");
-    }
-
-    private static class TeamStats {
-        final Team team;
-        int points = 0;
-        int goalsFor = 0;
-        int goalsAgainst = 0;
-
-        TeamStats(Team team) {
-            this.team = team;
-        }
-    }
-
-    private static class GroupStandings {
-        Team first;
-        Team second;
     }
 }
