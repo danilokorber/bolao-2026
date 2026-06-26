@@ -17,11 +17,16 @@ public class OddUpdateScheduler {
     @ConfigProperty(name = "the-odds-api.enabled", defaultValue = "false")
     boolean enabled;
 
-    @Scheduled(every = "168h",
+    @Scheduled(cron = "${bolao.schedules.odds.schedule:0 0 12 * * ?}",
+            timeZone = "${bolao.schedules.odds.timezone:GMT}",
             identity = "odds-update-scheduler")
     public void scheduleOddsUpdate() {
+        if (!enabled) {
+            log.fine("Odds update scheduler is disabled");
+            return;
+        }
 
-        log.info("Scheduling Odds Update Schedule");
-        if (enabled) oddsService.printAllEventsWithMatchingMatches();
+        log.info("Running daily odds update");
+        oddsService.updateOddsForAllMatches();
     }
 }

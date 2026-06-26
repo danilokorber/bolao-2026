@@ -1,15 +1,15 @@
 package io.easyware.bolao.services;
 
 import io.easyware.bolao.clients.TheOddsApiClient;
-import io.easyware.bolao.dto.theoddsapi.TheOddsEvent;
 import io.easyware.bolao.dto.theoddsapi.TheOddsOdds;
 import io.easyware.bolao.entities.Match;
 import io.easyware.bolao.entities.Team;
+import io.easyware.bolao.enums.MatchStatus;
 import io.easyware.bolao.repositories.MatchRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.jboss.resteasy.reactive.ClientWebApplicationException;
 
 import java.text.Normalizer;
 import java.time.LocalDateTime;
@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
+@Slf4j
 public class OddsService {
 
     @Inject
@@ -34,56 +35,69 @@ public class OddsService {
     @Inject
     MatchRepository matchRepository;
 
+    /**
+     * Fetches odds for every currently-priced World Cup match in a single bulk
+     * request (1 API credit) and stores the latest average h2h odds on each
+     * matching, still-scheduled, future match.
+     *
+     * <p>Matches that are in play or already played are skipped so live odds never
+     * overwrite the pre-kickoff line once bets are locked.
+     */
     @Transactional
-    public void printAllEventsWithMatchingMatches() {
-        List<TheOddsEvent> events = theOddsApiClient.getEvents();
+    public void updateOddsForAllMatches() {
+        List<TheOddsOdds> events;
+        try {
+            events = theOddsApiClient.getAllOdds();
+        } catch (RuntimeException exception) {
+            log.error("Failed to fetch odds from The Odds API: {}", exception.getMessage(), exception);
+            return;
+        }
+
+        if (events == null || events.isEmpty()) {
+            log.info("The Odds API returned no priced events; nothing to update");
+            return;
+        }
+
         List<Match> matches = matchRepository.listAll();
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
 
-        for (TheOddsEvent event : events) {
+        int updated = 0;
+        int skipped = 0;
+        int unmatched = 0;
+
+        for (TheOddsOdds event : events) {
             Match match = findMatchingMatch(event, matches);
-            String matchId = match != null
-                    ? String.valueOf(match.getMatchId() != null ? match.getMatchId() : match.getId())
-                    : "🟥";
-            LocalDateTime matchTime = match != null ? match.getMatchDatetime() : parseUtc(event.getCommenceTime());
-
             if (match == null) {
+                unmatched++;
                 logUnmatchedEvent(event, matches);
-            }
-
-            TheOddsOdds odds;
-            try {
-                odds = theOddsApiClient.getOddsForEvent(event.getId());
-            } catch (ClientWebApplicationException exception) {
-                System.err.println(formatOddsFailure(matchId, matchTime, event, exception));
                 continue;
             }
 
-            if (match != null) {
-                match.setHomeOdds(roundOdds(odds.getAverageHome()));
-                match.setAwayOdds(roundOdds(odds.getAverageAway()));
-                match.setDrawOdds(roundOdds(odds.getAvarageDraw()));
+            if (match.getStatus() != MatchStatus.SCHEDULED
+                    || match.getMatchDatetime() == null
+                    || !match.getMatchDatetime().isAfter(now)) {
+                skipped++;
+                continue;
             }
 
-            String line = String.format(
-                    Locale.ROOT,
-                    "%s  %s %s %.2f %.2f %.2f %s",
-                    matchId,
-                    matchTime,
-                    event.getHomeTeam(),
-                    odds.getAverageHome(),
-                    odds.getAvarageDraw(),
-                    odds.getAverageAway(),
-                    event.getAwayTeam()
-            );
-            System.out.println(line);
+            match.setHomeOdds(roundOdds(event.getAverageHome()));
+            match.setAwayOdds(roundOdds(event.getAverageAway()));
+            match.setDrawOdds(roundOdds(event.getAverageDraw()));
+            updated++;
         }
+
+        log.info("Odds update complete: {} event(s) received, {} updated, {} skipped (in-play/past), {} unmatched",
+                events.size(), updated, skipped, unmatched);
     }
 
-    private Double roundOdds(double odds) {
+    private Double roundOdds(Double odds) {
+        if (odds == null) {
+            return null;
+        }
         return Math.round(odds * 100.0d) / 100.0d;
     }
 
-    private void logUnmatchedEvent(TheOddsEvent event, List<Match> matches) {
+    private void logUnmatchedEvent(TheOddsOdds event, List<Match> matches) {
         LocalDateTime kickoff = parseUtc(event.getCommenceTime());
         List<MatchCandidate> candidates = new ArrayList<>();
 
@@ -138,9 +152,9 @@ public class OddsService {
                 .limit(3)
                 .map(MatchCandidate::description)
                 .collect(Collectors.joining(" | "));
-        System.err.println(String.format(
+        log.warn(String.format(
                 Locale.ROOT,
-                "Unmatched event id=%s kickoff=%s home=%s away=%s candidates=%s",
+                "Unmatched odds event id=%s kickoff=%s home=%s away=%s candidates=%s",
                 event.getId(),
                 event.getCommenceTime(),
                 event.getHomeTeam(),
@@ -179,34 +193,7 @@ public class OddsService {
         }
     }
 
-    private String formatOddsFailure(String matchId,
-                                     LocalDateTime matchTime,
-                                     TheOddsEvent event,
-                                     ClientWebApplicationException exception) {
-        String responseBody = readResponseBody(exception);
-        return String.format(
-                Locale.ROOT,
-                "Odds API error for event %s [%s -> %s] match=%s time=%s status=%s body=%s",
-                event.getId(),
-                event.getHomeTeam(),
-                event.getAwayTeam(),
-                matchId,
-                matchTime,
-                exception.getResponse().getStatus(),
-                responseBody
-        );
-    }
-
-    private String readResponseBody(ClientWebApplicationException exception) {
-        try {
-            String body = exception.getResponse().readEntity(String.class);
-            return body == null || body.isBlank() ? "<empty>" : body;
-        } catch (RuntimeException readException) {
-            return "<unreadable response body: " + readException.getClass().getSimpleName() + ">";
-        }
-    }
-
-    private Match findMatchingMatch(TheOddsEvent event, List<Match> matches) {
+    private Match findMatchingMatch(TheOddsOdds event, List<Match> matches) {
         if (event == null) {
             return null;
         }
@@ -258,7 +245,9 @@ public class OddsService {
         }
 
         String normalized = Normalizer.normalize(value, Normalizer.Form.NFKD)
-                .replaceAll("\\p{M}+", "");
+                .replaceAll("\\p{M}+", "")
+                .replace("&", " and ")
+                .replaceAll("\\s+", " ");
         return normalized.trim().toLowerCase(Locale.ROOT);
     }
 }

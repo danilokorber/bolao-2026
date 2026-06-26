@@ -13,6 +13,9 @@ bolao:
     matches:
       schedule: ${SCHEDULE_MATCHES_SCHEDULE:0 0/1 * * * ?} # Every minute
       enabled: ${SCHEDULE_MATCHES_ENABLED:true}
+    odds:
+      schedule: ${SCHEDULE_ODDS_SCHEDULE:0 0 12 * * ?} # Daily at 12:00
+      timezone: ${SCHEDULE_ODDS_TIMEZONE:GMT}
   notifications:
     enabled: ${NOTIFICATIONS_ENABLED:true}
     global-send-zone: ${NOTIFICATIONS_GLOBAL_SEND_ZONE:UTC}

@@ -60,6 +60,12 @@ public class TheOddsOdds {
                 if (market == null || market.getOutcomes() == null) {
                     continue;
                 }
+                // Only average the back-odds h2h market. Exchanges (e.g. betfair,
+                // matchbook) also return a h2h_lay market whose lay prices would
+                // otherwise skew the average.
+                if (!"h2h".equalsIgnoreCase(market.getKey())) {
+                    continue;
+                }
                 for (Outcome outcome : market.getOutcomes()) {
                     if (outcome == null || outcome.getPrice() == null) {
                         continue;

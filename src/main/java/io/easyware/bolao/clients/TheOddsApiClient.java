@@ -51,4 +51,25 @@ public interface TheOddsApiClient {
     @ClientQueryParam(name = "regions", value = "eu")
     @ClientQueryParam(name = "markets", value = "h2h")
     TheOddsOdds getOddsForEvent(@PathParam("eventId") String eventId);
+
+    /**
+     * Fetches bookmaker odds for every currently-priced FIFA World Cup event in a
+     * single request (the "featured" odds endpoint).
+     *
+     * <p><strong>Usage quota:</strong> the cost is {@code markets × regions} credits —
+     * here {@code 1 × 1 = 1 credit} — regardless of how many events are returned. This
+     * is dramatically cheaper than calling {@link #getOddsForEvent(String)} once per
+     * event. The response is a rolling window of the matches bookmakers currently price,
+     * so far-future fixtures are simply absent until they get priced.
+     *
+     * <p>Note: for betting exchanges the {@code h2h} request also returns a
+     * {@code h2h_lay} market; callers must average the {@code h2h} market only.
+     *
+     * @return odds data for every currently-priced event with the {@code h2h} market
+     */
+    @GET
+    @Path("/sports/soccer_fifa_world_cup/odds")
+    @ClientQueryParam(name = "regions", value = "eu")
+    @ClientQueryParam(name = "markets", value = "h2h")
+    List<TheOddsOdds> getAllOdds();
 }
