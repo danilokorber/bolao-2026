@@ -2,17 +2,19 @@ import { isPlatformBrowser } from '@angular/common';
 import { Component, effect, inject, PLATFORM_ID, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { ICON, IconComponent } from '@components/icon';
+import { Version } from '@components/version';
 import { BolaoModule } from '@modules/bolao/bolao.module';
 import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'navigation-layout',
-  imports: [RouterModule, BolaoModule, IconComponent],
+  imports: [RouterModule, BolaoModule, IconComponent, Version],
   template: `
     <!-- Main container: full screen height -->
     <div
       class="h-dvh w-dvw pb-24 lg:pb-8 flex flex-col items-center gap-4 overflow-y-auto p-4 bg-linear-to-br from-primary-50 via-success-50 to-secondary-50 dark:bg-linear-to-br dark:from-primary-950 dark:via-success-950 dark:to-secondary-950"
     >
+      <version></version>
       <aside>
         <icon [icon]="ICON.HOME"></icon>
         <icon [icon]="ICON.BALL"></icon>

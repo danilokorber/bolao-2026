@@ -2,16 +2,18 @@ import { isPlatformBrowser } from '@angular/common';
 import { Component, effect, inject, PLATFORM_ID, signal } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
 import { ICON } from '@components/icon';
+import { Version } from '@components/version';
 import { BolaoModule } from '@modules/bolao/bolao.module';
 import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'clean-layout',
-  imports: [RouterModule, BolaoModule],
+  imports: [RouterModule, BolaoModule, Version],
   template: `
     <div
-      class="h-dvh w-dvw flex flex-col items-center gap-4 overflow-y-auto p-4 bg-linear-to-br from-primary-50 via-success-50 to-secondary-50 dark:bg-linear-to-br dark:from-primary-950 dark:via-success-950 dark:to-secondary-950"
+      class="relative h-dvh w-dvw flex flex-col items-center gap-4 overflow-y-auto p-4 bg-linear-to-br from-primary-50 via-success-50 to-secondary-50 dark:bg-linear-to-br dark:from-primary-950 dark:via-success-950 dark:to-secondary-950"
     >
+      <version></version>
       <div
         id="content"
         class="flex flex-col w-4xl max-w-full bg-white border border-gray-300 rounded-t-3xl p-8 dark:text-white dark:bg-primary-900"
