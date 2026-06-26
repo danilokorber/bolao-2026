@@ -154,4 +154,8 @@ export const API = {
     UNSUBSCRIBE: (endpoint: string) =>
       `/api/v1/notifications/push/subscriptions?endpoint=${encodeURIComponent(endpoint)}`,
   },
+
+  ROUTE_VISITS: {
+    TRACK: () => `/api/v1/route-visits`,
+  },
 };

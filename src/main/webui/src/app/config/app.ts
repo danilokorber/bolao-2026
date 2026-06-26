@@ -1,5 +1,8 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { RouteTrackingService } from '@services/route-tracking.service';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -9,4 +12,16 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('bolao');
+
+  private readonly router = inject(Router);
+  private readonly routeTracking = inject(RouteTrackingService);
+
+  constructor() {
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe((event) => this.routeTracking.track(event.urlAfterRedirects));
+  }
 }

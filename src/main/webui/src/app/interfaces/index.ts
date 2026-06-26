@@ -25,3 +25,4 @@ export * from './ranking-entry.interface';
 export * from './paged-response.interface';
 export * from './notification-preference.interface';
 export * from './push-public-key.interface';
+export * from './route-visit.interface';
