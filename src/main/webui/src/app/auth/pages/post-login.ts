@@ -27,10 +27,8 @@ export class PostLoginPage {
   private readonly router = inject(Router);
   protected readonly signalStore = inject(SignalStore);
 
-  appUser = this.signalStore.getAppUser();
-
   redirectToDashboard = effect(() => {
-    const user = this.appUser();
+    const user = this.signalStore.appuser();
     if (user) {
       this.router.navigate(['group-bets']);
     }

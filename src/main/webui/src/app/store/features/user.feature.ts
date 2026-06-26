@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { API } from '@api/api';
 import { AuthService } from '@auth/services/auth.service';
 import { AppUser, UserPool } from '@interfaces/index';
@@ -58,10 +58,6 @@ export function withUserFeature() {
             const poolId = await signalStoreService.getFirstActivePoolId(appUser.id);
             patchState(store, { currentPoolId: poolId });
           }
-        },
-
-        getAppUser() {
-          return computed(() => store.appuser() ?? this.loadAppUser());
         },
 
         setCurrentPoolId(id: string) {

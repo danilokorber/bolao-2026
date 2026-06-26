@@ -1,4 +1,4 @@
-import { computed, inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { OAuthEvent, OAuthService } from 'angular-oauth2-oidc';
 import { AUTH_CONFIG } from '../config/auth.config';
@@ -96,32 +96,37 @@ export class AuthService {
     }
   }
 
-  userinfo = computed(() => {
+  // NOTE: These accessors must read the OAuth state freshly on every call.
+  // They wrap non-reactive `oAuthService` methods, so they MUST NOT be wrapped
+  // in `computed()`: a computed with no signal dependencies evaluates once and
+  // caches its value forever, which previously left guards reading a stale
+  // "not logged in" result and caused an infinite /login redirect loop.
+  userinfo = () => {
     return this.oAuthService.getIdentityClaims();
-  });
+  };
 
-  pictureUrl = computed(() => {
+  pictureUrl = () => {
     const claims = this.oAuthService.getIdentityClaims();
     const picture = claims && claims['picture'] ? claims['picture'] : undefined;
     return picture ? picture : 'platypus_clear.png'; // TODO: Replace with actual default avatar if needed
-  });
+  };
 
-  currentUser = computed(() => {
+  currentUser = () => {
     const claims = this.oAuthService.getIdentityClaims();
     return claims ? claims['sub'] : null;
-  });
+  };
 
-  isLoggedIn = computed(() => {
+  isLoggedIn = () => {
     return (
       this.oAuthService.hasValidAccessToken() && this.oAuthService.getIdentityClaims() !== undefined
     );
-  });
+  };
 
-  isNotLoggedIn = computed(() => {
+  isNotLoggedIn = () => {
     return !this.isLoggedIn();
-  });
+  };
 
-  token = computed(() => {
+  token = () => {
     return this.oAuthService.getIdToken();
-  });
+  };
 }
