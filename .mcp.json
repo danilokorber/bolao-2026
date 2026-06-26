@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "grafana-easyware": {
+      "tools": ["*"],
+      "command": "uvx",
+      "args": ["mcp-grafana"],
+      "env": {
+        "GRAFANA_URL": "https://grafana.easyware.io",
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "glsa_xH2edm80LpEIQDm5SRzXQdbf3VJqfmuU_19d91f5b"
+      }
+    }
+  }
+}
