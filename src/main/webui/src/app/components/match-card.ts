@@ -1,7 +1,7 @@
 import { Component, computed, inject, input, linkedSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatchStatus, MatchV2 } from '@interfaces/index';
+import { MatchStage, MatchStatus, MatchV2 } from '@interfaces/index';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ScoreService } from '@services/score.service';
 import { utcDate } from '@utils/date-utils';
@@ -67,6 +67,18 @@ export class MatchCard {
   bet = linkedSignal(() =>
     this.match().bets?.find((bet) => bet.userId === this.store.appuser()!.id),
   );
+
+  isKnockOutMatch = computed(() => {
+    const stage = this.match().stage;
+    return (
+      stage === MatchStage.ROUND_OF_32 ||
+      stage === MatchStage.ROUND_OF_16 ||
+      stage === MatchStage.QUARTER_FINALS ||
+      stage === MatchStage.SEMI_FINALS ||
+      stage === MatchStage.THIRD_PLACE ||
+      stage === MatchStage.FINAL
+    );
+  });
 
   isZebra = computed(() => {
     const bets = this.match().bets ?? [];

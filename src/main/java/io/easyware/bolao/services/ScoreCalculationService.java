@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * When the match finishes, the final score is locked in and group winner / champion bet
  * evaluation is triggered if applicable.
  *
- * <h3>Match Bet Scoring (90-minute result only)</h3>
+ * <h3>Match Bet Scoring (final score, incl. extra time; penalty shootouts not counted)</h3>
  * <ul>
  *   <li>Exact score: 10 points</li>
  *   <li>Correct goal difference (implies correct winner): 5 points</li>

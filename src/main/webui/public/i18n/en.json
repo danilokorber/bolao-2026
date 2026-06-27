@@ -50,7 +50,7 @@
       "subtitle": "Points are calculated in real time during matches.",
       "matchBets": {
         "title": "Match Predictions",
-        "note90min": "Only the 90-minute result is considered.",
+        "noteExtraTime": "Extra time is included; penalty shootouts are not counted.",
         "exact": "Exact score",
         "goalDiff": "Correct goal difference (implies correct winner)",
         "winner": "Correct winner, wrong margin",

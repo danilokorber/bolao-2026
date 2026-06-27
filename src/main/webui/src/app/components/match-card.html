@@ -58,7 +58,14 @@
     </div>
   }
 
-  <div class="absolute bottom-0.5 w-full flex justify-center items-center">
+  @if (isKnockOutMatch()) {
+    <div class="absolute bottom-1 w-full flex justify-center items-center">
+      <p class="text-xs opacity-60 dark:opacity-50 pl-2">
+        {{ 'account.scoring.matchBets.noteExtraTime' | transloco }}
+      </p>
+    </div>
+  }
+  <div class="absolute bottom-0.5 w-full flex justify-center items-center z-10">
     <div
       [id]="'savedTip' + match().id"
       class="saved-tip text-xs sm:text-sm px-3 sm:px-4 py-px rounded-full bg-primary-500 text-gray-50"

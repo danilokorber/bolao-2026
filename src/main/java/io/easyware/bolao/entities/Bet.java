@@ -59,7 +59,9 @@ public class Bet {
     private LocalDateTime betAt = LocalDateTime.now();
 
     /**
-     * Calculates the score tier for this bet based on the actual 90-minute match result.
+     * Calculates the score tier for this bet based on the actual final match result.
+     * For knockout matches this is the score after extra time; penalty shootouts are
+     * not counted (the pre-shootout score is used).
      *
      * @return the tier, or null if match result is not yet available
      */
@@ -90,7 +92,8 @@ public class Bet {
     }
 
     /**
-     * Calculates points achieved for this bet based on the actual 90-minute match result,
+     * Calculates points achieved for this bet based on the actual final match result
+     * (including extra time for knockout matches; penalty shootouts are not counted),
      * then applies the stage multiplier.
      *
      * Base scoring rules (highest applicable tier wins):

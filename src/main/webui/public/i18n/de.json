@@ -50,7 +50,7 @@
       "subtitle": "Punkte werden in Echtzeit während der Spiele berechnet.",
       "matchBets": {
         "title": "Spieltipps",
-        "note90min": "Nur das Ergebnis nach 90 Minuten wird gewertet.",
+        "noteExtraTime": "Die Verlängerung zählt mit; das Elfmeterschießen nicht.",
         "exact": "Exaktes Ergebnis",
         "goalDiff": "Richtige Tordifferenz (impliziert richtigen Gewinner)",
         "winner": "Richtiger Gewinner, falsche Differenz",

@@ -27,7 +27,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
             ⚽ {{ 'account.scoring.matchBets.title' | transloco }}
           </h3>
           <p class="text-xs opacity-60 dark:opacity-50 pl-2">
-            {{ 'account.scoring.matchBets.note90min' | transloco }}
+            {{ 'account.scoring.matchBets.noteExtraTime' | transloco }}
           </p>
           <div class="flex flex-col gap-1 pl-2">
             <div class="flex items-center gap-2">

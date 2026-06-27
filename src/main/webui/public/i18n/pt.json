@@ -50,7 +50,7 @@
       "subtitle": "Os pontos são calculados em tempo real durante as partidas.",
       "matchBets": {
         "title": "Palpites de Partidas",
-        "note90min": "Apenas o resultado dos 90 minutos é considerado.",
+        "noteExtraTime": "A prorrogação é incluída; a disputa de pênaltis não conta.",
         "exact": "Placar exato",
         "goalDiff": "Saldo de gols correto (implica vencedor correto)",
         "winner": "Vencedor correto, margem errada",
