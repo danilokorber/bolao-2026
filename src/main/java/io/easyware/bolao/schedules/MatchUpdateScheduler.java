@@ -3,6 +3,7 @@ package io.easyware.bolao.schedules;
 import io.easyware.bolao.clients.FootballDataClient;
 import io.easyware.bolao.dto.footballdata.FootballDataResponse;
 import io.easyware.bolao.services.FootballDataService;
+import io.easyware.bolao.services.KnockoutAdvancementService;
 import io.easyware.bolao.services.NotificationService;
 import io.easyware.bolao.services.ScoreCalculationService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -39,6 +40,9 @@ public class MatchUpdateScheduler {
 
     @Inject
     ScoreCalculationService scoreCalculationService;
+
+    @Inject
+    KnockoutAdvancementService knockoutAdvancementService;
 
     @Inject
     NotificationService notificationService;
@@ -86,6 +90,14 @@ public class MatchUpdateScheduler {
                 if (notificationsEnabled && eventNotificationsEnabled) {
                     notificationService.sendMatchFinishedNotifications(changedMatchIds);
                 }
+            }
+
+            // Advance knockout winners (and semifinal losers) into their next match. This is an
+            // idempotent reconciliation scan, so it runs every tick to remain self-healing across
+            // restarts or a previously missed advancement.
+            int advanced = knockoutAdvancementService.advanceFinishedKnockoutMatches();
+            if (advanced > 0) {
+                log.info("Knockout advancement re-pointed {} downstream match(es) to real teams", advanced);
             }
         } catch (Exception e) {
             log.error("Error polling football-data.org", e);

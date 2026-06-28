@@ -7,6 +7,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,6 +21,19 @@ public class MatchRepository implements PanacheRepositoryBase<Match, UUID> {
 
     public List<Match> findByStatus(MatchStatus status) {
         return list("status", status);
+    }
+
+    /**
+     * Finds finished matches in any of the given stages that have a winner set and a kickoff
+     * in the past. Used to reconcile knockout bracket advancement.
+     *
+     * @param stages the stages to include (e.g. the knockout rounds)
+     * @param before only matches whose kickoff is strictly before this instant
+     * @return finished, decided matches in those stages
+     */
+    public List<Match> findFinishedWithWinnerByStages(Collection<MatchStage> stages, LocalDateTime before) {
+        return list("stage in ?1 and status = ?2 and winner is not null and matchDatetime < ?3",
+                stages, MatchStatus.FINISHED, before);
     }
 
     public List<Match> findByTeam(UUID teamId) {

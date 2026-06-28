@@ -73,7 +73,20 @@ public class FootballDataService {
                 match.setWentToPenalties(true);
             }
         }
-        
+
+        // Once finished, record the winner. {@code score.winner} is penalty-aware: a knockout
+        // decided on penalties reports the shootout winner here (HOME_TEAM/AWAY_TEAM), not DRAW.
+        // A drawn group game reports DRAW and leaves the winner null. This also drives knockout
+        // bracket advancement and final → champion-bet scoring.
+        if (newStatus == MatchStatus.FINISHED && footballDataMatch.getScore() != null) {
+            String winner = footballDataMatch.getScore().getWinner();
+            if ("HOME_TEAM".equals(winner)) {
+                match.setWinner(match.getHomeTeam());
+            } else if ("AWAY_TEAM".equals(winner)) {
+                match.setWinner(match.getAwayTeam());
+            }
+        }
+
         matchRepository.persist(match);
 
         // Determine if score recalculation is needed
