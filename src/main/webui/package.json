@@ -1,6 +1,6 @@
 {
   "name": "bolao",
-  "version": "2026.12.1",
+  "version": "2026.12.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
