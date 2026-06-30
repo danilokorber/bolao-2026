@@ -57,6 +57,22 @@ public class Match {
     @Column(name = "away_goals")
     private Integer awayGoals;
 
+    /**
+     * Penalty shootout score for the home team (number of converted penalties),
+     * or {@code null} when the match was not decided on penalties. Kept separate
+     * from {@link #homeGoals}, which holds the score after extra time.
+     */
+    @Column(name = "home_penalties")
+    private Integer homePenalties;
+
+    /**
+     * Penalty shootout score for the away team (number of converted penalties),
+     * or {@code null} when the match was not decided on penalties. Kept separate
+     * from {@link #awayGoals}, which holds the score after extra time.
+     */
+    @Column(name = "away_penalties")
+    private Integer awayPenalties;
+
     @Column(name = "home_odds")
     private Double homeOdds;
 

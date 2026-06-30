@@ -23,13 +23,20 @@
   <match-card-flag [team]="match().homeTeam!"></match-card-flag>
   <div class="flex-1 w-full flex flex-row gap-1 sm:gap-2 justify-center items-center">
     <match-card-team-name [team]="match().homeTeam!" [homeAway]="'home'"></match-card-team-name>
+    @if (match().homePenalties) {
+      <div class="text-sm ml-2 my-auto">({{ match().homePenalties }})</div>
+    }
     <div
       class="w-16 sm:w-28 text-xl sm:text-4xl font-bold my-1 sm:my-2 flex flex-row justify-center items-center relative"
     >
       @if (startIsInThePast()) {
-        <div class="text-right">{{ match().homeGoals }}</div>
+        <div class="text-right">
+          {{ match().homeGoals }}
+        </div>
         <div class="w-4 sm:w-8 text-center">:</div>
-        <div class="text-left">{{ match().awayGoals }}</div>
+        <div class="text-left">
+          {{ match().awayGoals }}
+        </div>
         <div
           class="absolute -bottom-4 sm:-bottom-6 text-xs sm:text-lg text-gray-500 whitespace-nowrap"
         >
@@ -43,6 +50,9 @@
         <match-card-bet-form [match]="match()"></match-card-bet-form>
       }
     </div>
+    @if (match().awayPenalties) {
+      <div class="text-sm mr-2 my-auto">({{ match().awayPenalties }})</div>
+    }
     <match-card-team-name [team]="match().awayTeam!" [homeAway]="'away'"></match-card-team-name>
   </div>
   <match-card-flag [team]="match().awayTeam!"></match-card-flag>

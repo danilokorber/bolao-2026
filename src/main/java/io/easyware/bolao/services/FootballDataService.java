@@ -56,11 +56,25 @@ public class FootballDataService {
 
         match.setStatus(newStatus);
         
-        // Update scores if available
+        // Update scores if available. football-data.org folds the penalty shootout into
+        // score.fullTime for knockout matches (e.g. a 0-0 draw decided 3-0 on penalties is
+        // reported as fullTime 3-0). Keep the two separated: home/away goals hold the score
+        // after extra time (fullTime minus the shootout), and the shootout result is stored
+        // in its own home/away penalty columns.
         if (footballDataMatch.getScore() != null && footballDataMatch.getScore().getFullTime() != null) {
-            FootballDataMatch.Score.TimeScore fullTime = footballDataMatch.getScore().getFullTime();
-            match.setHomeGoals(fullTime.getHome());
-            match.setAwayGoals(fullTime.getAway());
+            FootballDataMatch.Score score = footballDataMatch.getScore();
+            FootballDataMatch.Score.TimeScore fullTime = score.getFullTime();
+            FootballDataMatch.Score.TimeScore penalties = score.getPenalties();
+
+            if (penalties != null && penalties.getHome() != null && penalties.getAway() != null) {
+                match.setHomePenalties(penalties.getHome());
+                match.setAwayPenalties(penalties.getAway());
+                match.setHomeGoals(subtractPenalties(fullTime.getHome(), penalties.getHome()));
+                match.setAwayGoals(subtractPenalties(fullTime.getAway(), penalties.getAway()));
+            } else {
+                match.setHomeGoals(fullTime.getHome());
+                match.setAwayGoals(fullTime.getAway());
+            }
         }
 
         // Detect extra time / penalties from duration field
@@ -154,6 +168,24 @@ public class FootballDataService {
 
         log.info("Updated {} matches from football-data.org", response.getMatches().size());
         return needsRecalc;
+    }
+
+    /**
+     * Recovers the after-extra-time score by removing the penalty shootout tally that
+     * football-data.org folds into {@code score.fullTime}. Guards against missing values.
+     *
+     * @param fullTimeGoals the fullTime score for a side (shootout included)
+     * @param penaltyGoals  the shootout score for the same side
+     * @return the score after extra time, or {@code null} if {@code fullTimeGoals} is null
+     */
+    private static Integer subtractPenalties(Integer fullTimeGoals, Integer penaltyGoals) {
+        if (fullTimeGoals == null) {
+            return null;
+        }
+        if (penaltyGoals == null) {
+            return fullTimeGoals;
+        }
+        return fullTimeGoals - penaltyGoals;
     }
 
     private io.easyware.bolao.enums.MatchStatus mapStatus(String footballDataStatus) {

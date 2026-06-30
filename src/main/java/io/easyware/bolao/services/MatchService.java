@@ -117,6 +117,8 @@ public class MatchService {
         match.setStage(matchDTO.getStage());
         match.setHomeGoals(matchDTO.getHomeGoals());
         match.setAwayGoals(matchDTO.getAwayGoals());
+        match.setHomePenalties(matchDTO.getHomePenalties());
+        match.setAwayPenalties(matchDTO.getAwayPenalties());
         match.setHomeOdds(matchDTO.getHomeOdds());
         match.setAwayOdds(matchDTO.getAwayOdds());
         match.setDrawOdds(matchDTO.getDrawOdds());

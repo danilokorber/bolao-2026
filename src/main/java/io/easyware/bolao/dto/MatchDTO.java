@@ -42,6 +42,12 @@ public class MatchDTO {
     @Min(0)
     private Integer awayGoals;
 
+    @Min(0)
+    private Integer homePenalties;
+
+    @Min(0)
+    private Integer awayPenalties;
+
     private Double homeOdds;
     private Double awayOdds;
     private Double drawOdds;

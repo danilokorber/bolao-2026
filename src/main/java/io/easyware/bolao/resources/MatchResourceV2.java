@@ -108,6 +108,8 @@ public class MatchResourceV2 {
                 .stage(mapped.getStage())
                 .homeGoals(mapped.getHomeGoals())
                 .awayGoals(mapped.getAwayGoals())
+                .homePenalties(mapped.getHomePenalties())
+                .awayPenalties(mapped.getAwayPenalties())
                 .homeOdds(mapped.getHomeOdds())
                 .awayOdds(mapped.getAwayOdds())
                 .drawOdds(mapped.getDrawOdds())

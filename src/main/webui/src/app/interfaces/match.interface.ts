@@ -15,6 +15,8 @@ export interface Match {
   stage: MatchStage;
   homeGoals?: number;
   awayGoals?: number;
+  homePenalties?: number;
+  awayPenalties?: number;
   homeOdds?: number;
   awayOdds?: number;
   drawOdds?: number;

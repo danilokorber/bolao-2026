@@ -95,6 +95,9 @@ public class FootballDataMatch {
         private String duration;
         private TimeScore fullTime;
         private TimeScore halfTime;
+        private TimeScore regularTime;
+        private TimeScore extraTime;
+        private TimeScore penalties;
 
         @Getter
         @Setter

@@ -195,6 +195,50 @@ class FootballDataServiceTest {
         assertThat(match.getWinner()).isNull();
     }
 
+    @Test
+    void separatesPenaltyShootoutScoreFromAfterExtraTimeScore() {
+        Team home = team("POR");
+        Team away = team("SVN");
+        Match match = knockoutMatch(home, away, MatchStatus.LIVE);
+
+        // Real Euro 2024 R16 shape: 0-0 after extra time, home won 3-0 on penalties.
+        // football-data.org reports fullTime 3-0 (shootout folded in) plus a penalties block.
+        FootballDataMatch footballDataMatch = finishedPenaltySnapshot("HOME_TEAM", 3, 0, 3, 0);
+
+        when(matchRepository.find("footballDataMatchId", 537417L)).thenReturn(panacheQuery);
+        when(panacheQuery.firstResultOptional()).thenReturn(Optional.of(match));
+        doNothing().when(matchRepository).persist(any(Match.class));
+
+        service.updateMatchFromFootballData(footballDataMatch);
+
+        assertThat(match.getHomeGoals()).isZero();
+        assertThat(match.getAwayGoals()).isZero();
+        assertThat(match.getHomePenalties()).isEqualTo(3);
+        assertThat(match.getAwayPenalties()).isZero();
+        assertThat(match.getWentToPenalties()).isTrue();
+        assertThat(match.getWinner()).isSameAs(home);
+    }
+
+    @Test
+    void storesFullTimeAsGoalsAndLeavesPenaltiesNullWhenNoShootout() {
+        Team home = team("BRA");
+        Team away = team("ARG");
+        Match match = knockoutMatch(home, away, MatchStatus.LIVE);
+
+        FootballDataMatch footballDataMatch = finishedSnapshot("HOME_TEAM", "REGULAR", 2, 1);
+
+        when(matchRepository.find("footballDataMatchId", 537417L)).thenReturn(panacheQuery);
+        when(panacheQuery.firstResultOptional()).thenReturn(Optional.of(match));
+        doNothing().when(matchRepository).persist(any(Match.class));
+
+        service.updateMatchFromFootballData(footballDataMatch);
+
+        assertThat(match.getHomeGoals()).isEqualTo(2);
+        assertThat(match.getAwayGoals()).isEqualTo(1);
+        assertThat(match.getHomePenalties()).isNull();
+        assertThat(match.getAwayPenalties()).isNull();
+    }
+
     private static Team team(String fifaCode) {
         return Team.builder()
                 .id(UUID.randomUUID())
@@ -223,6 +267,21 @@ class FootballDataServiceTest {
                         .winner(winner)
                         .duration(duration)
                         .fullTime(FootballDataMatch.Score.TimeScore.builder().home(home).away(away).build())
+                        .build())
+                .build();
+    }
+
+    private static FootballDataMatch finishedPenaltySnapshot(String winner, int fullTimeHome, int fullTimeAway,
+                                                             int penaltiesHome, int penaltiesAway) {
+        return FootballDataMatch.builder()
+                .id(537417L)
+                .status("FINISHED")
+                .utcDate(OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120))
+                .score(FootballDataMatch.Score.builder()
+                        .winner(winner)
+                        .duration("PENALTY_SHOOTOUT")
+                        .fullTime(FootballDataMatch.Score.TimeScore.builder().home(fullTimeHome).away(fullTimeAway).build())
+                        .penalties(FootballDataMatch.Score.TimeScore.builder().home(penaltiesHome).away(penaltiesAway).build())
                         .build())
                 .build();
     }
