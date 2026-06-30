@@ -52,9 +52,15 @@
       <!-- Score -->
       <div class="flex flex-col items-center">
         <div class="text-4xl sm:text-5xl font-bold flex items-center gap-2 sm:gap-3">
+          @if (match()!.homePenalties) {
+            <span class="text-sm mr-2 my-auto">({{ match()!.homePenalties }})</span>
+          }
           <span>{{ match()!.homeGoals }}</span>
           <span class="opacity-30">:</span>
           <span>{{ match()!.awayGoals }}</span>
+          @if (match()!.awayPenalties) {
+            <span class="text-sm ml-2 my-auto">({{ match()!.awayPenalties }})</span>
+          }
         </div>
         @if (match()!.wentToPenalties) {
           <span class="text-xs mt-1 opacity-50">{{ 'matchDetail.penalties' | transloco }}</span>
@@ -99,8 +105,13 @@
             <!-- User name -->
             <span class="flex-1 text-sm sm:text-base truncate">{{ bet.user?.name ?? '—' }}</span>
 
+            <!-- User's bet time -->
+            <span class="text-xs sm:text-xs font-mono tabular-nums opacity-60">
+              {{ bet.betAt | date:'dd.MM HH:mm:ss' }}
+            </span>
+
             <!-- User's bet -->
-            <span class="text-sm sm:text-base font-mono tabular-nums opacity-60">
+            <span class="text-sm sm:text-base font-mono tabular-nums opacity-60 w-20 text-center">
               {{ bet.homeGoalsBet }} : {{ bet.awayGoalsBet }}
             </span>
 

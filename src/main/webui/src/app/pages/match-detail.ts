@@ -8,10 +8,11 @@ import { StageService } from '@services/stage.service';
 import { TeamService } from '@services/team.service';
 import { utcDate } from '@utils/date-utils';
 import { SignalStore } from '../store/signal-store';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'match-detail',
-  imports: [TranslocoPipe, FlagFallbackDirective],
+  imports: [TranslocoPipe, DatePipe, FlagFallbackDirective],
   templateUrl: './match-detail.html',
   styles: `
     .flag {

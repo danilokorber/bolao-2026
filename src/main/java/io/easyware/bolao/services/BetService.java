@@ -125,6 +125,7 @@ public class BetService {
         if (request.getWinnerBetId() != null) {
             bet.setWinnerBet(teamRepository.findById(request.getWinnerBetId()));
         }
+        bet.setBetAt(LocalDateTime.now());
 
         betRepository.persist(bet);
         return betMapper.toDTO(bet);
