@@ -106,8 +106,14 @@
             <span class="flex-1 text-sm sm:text-base truncate">{{ bet.user?.name ?? '—' }}</span>
 
             <!-- User's bet time -->
-            <span class="text-xs sm:text-xs font-mono tabular-nums opacity-60">
-              {{ bet.betAt | date:'dd.MM HH:mm:ss' }}
+            <span class="hidden md:block text-xs sm:text-xs font-mono tabular-nums opacity-60">
+              {{ bet.betAt | date: 'dd.MM HH:mm:ss' }}
+            </span>
+            <span
+              class="block md:hidden text-xs sm:text-xs opacity-60"
+              title="{{ bet.betAt | date: 'dd.MM.yyyy HH:mm:ss' }}"
+            >
+              ⏱️
             </span>
 
             <!-- User's bet -->
