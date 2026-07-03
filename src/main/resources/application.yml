@@ -6,6 +6,8 @@ the-odds-api:
   enabled: ${THE_ODDS_API_ENABLED:false}
 
 bolao:
+  football-data:
+    lock-finished-matches: ${FOOTBALL_DATA_LOCK_FINISHED_MATCHES:true}
   auth:
     header:
       domain: ${AUTH_HEADER_NAME:X-Game-Id}

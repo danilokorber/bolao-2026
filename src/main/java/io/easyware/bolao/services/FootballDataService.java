@@ -9,6 +9,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,9 @@ public class FootballDataService {
 
     @Inject
     MatchRepository matchRepository;
+
+    @ConfigProperty(name = "bolao.football-data.lock-finished-matches", defaultValue = "true")
+    boolean lockFinishedMatches;
 
     /**
      * Updates a single match from football-data.org API data.
@@ -50,6 +54,13 @@ public class FootballDataService {
         
         Match match = matchOpt.get();
         MatchStatus previousStatus = match.getStatus();
+
+        if (lockFinishedMatches && previousStatus == MatchStatus.FINISHED) {
+            log.debug("Skipping football-data update for match {} (football-data: {}) because it is already FINISHED",
+                    match.getMatchId(), footballDataId);
+            return Optional.empty();
+        }
+
         Integer previousHomeGoals = match.getHomeGoals();
         Integer previousAwayGoals = match.getAwayGoals();
         MatchStatus newStatus = normalizeStatus(match, mapStatus(footballDataMatch.getStatus()));

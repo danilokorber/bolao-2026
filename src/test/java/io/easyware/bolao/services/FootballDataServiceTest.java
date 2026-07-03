@@ -22,6 +22,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +41,7 @@ class FootballDataServiceTest {
     void setUp() {
         service = new FootballDataService();
         service.matchRepository = matchRepository;
+        service.lockFinishedMatches = true;
     }
 
     @Test
@@ -237,6 +239,57 @@ class FootballDataServiceTest {
         assertThat(match.getAwayGoals()).isEqualTo(1);
         assertThat(match.getHomePenalties()).isNull();
         assertThat(match.getAwayPenalties()).isNull();
+    }
+
+    @Test
+    void doesNotUpdateScoresWhenMatchIsAlreadyFinishedInDatabase() {
+        Team home = team("BRA");
+        Team away = team("ARG");
+        Match match = knockoutMatch(home, away, MatchStatus.FINISHED);
+        match.setHomeGoals(1);
+        match.setAwayGoals(0);
+        match.setWinner(home);
+
+        FootballDataMatch footballDataMatch = finishedSnapshot("AWAY_TEAM", "REGULAR", 2, 3);
+
+        when(matchRepository.find("footballDataMatchId", 537417L)).thenReturn(panacheQuery);
+        when(panacheQuery.firstResultOptional()).thenReturn(Optional.of(match));
+
+        Optional<UUID> recalculatedMatchId = service.updateMatchFromFootballData(footballDataMatch);
+
+        assertThat(recalculatedMatchId).isEmpty();
+        assertThat(match.getStatus()).isEqualTo(MatchStatus.FINISHED);
+        assertThat(match.getHomeGoals()).isEqualTo(1);
+        assertThat(match.getAwayGoals()).isEqualTo(0);
+        assertThat(match.getWinner()).isSameAs(home);
+        verify(matchRepository, never()).persist(match);
+    }
+
+    @Test
+    void updatesFinishedMatchWhenLockFinishedMatchesIsDisabled() {
+        service.lockFinishedMatches = false;
+
+        Team home = team("BRA");
+        Team away = team("ARG");
+        Match match = knockoutMatch(home, away, MatchStatus.FINISHED);
+        match.setHomeGoals(1);
+        match.setAwayGoals(0);
+        match.setWinner(home);
+
+        FootballDataMatch footballDataMatch = finishedSnapshot("AWAY_TEAM", "REGULAR", 2, 3);
+
+        when(matchRepository.find("footballDataMatchId", 537417L)).thenReturn(panacheQuery);
+        when(panacheQuery.firstResultOptional()).thenReturn(Optional.of(match));
+        doNothing().when(matchRepository).persist(any(Match.class));
+
+        Optional<UUID> recalculatedMatchId = service.updateMatchFromFootballData(footballDataMatch);
+
+        // Score changed on an active (FINISHED) match → triggers recalculation
+        assertThat(recalculatedMatchId).isPresent();
+        assertThat(match.getHomeGoals()).isEqualTo(2);
+        assertThat(match.getAwayGoals()).isEqualTo(3);
+        assertThat(match.getWinner()).isSameAs(away);
+        verify(matchRepository).persist(match);
     }
 
     private static Team team(String fifaCode) {
