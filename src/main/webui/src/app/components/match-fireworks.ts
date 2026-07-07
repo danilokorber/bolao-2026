@@ -16,7 +16,7 @@ export class MatchFireworks {
     () =>
       this.match().status === MatchStatus.FINISHED &&
       ((this.match().homeTeam?.fifaCode == 'ARG' &&
-        (this.match().homeGoals ?? 0) > (this.match().awayGoals ?? 0)) ||
+        (this.match().homeGoals ?? 0) < (this.match().awayGoals ?? 0)) ||
         (this.match().awayTeam?.fifaCode == 'ARG' &&
           (this.match().awayGoals ?? 0) < (this.match().homeGoals ?? 0))),
   );
