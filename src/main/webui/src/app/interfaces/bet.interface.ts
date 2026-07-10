@@ -14,5 +14,6 @@ export interface Bet {
   winnerBet?: Team;
   pointsEarned?: number;
   calculatedPoints?: number;
+  scoreTier?: 'EXACT' | 'DIFF' | 'WINNER' | 'INVERTED' | 'WRONG';
   betAt?: string;
 }

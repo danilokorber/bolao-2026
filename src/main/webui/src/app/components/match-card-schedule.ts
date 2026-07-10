@@ -82,5 +82,5 @@ export class MatchCardSchedule {
     return NOW > SCHEDULE;
   });
 
-  scoreColor = linkedSignal(() => this.scoreService.color(this.bet()?.pointsEarned ?? 0));
+  scoreColor = linkedSignal(() => this.scoreService.color(this.bet()?.pointsEarned ?? 0, this.bet()?.scoreTier));
 }

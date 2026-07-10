@@ -50,7 +50,7 @@ import { SignalStore } from '../store/signal-store';
 
       <div
         class="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold text-white"
-        [style.background-color]="scoreService.color(bet()?.pointsEarned ?? 0)"
+        [style.background-color]="scoreService.color(bet()?.pointsEarned ?? 0, bet()?.scoreTier)"
       >
         {{ bet()?.pointsEarned ?? 0 }}
       </div>

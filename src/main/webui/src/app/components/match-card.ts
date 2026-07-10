@@ -96,7 +96,7 @@ export class MatchCard {
 
   matchInProgress = linkedSignal(() => this.match().status == MatchStatus.LIVE);
 
-  scoreColor = linkedSignal(() => this.scoreService.color(this.bet()?.pointsEarned ?? 0));
+  scoreColor = linkedSignal(() => this.scoreService.color(this.bet()?.pointsEarned ?? 0, this.bet()?.scoreTier));
 
   onCardClick() {
     if (this.startIsInThePast()) {

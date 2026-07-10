@@ -1,5 +1,6 @@
 package io.easyware.bolao.dto;
 
+import io.easyware.bolao.enums.ScoreTier;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,5 +23,6 @@ public class BetDTO {
     private TeamDTO winnerBet;
     private Integer pointsEarned;
     private Integer calculatedPoints;
+    private ScoreTier scoreTier;
     private LocalDateTime betAt;
 }
